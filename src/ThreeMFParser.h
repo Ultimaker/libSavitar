@@ -21,13 +21,11 @@
 
 #include "SavitarExport.h"
 
-namespace Savitar
+class SAVITAR_EXPORT ThreeMFParser
 {
-    class SAVITAR_EXPORT ThreeMFParser
-    {
-    public:
-        ThreeMFParser();
-        virtual ~ThreeMFParser();
-    };
-}
+public:
+    ThreeMFParser();
+    virtual ~ThreeMFParser();
+};
+
 #endif

@@ -22,7 +22,6 @@
 {
 %TypeHeaderCode
 #include <string>
-#include "Types.h"
 %End
 
 %ConvertFromTypeCode

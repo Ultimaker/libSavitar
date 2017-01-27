@@ -19,10 +19,9 @@
 %Module(name = Savitar, call_super_init = True)
 
 %Include Types.sip
+%Include SceneNode.sip
 
-%ModuleHeaderCode
-using namespace Savitar;
-%End
+namespace Savitar;
 
 class ThreeMFParser
 {

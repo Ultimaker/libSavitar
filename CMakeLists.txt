@@ -32,11 +32,13 @@ endif()
 
 set(savitar_SRCS
     src/ThreeMFParser.cpp
+    src/SceneNode.cpp
 )
 
 set(savitar_HDRS
     src/ThreeMFParser.h
     src/Types.h
+    src/SceneNode.h
 )
 
 set(SAVITAR_VERSION 0.1.0)
@@ -56,7 +58,7 @@ endif()
 
 
 if(BUILD_PYTHON)
-    set(SIP_EXTRA_FILES_DEPEND python/Types.sip)
+    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/SceneNode.sip)
     #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
     set(SIP_EXTRA_OPTIONS -g) # -g means always release the GIL before calling C++ methods.
     add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)

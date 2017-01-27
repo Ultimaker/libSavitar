@@ -16,15 +16,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ThreeMFParser.h"
+#ifndef SAVITAR_SCENENODE_H
+#define SAVITAR_SCENENODE_H
 
-
-ThreeMFParser::ThreeMFParser()
+class SceneNode
 {
+public:
+    SceneNode();
+    virtual ~SceneNode();
+};
 
-}
-
-ThreeMFParser::~ThreeMFParser()
-{
-
-}
+#endif
