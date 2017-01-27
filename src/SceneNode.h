@@ -20,12 +20,14 @@
 #define SAVITAR_SCENENODE_H
 #include "SavitarExport.h"
 
-class SAVITAR_EXPORT SceneNode
+namespace Savitar
 {
-public:
-    SceneNode();
-    virtual ~SceneNode();
-};
-
+    class SAVITAR_EXPORT SceneNode
+    {
+    public:
+        SceneNode();
+        virtual ~SceneNode();
+    };
+}
 
 #endif

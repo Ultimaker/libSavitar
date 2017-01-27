@@ -21,7 +21,10 @@
 %Include Types.sip
 %Include SceneNode.sip
 
-namespace Savitar;
+%ModuleHeaderCode
+namespace Savitar{} //Ensure that the namespace already exists
+using namespace Savitar;
+%End
 
 class ThreeMFParser
 {

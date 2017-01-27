@@ -18,6 +18,7 @@
 
 #include "ThreeMFParser.h"
 
+using namespace Savitar;
 
 ThreeMFParser::ThreeMFParser()
 {

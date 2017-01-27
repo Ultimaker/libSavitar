@@ -20,12 +20,14 @@
 #define THREEMFPARSER_H
 
 #include "SavitarExport.h"
-
-class SAVITAR_EXPORT ThreeMFParser
+#include "SceneNode.h"
+namespace Savitar
 {
-public:
-    ThreeMFParser();
-    virtual ~ThreeMFParser();
-};
-
+    class SAVITAR_EXPORT ThreeMFParser
+    {
+    public:
+        ThreeMFParser();
+        virtual ~ThreeMFParser();
+    };
+}
 #endif
