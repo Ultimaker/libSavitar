@@ -21,6 +21,7 @@
 
 #include "SavitarExport.h"
 #include "SceneNode.h"
+#include "../pugixml/src/pugixml.hpp"
 namespace Savitar
 {
     class SAVITAR_EXPORT ThreeMFParser

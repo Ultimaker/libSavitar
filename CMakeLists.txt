@@ -7,6 +7,9 @@ include(CMakePackageConfigHelpers)
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
 
+
+add_subdirectory(pugixml)
+
 if(BUILD_PYTHON)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
     find_package(SIP REQUIRED)
@@ -50,6 +53,7 @@ if(BUILD_STATIC)
     add_library(Savitar STATIC ${savitar_SRCS})
     if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
         target_link_libraries(Savitar PRIVATE pthread)
+        target_link_libraries(Savitar PRIVATE pugixml)
         set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
     endif()
 else()
@@ -103,4 +107,3 @@ install(FILES
     ${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
 )
-
