@@ -18,12 +18,14 @@
 
 #ifndef SAVITAR_SCENENODE_H
 #define SAVITAR_SCENENODE_H
+#include "SavitarExport.h"
 
-class SceneNode
+class SAVITAR_EXPORT SceneNode
 {
 public:
     SceneNode();
     virtual ~SceneNode();
 };
+
 
 #endif
