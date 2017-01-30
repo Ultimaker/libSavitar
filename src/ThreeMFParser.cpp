@@ -46,7 +46,7 @@ Scene ThreeMFParser::parse(std::string xml_string)
         if(object.child("mesh") && std::string(object.attribute("type").value()) == "model")
         {
             MeshData temp_mesh = MeshData();
-            temp_mesh.fillByXMLNode(object.child("mesh"));
+            temp_mesh.fillByXMLNode(object);
             meshes.push_back(temp_mesh);
         }
     }
