@@ -22,13 +22,24 @@
 #include "SavitarExport.h"
 #include "SceneNode.h"
 #include "../pugixml/src/pugixml.hpp"
+
+#include <string>
 namespace Savitar
 {
+    class Scene;
+
     class SAVITAR_EXPORT ThreeMFParser
     {
     public:
         ThreeMFParser();
         virtual ~ThreeMFParser();
+
+        /**
+         * Parse the string containing xml data that was obtained from 3D/3dmodel.model in a 3mf file
+         * \param xml_string the xml string to be parsed by the 3mf parser.
+         * \returns A filled Scene object
+         */
+        Scene parse(std::string xml_string);
     };
 }
 #endif

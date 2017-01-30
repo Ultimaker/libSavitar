@@ -19,6 +19,9 @@
 #ifndef MESHDATA_H
 #define MESHDATA_H
 #include "SavitarExport.h"
+#include <vector>
+#include <string>
+#include "Vertex.h"
 
 namespace Savitar
 {
@@ -27,6 +30,14 @@ namespace Savitar
     public:
         MeshData();
         virtual ~MeshData();
+
+        /**
+         * Set the data of this MeshData by letting it parse a string filled with XML data.
+         */
+        void fillByXML(std::string xml);
+
+    protected:
+        std::vector<Vertex> vertices;
     };
 }
 

@@ -17,6 +17,8 @@
  */
 
 #include "ThreeMFParser.h"
+#include "Scene.h"
+#include <iostream>
 
 using namespace Savitar;
 
@@ -28,4 +30,12 @@ ThreeMFParser::ThreeMFParser()
 ThreeMFParser::~ThreeMFParser()
 {
 
+}
+
+Scene ThreeMFParser::parse(std::string xml_string)
+{
+    pugi::xml_document document;
+    document.load_string(xml_string.c_str());
+    
+    return Scene();
 }

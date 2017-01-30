@@ -16,25 +16,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef VERTEX_H
+#define VERTEX_H
 #include "SavitarExport.h"
-#include "SceneNode.h"
-
-#include <vector>
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT Scene
+    class SAVITAR_EXPORT Vertex
     {
     public:
-        Scene();
-        virtual ~Scene();
+        Vertex(float x, float y, float z);
+        virtual ~Vertex();
 
-        std::vector< SceneNode > getSceneNodes();
-        void addSceneNode(SceneNode node);
+        float getX();
+        float getY();
+        float getZ();
     protected:
-        std::vector< SceneNode > scene_nodes;
+        float x;
+        float y;
+        float z;
     };
 }
+
 #endif

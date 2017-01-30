@@ -18,7 +18,10 @@
 
 #ifndef SAVITAR_SCENENODE_H
 #define SAVITAR_SCENENODE_H
+
 #include "SavitarExport.h"
+#include "MeshData.h"
+
 #include <string>
 #include <vector>
 
@@ -36,9 +39,13 @@ namespace Savitar
         std::vector<SceneNode> getChildren();
         void addChild(SceneNode node);
 
+        MeshData& getMeshData();
+        void setMeshData(MeshData mesh_data);
+
     protected:
         std::string transformation;
         std::vector<SceneNode> children;
+        MeshData mesh_data;
     };
 }
 
