@@ -20,6 +20,7 @@
 
 %Include Types.sip
 %Include SceneNode.sip
+%Include Scene.sip
 
 %ModuleHeaderCode
 namespace Savitar{} //Ensure that the namespace already exists
@@ -35,4 +36,5 @@ class ThreeMFParser
 public:
     ThreeMFParser();
     virtual ~ThreeMFParser();
+    Scene parse(std::string xml_string);
 };
