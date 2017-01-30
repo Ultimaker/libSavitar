@@ -38,6 +38,7 @@ set(savitar_SRCS
     src/SceneNode.cpp
     src/Scene.cpp
     src/MeshData.cpp
+    src/Vertex.cpp
 )
 
 set(savitar_HDRS
@@ -46,6 +47,7 @@ set(savitar_HDRS
     src/SceneNode.h
     src/Scene.h
     src/MeshData.h
+    src/Vertex.h
 )
 
 set(SAVITAR_VERSION 0.1.0)
@@ -55,12 +57,13 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 if(BUILD_STATIC)
     add_library(Savitar STATIC ${savitar_SRCS})
-    if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
-        target_link_libraries(Savitar PRIVATE pugixml)
-        set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
-    endif()
 else()
     add_library(Savitar SHARED ${savitar_SRCS})
+endif()
+
+if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
+    target_link_libraries(Savitar PUBLIC pugixml)
+    set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
 endif()
 
 
