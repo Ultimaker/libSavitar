@@ -39,6 +39,7 @@ set(savitar_SRCS
     src/Scene.cpp
     src/MeshData.cpp
     src/Vertex.cpp
+    src/Face.cpp
 )
 
 set(savitar_HDRS
@@ -48,6 +49,7 @@ set(savitar_HDRS
     src/Scene.h
     src/MeshData.h
     src/Vertex.h
+    src/Face.h
 )
 
 set(SAVITAR_VERSION 0.1.0)

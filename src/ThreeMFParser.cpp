@@ -35,7 +35,21 @@ ThreeMFParser::~ThreeMFParser()
 Scene ThreeMFParser::parse(std::string xml_string)
 {
     pugi::xml_document document;
-    document.load_string(xml_string.c_str());
-    
+    pugi::xml_parse_result result = document.load_string(xml_string.c_str());
+    pugi::xml_node resources = document.child("model").child("resources");
+
+
+    std::vector<MeshData> meshes;
+    // For each object in resources node
+    for(pugi::xml_node object = resources.child("object"); object; object = object.next_sibling("object"))
+    {
+        if(object.child("mesh") && std::string(object.attribute("type").value()) == "model")
+        {
+            MeshData temp_mesh = MeshData();
+            temp_mesh.fillByXMLNode(object.child("mesh"));
+            meshes.push_back(temp_mesh);
+        }
+    }
+    std::cout << document.child("model").child("resources")  << " zomg " << result.description()<< std::endl;
     return Scene();
 }

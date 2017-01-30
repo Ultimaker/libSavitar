@@ -22,6 +22,12 @@
 #include <vector>
 #include <string>
 #include "Vertex.h"
+#include "Face.h"
+
+namespace pugi
+{
+    class xml_node;
+}
 
 namespace Savitar
 {
@@ -32,12 +38,13 @@ namespace Savitar
         virtual ~MeshData();
 
         /**
-         * Set the data of this MeshData by letting it parse a string filled with XML data.
+         * Set the data of this MeshData by giving it a xml node
          */
-        void fillByXML(std::string xml);
+        void fillByXMLNode(pugi::xml_node xml_node);
 
     protected:
         std::vector<Vertex> vertices;
+        std::vector<Face> faces;
     };
 }
 
