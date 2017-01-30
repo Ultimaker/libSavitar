@@ -36,12 +36,14 @@ endif()
 set(savitar_SRCS
     src/ThreeMFParser.cpp
     src/SceneNode.cpp
+    src/Scene.cpp
 )
 
 set(savitar_HDRS
     src/ThreeMFParser.h
     src/Types.h
     src/SceneNode.h
+    src/Scene.h
 )
 
 set(SAVITAR_VERSION 0.1.0)
@@ -52,7 +54,6 @@ set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 if(BUILD_STATIC)
     add_library(Savitar STATIC ${savitar_SRCS})
     if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
-        target_link_libraries(Savitar PRIVATE pthread)
         target_link_libraries(Savitar PRIVATE pugixml)
         set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
     endif()
@@ -62,7 +63,7 @@ endif()
 
 
 if(BUILD_PYTHON)
-    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/SceneNode.sip)
+    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/SceneNode.sip python/Scene.sip)
     #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
     set(SIP_EXTRA_OPTIONS -g) # -g means always release the GIL before calling C++ methods.
     add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)
