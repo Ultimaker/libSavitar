@@ -19,6 +19,8 @@
 #ifndef SAVITAR_SCENENODE_H
 #define SAVITAR_SCENENODE_H
 #include "SavitarExport.h"
+#include <string>
+#include <vector>
 
 namespace Savitar
 {
@@ -27,6 +29,16 @@ namespace Savitar
     public:
         SceneNode();
         virtual ~SceneNode();
+
+        std::string getTransformation();
+        void setStransformation(std::string);
+
+        std::vector<SceneNode> getChildren();
+        void addChild(SceneNode node);
+
+    protected:
+        std::string transformation;
+        std::vector<SceneNode> children;
     };
 }
 

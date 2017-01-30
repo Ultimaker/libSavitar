@@ -19,14 +19,22 @@
 #ifndef SCENE_H
 #define SCENE_H
 #include "SavitarExport.h"
+#include <vector>
 
 namespace Savitar
 {
+    class SceneNode;
+
     class SAVITAR_EXPORT Scene
     {
     public:
         Scene();
         virtual ~Scene();
+
+        std::vector< SceneNode > getSceneNodes();
+        void addSceneNode(SceneNode node);
+    protected:
+        std::vector< SceneNode > scene_nodes;
     };
 }
-#endif SCENE_H
+#endif
