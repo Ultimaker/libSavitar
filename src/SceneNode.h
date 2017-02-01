@@ -25,6 +25,11 @@
 #include <string>
 #include <vector>
 
+namespace pugi
+{
+    class xml_node;
+}
+
 namespace Savitar
 {
     class SAVITAR_EXPORT SceneNode
@@ -41,6 +46,11 @@ namespace Savitar
 
         MeshData& getMeshData();
         void setMeshData(MeshData mesh_data);
+
+        /**
+         * Set the data of this SceneNode by giving it a xml node
+         */
+        void fillByXMLNode(pugi::xml_node xml_node);
 
     protected:
         std::string transformation;

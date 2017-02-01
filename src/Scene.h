@@ -23,6 +23,12 @@
 
 #include <vector>
 
+// Forward declaration
+namespace pugi
+{
+    class xml_node;
+}
+
 namespace Savitar
 {
     class SAVITAR_EXPORT Scene
@@ -33,6 +39,12 @@ namespace Savitar
 
         std::vector< SceneNode > getSceneNodes();
         void addSceneNode(SceneNode node);
+
+        /**
+         * Set the data of this SceneNode by giving it a xml node
+         */
+        void fillByXMLNode(pugi::xml_node xml_node);
+
     protected:
         std::vector< SceneNode > scene_nodes;
     };

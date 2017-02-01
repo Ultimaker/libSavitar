@@ -1,5 +1,6 @@
 #include "SceneNode.h"
-
+#include "../pugixml/src/pugixml.hpp"
+#include <iostream>
 using namespace Savitar;
 
 SceneNode::SceneNode()
@@ -41,5 +42,19 @@ MeshData& SceneNode::getMeshData()
 void SceneNode::setMeshData(MeshData mesh_data)
 {
     this->mesh_data = mesh_data;
+}
+
+void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
+{
+    std::string name = std::string(xml_node.name());
+    if(name == "item")
+    {
+
+        std::cout << xml_node.name() << std::endl;
+    }
+    else if (name == "object")
+    {
+
+    }
 }
 
