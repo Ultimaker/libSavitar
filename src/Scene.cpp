@@ -29,6 +29,12 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
 {
     pugi::xml_node resources = xml_node.child("resources");
 
+    // Handle metadata:
+    for(pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
+    {
+        setMetaDataEntry(metadata_node.attribute("name").as_string(), metadata_node.text().as_string());
+    }
+
     pugi::xml_node build = xml_node.child("build");
     for(pugi::xml_node item = build.child("item"); item; item = item.next_sibling("item"))
     {
@@ -75,5 +81,11 @@ SceneNode Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_n
     }
     return scene_node;
 }
+
+void Scene::setMetaDataEntry(std::string key, std::string value)
+{
+    metadata[key] = value;
+}
+
 
 

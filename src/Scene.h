@@ -21,7 +21,9 @@
 #include "SavitarExport.h"
 #include "SceneNode.h"
 
-#include <vector>
+#include <vector> // For std::vector
+#include <map> // For std::map
+#include <string> // For std::string
 
 // Forward declaration
 namespace pugi
@@ -45,8 +47,11 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
+        void setMetaDataEntry(std::string key, std::string value);
+
     protected:
         std::vector< SceneNode > scene_nodes;
+        std::map<std::string, std::string> metadata;
 
         SceneNode createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
     };
