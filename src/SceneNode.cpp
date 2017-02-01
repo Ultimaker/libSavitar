@@ -46,15 +46,17 @@ void SceneNode::setMeshData(MeshData mesh_data)
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 {
-    std::string name = std::string(xml_node.name());
-    if(name == "item")
-    {
+    id = xml_node.attribute("id").as_string();
 
-        std::cout << xml_node.name() << std::endl;
-    }
-    else if (name == "object")
+    if(xml_node.child("mesh"))
     {
-
+        mesh_data.clear();
+        mesh_data.fillByXMLNode(xml_node.child("mesh"));
     }
+}
+
+std::string SceneNode::getId()
+{
+    return this->id;
 }
 

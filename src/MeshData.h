@@ -41,13 +41,11 @@ namespace Savitar
          * Set the data of this MeshData by giving it a xml node (An object node in 3mf)
          */
         void fillByXMLNode(pugi::xml_node xml_node);
-
-        std::string getId();
-
+        
+        void clear();
     protected:
         std::vector<Vertex> vertices;
         std::vector<Face> faces;
-        std::string id;
     };
 }
 

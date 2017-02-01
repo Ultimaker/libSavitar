@@ -47,6 +47,8 @@ namespace Savitar
 
     protected:
         std::vector< SceneNode > scene_nodes;
+
+        SceneNode createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
     };
 }
 #endif

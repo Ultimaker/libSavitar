@@ -52,10 +52,14 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
+        std::string getId();
+
     protected:
         std::string transformation;
         std::vector<SceneNode> children;
         MeshData mesh_data;
+
+        std::string id;
     };
 }
 
