@@ -55,11 +55,7 @@ namespace Savitar
 
         std::string getId();
 
-        SceneNode* getChildByIndex(int index);
-
         std::map<std::string, std::string> getSettings();
-
-        int getNumChildren();
 
     protected:
         std::string transformation;

@@ -25,10 +25,6 @@ public:
     Scene();
     virtual ~Scene();
 
-    int getNumSceneNodes();
-
-    SceneNode* getSceneNodeByIndex(int index) /AllowNone/;
-
     std::vector< SceneNode > getSceneNodes();
     std::map<std::string, std::string> getMetadata();
     std::string getUnit();

@@ -29,22 +29,6 @@ std::vector<SceneNode> SceneNode::getChildren()
     return this->children;
 }
 
-SceneNode* SceneNode::getChildByIndex(int index)
-{
-    if(index < 0 || index >= children.size())
-    {
-        return NULL;
-    }
-
-    return &this->children.at(index);
-}
-
-int SceneNode::getNumChildren()
-{
-    return children.size();
-}
-
-
 void SceneNode::addChild(SceneNode node)
 {
     this->children.push_back(node);
