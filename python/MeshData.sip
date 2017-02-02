@@ -26,4 +26,6 @@ public:
     virtual ~MeshData();
     PyObject* getFacesAsBytes();
     PyObject* getVerticesAsBytes();
+
+    PyObject* getFlatVerticesAsBytes();
 };

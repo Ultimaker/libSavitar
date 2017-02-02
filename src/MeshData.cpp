@@ -60,9 +60,44 @@ PyObject* MeshData::getVerticesAsBytes()
     return PyBytes_FromStringAndSize(vertices_data.c_str(), vertices_data.size());
 }
 
+PyObject* MeshData::getFlatVerticesAsBytes()
+{
+    std::string vertices_data;
+    for(int i = 0; i < faces.size(); i++)
+    {
+        int v1 = faces.at(i).getV1();
+        int v2 = faces.at(i).getV2();
+        int v3 = faces.at(i).getV3();
+        
+        // Add vertices for face 1
+        float x = vertices.at(v1).getX();
+        float y = vertices.at(v1).getY();
+        float z = vertices.at(v1).getZ();
+        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+
+        // Add vertices for face 2
+        x = vertices.at(v2).getX();
+        y = vertices.at(v2).getY();
+        z = vertices.at(v2).getZ();
+        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+
+        // Add vertices for face 3
+        x = vertices.at(v3).getX();
+        y = vertices.at(v3).getY();
+        z = vertices.at(v3).getZ();
+        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+    }
+    return PyBytes_FromStringAndSize(vertices_data.c_str(), vertices_data.size());
+}
+
 PyObject* MeshData::getFacesAsBytes()
 {
-    std::string data;
     std::string face_data;
 
     for(int i = 0; i < faces.size(); i++)

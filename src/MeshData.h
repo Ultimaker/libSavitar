@@ -47,6 +47,16 @@ namespace Savitar
 
         PyObject* getVerticesAsBytes();
         PyObject* getFacesAsBytes();
+
+        /**
+         * Instead of getting all unique vertices, this function returns a bytearray with 3 vertices per face.
+         * This is usefull if you want to mimic the data type of STL files.
+         */
+        PyObject* getFlatVerticesAsBytes();
+
+        /**
+         * Reset the data of the MeshData object.
+         */
         void clear();
     protected:
         std::vector<Vertex> vertices;
