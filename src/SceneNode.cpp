@@ -34,9 +34,9 @@ void SceneNode::addChild(SceneNode node)
     this->children.push_back(node);
 }
 
-MeshData* SceneNode::getMeshData()
+MeshData SceneNode::getMeshData()
 {
-    return &mesh_data;
+    return mesh_data;
 }
 
 void SceneNode::setMeshData(MeshData mesh_data)

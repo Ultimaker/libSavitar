@@ -39,7 +39,16 @@ namespace Savitar
         Scene();
         virtual ~Scene();
 
-        std::vector< SceneNode > getSceneNodes();
+        /**
+         * Get the scene nodes in this scene.
+         * \return The scene nodes that are in the scene.
+         */
+        std::vector<SceneNode> getSceneNodes();
+
+        /**
+         * Add a scene node to the scene.
+         * \param node The SceneNode to be added.
+         */
         void addSceneNode(SceneNode node);
 
         /**
@@ -47,16 +56,36 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
+        /**
+         * Set a meta data entry of the scene.
+         *
+         * Note that this not adhere to the full 3mf spec yet. All keys are accepted.
+         *
+         * \param key The key of the meta data.
+         * \param value The value of the meta data.
+         */
         void setMetaDataEntry(std::string key, std::string value);
 
+        /**
+         * Get all meta data entries
+         */
         std::map<std::string, std::string> getMetadata();
 
+        /**
+        * Get the unit (milimeter, inch, etc) of the scene.
+        */
         std::string getUnit();
 
     protected:
         std::vector< SceneNode > scene_nodes;
         std::map<std::string, std::string> metadata;
         std::string unit;
+
+        /**
+         * Used to recursively create SceneNode objects based on xml nodes.
+         * Because 3mf uses references, we also need to provide the root_node, so it's know what the reference points to
+         * \returns The created SceneNode.
+         */
         SceneNode createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
     };
 }

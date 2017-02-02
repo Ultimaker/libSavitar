@@ -25,6 +25,8 @@ public:
     SceneNode();
     virtual ~SceneNode();
 
+    MeshData getMeshData();
+
     std::vector<SceneNode> getChildren();
     std::string getTransformation();
     std::map<std::string, std::string> getSettings();

@@ -45,7 +45,7 @@ namespace Savitar
         std::vector<SceneNode> getChildren();
         void addChild(SceneNode node);
 
-        MeshData* getMeshData();
+        MeshData getMeshData();
         void setMeshData(MeshData mesh_data);
 
         /**
@@ -53,8 +53,15 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
+        /**
+         * Get the (unique) identifier of the node.
+         */
         std::string getId();
 
+        /**
+         * Get the (per-object) settings attached to this SceneNode.
+         * Note that this is part of the Cura Extension and not 3mf Core.
+         */
         std::map<std::string, std::string> getSettings();
 
     protected:
