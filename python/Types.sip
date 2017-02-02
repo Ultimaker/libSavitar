@@ -67,7 +67,7 @@
 };
 
 // vector<SceneNode> is implemented as a Python list.
-/*%MappedType std::vector<SceneNode>
+%MappedType std::vector<SceneNode>
 {
 %TypeHeaderCode
 #include <vector>
@@ -75,19 +75,31 @@ using namespace std;
 %End
 
 %ConvertFromTypeCode
-  PyObject* list;
-  if ((list = PyList_New(sipCpp->size())) == NULL)
-  {
-    return NULL;
-  }
-  // Set the vector elements.
-  vector<SceneNode>::iterator iter;
-  int i(0);
-  for (iter = sipCpp->begin(); iter != sipCpp->end(); ++iter)
-  {
-    PyList_SET_ITEM(list, i++, *iter );
-  }
-  return list;
+    PyObject* list;
+    if ((list = PyList_New(sipCpp->size())) == NULL)
+    {
+        return NULL;
+    }
+    // Set the vector elements.
+    vector<SceneNode>::iterator iter;
+    int i(0);
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+        SceneNode *w = &sipCpp->at(i);
+        PyObject *wobj;
+
+        // Get the Python wrapper for the QWidget instance, creating a new
+        // one if necessary, and handle any ownership transfer.
+        if ((wobj = sipConvertFromType(w, sipType_SceneNode, sipTransferObj)) == NULL)
+        {
+            // There was an error so garbage collect the Python list.
+            Py_DECREF(list);
+            return NULL;
+        }
+
+        PyList_SET_ITEM(list, i++, wobj );
+    }
+    return list;
 %End
 
 %ConvertToTypeCode
@@ -103,4 +115,4 @@ using namespace std;
   *sipCppPtr = scene_node_vector;
   return sipGetState(sipTransferObj);
 %End
-};*/
+};

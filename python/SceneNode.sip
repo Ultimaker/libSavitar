@@ -28,5 +28,7 @@ public:
     MeshData* getMeshData() /AllowNone/;
 
     SceneNode* getChildByIndex(int index) /AllowNone/;
+
+    std::vector<SceneNode> getChildren();
 };
 
