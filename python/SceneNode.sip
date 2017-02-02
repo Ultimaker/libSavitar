@@ -30,5 +30,7 @@ public:
     SceneNode* getChildByIndex(int index) /AllowNone/;
 
     std::vector<SceneNode> getChildren();
+    
+    std::map<std::string, std::string> getSettings();
 };
 

@@ -62,6 +62,7 @@ void SceneNode::setMeshData(MeshData mesh_data)
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 {
+    settings.clear();
     id = xml_node.attribute("id").as_string();
 
     if(xml_node.child("mesh"))
@@ -69,10 +70,23 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         mesh_data.clear();
         mesh_data.fillByXMLNode(xml_node.child("mesh"));
     }
+
+    for(pugi::xml_node setting = xml_node.child("setting"); setting; setting = setting.next_sibling("setting"))
+    {
+        std::string key = setting.attribute("key").as_string();
+        std::string value = setting.text().as_string();
+        settings[key] = value;
+    }
 }
 
 std::string SceneNode::getId()
 {
     return this->id;
 }
+
+std::map< std::string, std::string > SceneNode::getSettings()
+{
+    return settings;
+}
+
 

@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <map> // For std::map
 
 namespace pugi
 {
@@ -56,13 +57,15 @@ namespace Savitar
 
         SceneNode* getChildByIndex(int index);
 
+        std::map<std::string, std::string> getSettings();
+
         int getNumChildren();
 
     protected:
         std::string transformation;
         std::vector<SceneNode> children;
         MeshData mesh_data;
-
+        std::map<std::string, std::string> settings;
         std::string id;
     };
 }
