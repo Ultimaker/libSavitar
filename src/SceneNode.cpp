@@ -70,12 +70,15 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         mesh_data.clear();
         mesh_data.fillByXMLNode(xml_node.child("mesh"));
     }
-
-    for(pugi::xml_node setting = xml_node.child("setting"); setting; setting = setting.next_sibling("setting"))
+    pugi::xml_node settings_node = xml_node.child("settings");
+    if(settings_node)
     {
-        std::string key = setting.attribute("key").as_string();
-        std::string value = setting.text().as_string();
-        settings[key] = value;
+        for(pugi::xml_node setting = settings_node.child("setting"); setting; setting = setting.next_sibling("setting"))
+        {
+            std::string key = setting.attribute("key").as_string();
+            std::string value = setting.text().as_string();
+            settings[key] = value;
+        }
     }
 }
 
