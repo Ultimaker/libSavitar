@@ -44,3 +44,37 @@ void MeshData::clear()
     this->vertices.clear();
 }
 
+PyObject* MeshData::getVerticesAsBytes()
+{
+    std::string vertices_data;
+
+    for(int i = 0; i < vertices.size(); i++)
+    {
+        float x = vertices.at(i).getX();
+        float y = vertices.at(i).getY();
+        float z = vertices.at(i).getZ();
+        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
+        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+    }
+    return PyBytes_FromStringAndSize(vertices_data.c_str(), vertices_data.size());
+}
+
+PyObject* MeshData::getFacesAsBytes()
+{
+    std::string data;
+    std::string face_data;
+
+    for(int i = 0; i < faces.size(); i++)
+    {
+        int v1 = faces.at(i).getV1();
+        int v2 = faces.at(i).getV2();
+        int v3 = faces.at(i).getV3();
+        face_data.append(reinterpret_cast<const char*>(&v1), sizeof(int));
+        face_data.append(reinterpret_cast<const char*>(&v2), sizeof(int));
+        face_data.append(reinterpret_cast<const char*>(&v3), sizeof(int));
+    }
+    return PyBytes_FromStringAndSize(face_data.c_str(), face_data.size());
+}
+
+

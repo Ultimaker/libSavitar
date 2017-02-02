@@ -87,5 +87,15 @@ void Scene::setMetaDataEntry(std::string key, std::string value)
     metadata[key] = value;
 }
 
+int Scene::getNumSceneNodes()
+{
+    return this->scene_nodes.size();
+}
+
+SceneNode Scene::getSceneNodeByIndex(int index)
+{
+    return this->scene_nodes.at(index);
+}
+
 
 

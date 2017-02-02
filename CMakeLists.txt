@@ -70,7 +70,7 @@ endif()
 
 
 if(BUILD_PYTHON)
-    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/SceneNode.sip python/Scene.sip python/MeshData.sip)
+    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
     #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
     set(SIP_EXTRA_OPTIONS -g) # -g means always release the GIL before calling C++ methods.
     add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)

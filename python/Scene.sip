@@ -24,5 +24,10 @@ class Scene
 public:
     Scene();
     virtual ~Scene();
+
+    int getNumSceneNodes();
+
+    SceneNode getSceneNodeByIndex(int index);
+
 };
 

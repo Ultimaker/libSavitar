@@ -24,4 +24,6 @@ class MeshData
 public:
     MeshData();
     virtual ~MeshData();
+    PyObject* getFacesAsBytes();
+    PyObject* getVerticesAsBytes();
 };

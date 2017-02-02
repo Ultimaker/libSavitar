@@ -24,5 +24,7 @@ class SceneNode
 public:
     SceneNode();
     virtual ~SceneNode();
+
+    MeshData getMeshData();
 };
 

@@ -21,6 +21,7 @@
 %Include Types.sip
 %Include SceneNode.sip
 %Include Scene.sip
+%Include MeshData.sip
 
 %ModuleHeaderCode
 namespace Savitar{} //Ensure that the namespace already exists

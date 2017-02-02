@@ -49,6 +49,9 @@ namespace Savitar
 
         void setMetaDataEntry(std::string key, std::string value);
 
+        int getNumSceneNodes();
+        SceneNode getSceneNodeByIndex(int index);
+
     protected:
         std::vector< SceneNode > scene_nodes;
         std::map<std::string, std::string> metadata;

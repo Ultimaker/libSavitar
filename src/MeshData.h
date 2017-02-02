@@ -21,9 +21,12 @@
 #include "SavitarExport.h"
 #include <vector>
 #include <string>
+#include <Python.h> // For PyObject
+
 #include "Vertex.h"
 #include "Face.h"
 
+// Forward declarations
 namespace pugi
 {
     class xml_node;
@@ -41,7 +44,9 @@ namespace Savitar
          * Set the data of this MeshData by giving it a xml node (An object node in 3mf)
          */
         void fillByXMLNode(pugi::xml_node xml_node);
-        
+
+        PyObject* getVerticesAsBytes();
+        PyObject* getFacesAsBytes();
         void clear();
     protected:
         std::vector<Vertex> vertices;

@@ -65,3 +65,42 @@
     return 0;
 %End
 };
+
+// vector<SceneNode> is implemented as a Python list.
+/*%MappedType std::vector<SceneNode>
+{
+%TypeHeaderCode
+#include <vector>
+using namespace std;
+%End
+
+%ConvertFromTypeCode
+  PyObject* list;
+  if ((list = PyList_New(sipCpp->size())) == NULL)
+  {
+    return NULL;
+  }
+  // Set the vector elements.
+  vector<SceneNode>::iterator iter;
+  int i(0);
+  for (iter = sipCpp->begin(); iter != sipCpp->end(); ++iter)
+  {
+    PyList_SET_ITEM(list, i++, *iter );
+  }
+  return list;
+%End
+
+%ConvertToTypeCode
+  if (sipIsErr == NULL)
+  {
+    return PyList_Check(sipPy);
+  }
+  vector<SceneNode> *scene_node_vector = new vector<SceneNode>;
+  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  {
+    //scene_node_vector->push_back(PyList_GET_ITEM(sipPy, i));
+  }
+  *sipCppPtr = scene_node_vector;
+  return sipGetState(sipTransferObj);
+%End
+};*/
