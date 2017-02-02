@@ -150,3 +150,119 @@ template<TYPE>
 %End
 };
 
+
+
+%MappedType std::map<std::string, std::string>
+{
+%TypeHeaderCode
+#include <map>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *result_dict = PyDict_New();
+
+    if (!result_dict)
+        return NULL;
+
+    // Set the dictionary elements.
+    std::map<std::string, std::string>::const_iterator i = sipCpp->begin();
+
+    while (i != sipCpp->end())
+    {
+        std::string *key = new std::string((*i).first);
+        std::string *value = new std::string((*i).second);
+
+        PyObject *key_object = sipConvertFromNewType(key, sipType_std_string, sipTransferObj);
+        PyObject *value_object = sipConvertFromNewType(value, sipType_std_string, sipTransferObj);
+
+        if (key_object == NULL || value_object == NULL || PyDict_SetItem(result_dict, key_object, value_object) < 0)
+        {
+            Py_DECREF(result_dict);
+
+            if (key_object)
+            {
+                Py_DECREF(key_object);
+            }
+            else
+            {
+                delete key;
+            }
+
+            if (value_object)
+            {
+                Py_DECREF(value_object);
+            }
+            else
+            {
+                delete value;
+            }
+
+            return nullptr;
+        }
+
+        Py_DECREF(key_object);
+        Py_DECREF(value_object);
+
+        ++i;
+    }
+
+    return result_dict;
+%End
+%ConvertToTypeCode
+    PyObject *key_object, *value_object;
+    SIP_SSIZE_T i = 0;
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == nullptr)
+    {
+        if (!PyDict_Check(sipPy))
+        {
+            return 0;
+        }
+
+        while (PyDict_Next(sipPy, &i, &key_object, &value_object))
+        {
+            if (!sipCanConvertToType(key_object, sipType_std_string, SIP_NOT_NONE))
+            {
+                return 0;
+            }
+
+            if (!sipCanConvertToType(value_object, sipType_std_string, SIP_NOT_NONE))
+            {
+                return 0;
+            }
+        }
+
+        return 1;
+    }
+
+    std::map<std::string, std::string> *std_map = new std::map<std::string, std::string>;
+
+    while (PyDict_Next(sipPy, &i, &key_object, &value_object))
+    {
+        int key_state, value_state;
+
+        std::string *key = reinterpret_cast<std::string *>(sipConvertToType(key_object, sipType_std_string, sipTransferObj, SIP_NOT_NONE, &key_state, sipIsErr));
+        std::string *value = reinterpret_cast<std::string *>(sipConvertToType(value_object, sipType_std_string, sipTransferObj, SIP_NOT_NONE, &value_state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            sipReleaseType(key, sipType_std_string, key_state);
+            sipReleaseType(value, sipType_std_string, value_state);
+
+            delete std_map;
+            return 0;
+        }
+
+        (*std_map)[*key] = *value;
+
+        sipReleaseType(key, sipType_std_string, key_state);
+        sipReleaseType(value, sipType_std_string, value_state);
+    }
+
+    *sipCppPtr = std_map;
+
+    return sipGetState(sipTransferObj);
+%End
+};

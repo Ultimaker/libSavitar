@@ -103,4 +103,7 @@ SceneNode* Scene::getSceneNodeByIndex(int index)
 }
 
 
-
+std::map< std::string, std::string > Scene::getMetadata()
+{
+    return metadata;
+}

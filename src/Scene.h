@@ -52,6 +52,8 @@ namespace Savitar
         int getNumSceneNodes();
         SceneNode* getSceneNodeByIndex(int index);
 
+        std::map<std::string, std::string> getMetadata();
+
 
     protected:
         std::vector< SceneNode > scene_nodes;

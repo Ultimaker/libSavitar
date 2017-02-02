@@ -30,6 +30,6 @@ public:
     SceneNode* getSceneNodeByIndex(int index) /AllowNone/;
 
     std::vector< SceneNode > getSceneNodes();
-
+    std::map<std::string, std::string> getMetadata();
 };
 
