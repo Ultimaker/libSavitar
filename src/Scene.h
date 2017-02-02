@@ -54,11 +54,12 @@ namespace Savitar
 
         std::map<std::string, std::string> getMetadata();
 
+        std::string getUnit();
 
     protected:
         std::vector< SceneNode > scene_nodes;
         std::map<std::string, std::string> metadata;
-
+        std::string unit;
         SceneNode createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
     };
 }

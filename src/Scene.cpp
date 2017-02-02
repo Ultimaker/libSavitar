@@ -6,7 +6,7 @@ using namespace Savitar;
 
 Scene::Scene()
 {
-
+    unit = "millimeter";
 }
 
 Scene::~Scene()
@@ -27,6 +27,8 @@ void Scene::addSceneNode(SceneNode node)
 
 void Scene::fillByXMLNode(pugi::xml_node xml_node)
 {
+    unit = xml_node.attribute("unit").as_string();
+
     pugi::xml_node resources = xml_node.child("resources");
 
     // Handle metadata:
@@ -100,6 +102,11 @@ SceneNode* Scene::getSceneNodeByIndex(int index)
     }
 
     return &this->scene_nodes.at(index);
+}
+
+std::string Scene::getUnit()
+{
+    return unit;
 }
 
 

@@ -31,5 +31,6 @@ public:
 
     std::vector< SceneNode > getSceneNodes();
     std::map<std::string, std::string> getMetadata();
+    std::string getUnit();
 };
 
