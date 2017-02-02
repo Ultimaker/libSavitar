@@ -44,7 +44,7 @@ namespace Savitar
         std::vector<SceneNode> getChildren();
         void addChild(SceneNode node);
 
-        MeshData& getMeshData();
+        MeshData* getMeshData();
         void setMeshData(MeshData mesh_data);
 
         /**
@@ -53,6 +53,10 @@ namespace Savitar
         void fillByXMLNode(pugi::xml_node xml_node);
 
         std::string getId();
+
+        SceneNode* getChildByIndex(int index);
+
+        int getNumChildren();
 
     protected:
         std::string transformation;

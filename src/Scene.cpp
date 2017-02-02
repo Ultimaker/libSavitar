@@ -92,9 +92,14 @@ int Scene::getNumSceneNodes()
     return this->scene_nodes.size();
 }
 
-SceneNode Scene::getSceneNodeByIndex(int index)
+SceneNode* Scene::getSceneNodeByIndex(int index)
 {
-    return this->scene_nodes.at(index);
+    if(index < 0 || index >= scene_nodes.size())
+    {
+        return NULL;
+    }
+
+    return &this->scene_nodes.at(index);
 }
 
 

@@ -27,7 +27,7 @@ public:
 
     int getNumSceneNodes();
 
-    SceneNode getSceneNodeByIndex(int index);
+    SceneNode* getSceneNodeByIndex(int index) /AllowNone/;
 
 };
 

@@ -25,6 +25,8 @@ public:
     SceneNode();
     virtual ~SceneNode();
 
-    MeshData getMeshData();
+    MeshData* getMeshData() /AllowNone/;
+
+    SceneNode* getChildByIndex(int index) /AllowNone/;
 };
 

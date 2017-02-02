@@ -50,7 +50,7 @@ namespace Savitar
         void setMetaDataEntry(std::string key, std::string value);
 
         int getNumSceneNodes();
-        SceneNode getSceneNodeByIndex(int index);
+        SceneNode* getSceneNodeByIndex(int index);
 
     protected:
         std::vector< SceneNode > scene_nodes;
