@@ -26,7 +26,11 @@ public:
     virtual ~Scene();
 
     std::vector< SceneNode > getSceneNodes();
+    void addSceneNode(SceneNode node);
+
     std::map<std::string, std::string> getMetadata();
+
     std::string getUnit();
+    void setUnit(std::string unit);
 };
 

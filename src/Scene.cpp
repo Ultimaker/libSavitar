@@ -98,3 +98,8 @@ std::map< std::string, std::string > Scene::getMetadata()
 {
     return metadata;
 }
+
+void Scene::setUnit(std::string unit)
+{
+    this->unit = unit;
+}

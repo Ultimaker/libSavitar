@@ -76,6 +76,8 @@ namespace Savitar
         */
         std::string getUnit();
 
+        void setUnit(std::string unit);
+
     protected:
         std::vector< SceneNode > scene_nodes;
         std::map<std::string, std::string> metadata;
