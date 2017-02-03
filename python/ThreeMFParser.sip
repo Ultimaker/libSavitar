@@ -38,4 +38,5 @@ public:
     ThreeMFParser();
     virtual ~ThreeMFParser();
     Scene parse(std::string xml_string);
+    std::string sceneToString(Scene scene);
 };

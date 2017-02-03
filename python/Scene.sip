@@ -25,8 +25,10 @@ public:
     Scene();
     virtual ~Scene();
 
-    std::vector< SceneNode > getSceneNodes();
-    void addSceneNode(SceneNode node);
+    std::vector< SceneNode *> getSceneNodes();
+    std::vector<SceneNode*> getAllSceneNodes();
+
+    void addSceneNode(SceneNode* node);
 
     std::map<std::string, std::string> getMetadata();
 

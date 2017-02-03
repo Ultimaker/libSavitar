@@ -24,17 +24,17 @@ void SceneNode::setStransformation(std::string transformation)
 }
 
 
-std::vector<SceneNode> SceneNode::getChildren()
+std::vector<SceneNode*> SceneNode::getChildren()
 {
     return this->children;
 }
 
-void SceneNode::addChild(SceneNode node)
+void SceneNode::addChild(SceneNode* node)
 {
     this->children.push_back(node);
 }
 
-MeshData SceneNode::getMeshData()
+MeshData& SceneNode::getMeshData()
 {
     return mesh_data;
 }
@@ -71,9 +71,26 @@ std::string SceneNode::getId()
     return this->id;
 }
 
+void SceneNode::setId(std::string id)
+{
+    this->id = id;
+}
+
 std::map< std::string, std::string > SceneNode::getSettings()
 {
     return settings;
 }
 
+std::vector< SceneNode*> SceneNode::getAllChildren()
+{
+    std::vector<SceneNode*> all_children;
+    // Add all direct children to the result to return
+    all_children.insert(all_children.end(), children.begin(), children.end());
+    for(SceneNode* scene_node: children)
+    {
+        std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
+        all_children.insert(all_children.end(), temp_children.begin(), temp_children.end());
+    }
+    return all_children;
+}
 

@@ -43,13 +43,15 @@ namespace Savitar
          * Get the scene nodes in this scene.
          * \return The scene nodes that are in the scene.
          */
-        std::vector<SceneNode> getSceneNodes();
+        std::vector<SceneNode*> getSceneNodes();
+
+        std::vector<SceneNode*> getAllSceneNodes();
 
         /**
          * Add a scene node to the scene.
          * \param node The SceneNode to be added.
          */
-        void addSceneNode(SceneNode node);
+        void addSceneNode(SceneNode* node);
 
         /**
          * Set the data of this SceneNode by giving it a xml node
@@ -79,7 +81,7 @@ namespace Savitar
         void setUnit(std::string unit);
 
     protected:
-        std::vector< SceneNode > scene_nodes;
+        std::vector< SceneNode*> scene_nodes;
         std::map<std::string, std::string> metadata;
         std::string unit;
 
@@ -88,7 +90,7 @@ namespace Savitar
          * Because 3mf uses references, we also need to provide the root_node, so it's know what the reference points to
          * \returns The created SceneNode.
          */
-        SceneNode createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
+        SceneNode* createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
     };
 }
 #endif

@@ -25,12 +25,12 @@ public:
     SceneNode();
     virtual ~SceneNode();
 
-    MeshData getMeshData();
+    MeshData& getMeshData();
 
-    std::vector<SceneNode> getChildren();
+    std::vector<SceneNode*> getChildren();
     std::string getTransformation();
     std::map<std::string, std::string> getSettings();
 
-    void addChild(SceneNode child);
+    void addChild(SceneNode* child);
 };
 

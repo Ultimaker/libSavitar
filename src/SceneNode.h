@@ -42,10 +42,11 @@ namespace Savitar
         std::string getTransformation();
         void setStransformation(std::string);
 
-        std::vector<SceneNode> getChildren();
-        void addChild(SceneNode node);
+        std::vector<SceneNode*> getChildren();
+        std::vector<SceneNode*> getAllChildren();
+        void addChild(SceneNode* node);
 
-        MeshData getMeshData();
+        MeshData& getMeshData();
         void setMeshData(MeshData mesh_data);
 
         /**
@@ -58,6 +59,8 @@ namespace Savitar
          */
         std::string getId();
 
+        void setId(std::string id);
+
         /**
          * Get the (per-object) settings attached to this SceneNode.
          * Note that this is part of the Cura Extension and not 3mf Core.
@@ -66,7 +69,7 @@ namespace Savitar
 
     protected:
         std::string transformation;
-        std::vector<SceneNode> children;
+        std::vector<SceneNode*> children;
         MeshData mesh_data;
         std::map<std::string, std::string> settings;
         std::string id;

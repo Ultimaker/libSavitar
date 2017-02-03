@@ -14,12 +14,12 @@ Scene::~Scene()
 
 }
 
-std::vector< SceneNode > Scene::getSceneNodes()
+std::vector< SceneNode*> Scene::getSceneNodes()
 {
     return this->scene_nodes;
 }
 
-void Scene::addSceneNode(SceneNode node)
+void Scene::addSceneNode(SceneNode* node)
 {
     this->scene_nodes.push_back(node);
 }
@@ -44,8 +44,8 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         pugi::xml_node object_node = resources.find_child_by_attribute("object", "id", item.attribute("objectid").value());
         if(object_node)
         {
-            SceneNode temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
-            temp_scene_node.setStransformation(item.attribute("transform").as_string());
+            SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
+            temp_scene_node->setStransformation(item.attribute("transform").as_string());
             scene_nodes.push_back(temp_scene_node);
         }
         else
@@ -56,11 +56,11 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
     }
 }
 
-SceneNode Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node)
+SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node)
 {
     pugi::xml_node components = object_node.child("components");
-    SceneNode scene_node;
-    scene_node.fillByXMLNode(object_node);
+    SceneNode* scene_node = new SceneNode();
+    scene_node->fillByXMLNode(object_node);
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
     if(components)
@@ -71,9 +71,9 @@ SceneNode Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_n
             pugi::xml_node child_object_node = root_node.child("resources").find_child_by_attribute("object", "id", component.attribute("objectid").value());
             if(child_object_node)
             {
-                SceneNode child_node = createSceneNodeFromObject(root_node, child_object_node);
-                child_node.setStransformation(component.attribute("transform").as_string());
-                scene_node.addChild(child_node);
+                SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
+                child_node->setStransformation(component.attribute("transform").as_string());
+                scene_node->addChild(child_node);
             } else
             {
                 // TODO: ADD proper error handling here.
@@ -82,6 +82,18 @@ SceneNode Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_n
         }
     }
     return scene_node;
+}
+
+std::vector<SceneNode*> Scene::getAllSceneNodes()
+{
+    std::vector<SceneNode*> all_nodes;
+    all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
+    for(SceneNode* scene_node: scene_nodes)
+    {
+        std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
+        all_nodes.insert(all_nodes.end(), temp_children.begin(), temp_children.end());
+    }
+    return all_nodes;
 }
 
 void Scene::setMetaDataEntry(std::string key, std::string value)

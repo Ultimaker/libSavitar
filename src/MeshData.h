@@ -65,6 +65,8 @@ namespace Savitar
 
         void setFacesFromBytes(PyObject* py_bytes);
 
+        std::vector<Vertex> getVertices();
+
         /**
          * Reset the data of the MeshData object.
          */

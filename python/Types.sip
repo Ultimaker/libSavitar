@@ -66,6 +66,96 @@
 %End
 };
 
+%MappedType std::vector<SceneNode*>
+{
+    %TypeHeaderCode
+    #include <vector>
+    %End
+
+    %ConvertFromTypeCode
+        PyObject *l = PyList_New(sipCpp -> size());
+
+        // Create the Python list of the correct length.
+        if (!l)
+        {
+            return NULL;
+        }
+
+        // Go through each element in the C++ instance and convert it to a
+        // wrapped P2d.
+        for (int i = 0; i < (int)sipCpp->size(); ++i)
+        {
+            SceneNode *cpp = new SceneNode(*sipCpp->at(i));
+            PyObject *pobj = sipConvertFromInstance(cpp, sipClass_SceneNode, sipTransferObj);
+
+            // Get the Python wrapper for the Type instance, creating a new
+            // one if necessary, and handle any ownership transfer.
+            if (!pobj)
+            {
+                // There was an error so garbage collect the Python list.
+                Py_DECREF(l);
+                return NULL;
+            }
+
+            // Add the wrapper to the list.
+            PyList_SET_ITEM(l, i, pobj);
+        }
+
+        // Return the Python list.
+        return l;
+    %End
+
+    %ConvertToTypeCode
+        // Check if type is compatible
+        if (!sipIsErr)
+        {
+            // Must be any iterable
+            PyObject *i = PyObject_GetIter(sipPy);
+            bool iterable = (i != NULL);
+            Py_XDECREF(i);
+            return iterable;
+        }
+
+        // Iterate over the object
+        PyObject *iterator = PyObject_GetIter(sipPy);
+        PyObject *item;
+
+        std::vector<SceneNode*> *V = new std::vector<SceneNode*>();
+
+        while ((item = PyIter_Next(iterator)))
+        {
+            if (!sipCanConvertToInstance(item, sipClass_SceneNode, SIP_NOT_NONE))
+            {
+                PyErr_Format(PyExc_TypeError, "object in iterable cannot be converted to SceneNode");
+                *sipIsErr = 1;
+                break;
+            }
+
+            int state;
+            SceneNode* p = reinterpret_cast<SceneNode*>(sipConvertToInstance(item, sipClass_SceneNode, 0, SIP_NOT_NONE, &state, sipIsErr));
+
+            if (!*sipIsErr)
+            {
+                V->push_back(p);
+            }
+
+            sipReleaseInstance(p, sipClass_SceneNode, state);
+            Py_DECREF(item);
+        }
+
+        Py_DECREF(iterator);
+
+        if (*sipIsErr)
+        {
+            delete V;
+            return 0;
+        }
+
+        *sipCppPtr = V;
+        return sipGetState(sipTransferObj);
+    %End
+};
+
 // SIP generic implementation for std::vector<TYPE>
 template<TYPE>
 %MappedType std::vector<TYPE>

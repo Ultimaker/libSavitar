@@ -20,7 +20,6 @@ void MeshData::fillByXMLNode(pugi::xml_node xml_node)
     this->faces.clear();
 
     // TODO: Add error handling (what to do if there is no vertices object, etc)
-
     // Add every vertex.
     pugi::xml_node xml_vertices = xml_node.child("vertices");
     for(pugi::xml_node vertex = xml_vertices.child("vertex"); vertex; vertex = vertex.next_sibling("vertex"))
@@ -166,5 +165,11 @@ void MeshData::setFacesFromBytes(PyObject* py_bytes)
         this->faces.push_back(temp_face);
     }
 }
+
+std::vector< Vertex > MeshData::getVertices()
+{
+    return vertices;
+}
+
 
 
