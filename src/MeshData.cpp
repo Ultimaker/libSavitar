@@ -133,3 +133,38 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 }
 
+void MeshData::setVerticesFromBytes(PyObject* py_bytes)
+{
+    vertices.clear();
+    char* bytes = PyBytes_AsString(py_bytes);
+    int num_bytes = PyBytes_Size(py_bytes);
+    int num_floats = num_bytes / sizeof(float);
+
+    //Interpret byte array as array of floats.
+    float* float_array = reinterpret_cast<float*>(bytes);
+
+    for(int i = 0; i < num_floats; i +=3)
+    {
+        Vertex temp_vertex = Vertex(float_array[i], float_array[i + 1], float_array[i + 2]);
+        this->vertices.push_back(temp_vertex);
+    }
+}
+
+void MeshData::setFacesFromBytes(PyObject* py_bytes)
+{
+    faces.clear();
+    char* bytes = PyBytes_AsString(py_bytes);
+    int num_bytes = PyBytes_Size(py_bytes);
+    int num_ints = num_bytes / sizeof(int);
+
+    //Interpret byte array as array of ints.
+    int* int_array = reinterpret_cast<int*>(bytes);
+
+    for(int i = 0; i < num_ints; i +=3)
+    {
+        Face temp_face = Face(int_array[i], int_array[i + 1], int_array[i + 2]);
+        this->faces.push_back(temp_face);
+    }
+}
+
+

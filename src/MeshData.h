@@ -52,6 +52,7 @@ namespace Savitar
         void toXmlNode(pugi::xml_node& xml_node);
 
         PyObject* getVerticesAsBytes();
+
         PyObject* getFacesAsBytes();
 
         /**
@@ -59,6 +60,10 @@ namespace Savitar
          * This is usefull if you want to mimic the data type of STL files.
          */
         PyObject* getFlatVerticesAsBytes();
+
+        void setVerticesFromBytes(PyObject* py_bytes);
+
+        void setFacesFromBytes(PyObject* py_bytes);
 
         /**
          * Reset the data of the MeshData object.

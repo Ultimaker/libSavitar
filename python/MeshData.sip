@@ -28,4 +28,8 @@ public:
     PyObject* getVerticesAsBytes();
 
     PyObject* getFlatVerticesAsBytes();
+
+    void setVerticesFromBytes(PyObject* py_bytes);
+
+    void setFacesFromBytes(PyObject* py_bytes);
 };
