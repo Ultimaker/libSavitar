@@ -112,4 +112,24 @@ PyObject* MeshData::getFacesAsBytes()
     return PyBytes_FromStringAndSize(face_data.c_str(), face_data.size());
 }
 
+void MeshData::toXmlNode(pugi::xml_node& node)
+{
+    pugi::xml_node vertices_node = node.append_child("vertices");
+    for(int i = 0; i < vertices.size(); i++)
+    {
+        pugi::xml_node vertex_node = vertices_node.append_child("vertex");
+        vertex_node.append_attribute("x") = vertices.at(i).getX();
+        vertex_node.append_attribute("y") = vertices.at(i).getY();
+        vertex_node.append_attribute("z") = vertices.at(i).getZ();
+    }
+
+    pugi::xml_node triangles_node = node.append_child("triangles");
+    for(int i = 0; i < faces.size(); i++)
+    {
+        pugi::xml_node triangle_node = triangles_node.append_child("triangle");
+        triangle_node.append_attribute("v1") = faces.at(i).getV1();
+        triangle_node.append_attribute("v2") = faces.at(i).getV2();
+        triangle_node.append_attribute("v3") = faces.at(i).getV3();
+    }
+}
 

@@ -45,6 +45,12 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
+
+        /**
+         * Serialise the meshData to xml_node
+         */
+        void toXmlNode(pugi::xml_node& xml_node);
+
         PyObject* getVerticesAsBytes();
         PyObject* getFacesAsBytes();
 
