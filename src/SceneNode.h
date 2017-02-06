@@ -40,7 +40,7 @@ namespace Savitar
         virtual ~SceneNode();
 
         std::string getTransformation();
-        void setStransformation(std::string);
+        void setTransformation(std::string);
 
         std::vector<SceneNode*> getChildren();
         std::vector<SceneNode*> getAllChildren();

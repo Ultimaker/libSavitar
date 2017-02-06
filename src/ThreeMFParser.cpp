@@ -58,8 +58,6 @@ std::string ThreeMFParser::sceneToString(Scene scene)
     model_node.append_attribute("xmlns") = "http://schemas.microsoft.com/3dmanufacturing/core/2015/02";
     model_node.append_attribute("xml:lang") ="en-US";
 
-
-
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
     {
         SceneNode* scene_node = scene.getAllSceneNodes().at(i);

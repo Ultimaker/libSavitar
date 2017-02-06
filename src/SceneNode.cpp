@@ -18,7 +18,7 @@ std::string SceneNode::getTransformation()
     return this->transformation;
 }
 
-void SceneNode::setStransformation(std::string transformation)
+void SceneNode::setTransformation(std::string transformation)
 {
     this->transformation = transformation;
 }

@@ -45,7 +45,7 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         if(object_node)
         {
             SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
-            temp_scene_node->setStransformation(item.attribute("transform").as_string());
+            temp_scene_node->setTransformation(item.attribute("transform").as_string());
             scene_nodes.push_back(temp_scene_node);
         }
         else
@@ -72,7 +72,7 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
             if(child_object_node)
             {
                 SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
-                child_node->setStransformation(component.attribute("transform").as_string());
+                child_node->setTransformation(component.attribute("transform").as_string());
                 scene_node->addChild(child_node);
             } else
             {

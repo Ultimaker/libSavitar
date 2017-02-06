@@ -31,6 +31,8 @@ public:
     std::string getTransformation();
     std::map<std::string, std::string> getSettings();
 
+    void setTransformation(std::string);
+
     void addChild(SceneNode* child);
 };
 
