@@ -33,6 +33,6 @@ public:
 
     void setTransformation(std::string);
 
-    void addChild(SceneNode* child);
+    void addChild(SceneNode* child /Transfer/);
 };
 

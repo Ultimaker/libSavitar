@@ -28,7 +28,7 @@ public:
     std::vector< SceneNode *> getSceneNodes();
     std::vector<SceneNode*> getAllSceneNodes();
 
-    void addSceneNode(SceneNode* node);
+    void addSceneNode(SceneNode* node /Transfer/);
 
     std::map<std::string, std::string> getMetadata();
 
