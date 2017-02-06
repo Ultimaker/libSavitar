@@ -28,10 +28,12 @@ public:
     MeshData& getMeshData();
 
     std::vector<SceneNode*> getChildren();
-    std::string getTransformation();
-    std::map<std::string, std::string> getSettings();
 
+    std::string getTransformation();
     void setTransformation(std::string);
+
+    std::map<std::string, std::string> getSettings();
+    void setSetting(std::string key, std::string value);
 
     void addChild(SceneNode* child /Transfer/);
 };

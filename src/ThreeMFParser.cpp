@@ -66,7 +66,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
 
     for(SceneNode* scene_node: scene.getAllSceneNodes())
     {
-        // Create item :D
+        // Create item
         pugi::xml_node object = resources_node.append_child("object");
         object.append_attribute("id") = scene_node->getId().c_str();
         object.append_attribute("type") = "model";
@@ -75,6 +75,18 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         {
             pugi::xml_node mesh = object.append_child("mesh");
             scene_node->getMeshData().toXmlNode(mesh);
+        }
+
+        std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
+        if(!per_object_settings.empty())
+        {
+            pugi::xml_node settings = object.append_child("settings");
+            for(const std::pair<std::string, std::string> setting_pair: per_object_settings)
+            {
+                pugi::xml_node setting = settings.append_child("setting");
+                setting.append_attribute("key") = setting_pair.first.c_str();
+                setting.text().set(setting_pair.second.c_str());
+            }
         }
 
         if(scene_node->getChildren().size() != 0)

@@ -81,6 +81,12 @@ std::map< std::string, std::string > SceneNode::getSettings()
     return settings;
 }
 
+void SceneNode::setSetting(std::string key, std::string value)
+{
+    settings[key] = value;
+}
+
+
 std::vector< SceneNode*> SceneNode::getAllChildren()
 {
     std::vector<SceneNode*> all_children;
