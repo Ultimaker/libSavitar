@@ -31,6 +31,10 @@ std::vector<SceneNode*> SceneNode::getChildren()
 
 void SceneNode::addChild(SceneNode* node)
 {
+    if(node == nullptr)
+    {
+        return;
+    }
     this->children.push_back(node);
 }
 

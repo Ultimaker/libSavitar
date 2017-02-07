@@ -134,6 +134,11 @@ void MeshData::toXmlNode(pugi::xml_node& node)
 
 void MeshData::setVerticesFromBytes(PyObject* py_bytes)
 {
+    if(py_bytes == nullptr)
+    {
+        return;
+    }
+
     vertices.clear();
     char* bytes = PyBytes_AsString(py_bytes);
     int num_bytes = PyBytes_Size(py_bytes);
@@ -151,6 +156,11 @@ void MeshData::setVerticesFromBytes(PyObject* py_bytes)
 
 void MeshData::setFacesFromBytes(PyObject* py_bytes)
 {
+    if(py_bytes == nullptr)
+    {
+        return; 
+    }
+
     faces.clear();
     char* bytes = PyBytes_AsString(py_bytes);
     int num_bytes = PyBytes_Size(py_bytes);

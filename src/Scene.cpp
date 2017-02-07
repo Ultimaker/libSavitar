@@ -21,6 +21,10 @@ std::vector< SceneNode*> Scene::getSceneNodes()
 
 void Scene::addSceneNode(SceneNode* node)
 {
+    if(node == nullptr)
+    {
+        return;
+    }
     this->scene_nodes.push_back(node);
 }
 
