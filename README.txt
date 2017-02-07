@@ -8,6 +8,8 @@ Make sure you have run something like:
 
 “c:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 
+Next, git clone libSavitar and from the directory:
+
 mkdir build
 mkdir install_dir
 cd build
