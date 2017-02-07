@@ -63,8 +63,9 @@ else()
     add_library(Savitar SHARED ${savitar_SRCS})
 endif()
 
+target_link_libraries(Savitar PUBLIC pugixml)
+
 if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
-    target_link_libraries(Savitar PUBLIC pugixml)
     set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
 endif()
 
