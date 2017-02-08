@@ -12,7 +12,7 @@ Make sure you have run something like:
 
 Next, git clone libSavitar and from the directory:
 
-```
+```dos
 mkdir build
 mkdir install_dir
 cd build
