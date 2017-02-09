@@ -66,6 +66,7 @@
 %End
 };
 
+// Convert array of SceneNodes to vector of SceneNodes
 %MappedType std::vector<SceneNode*>
 {
     %TypeHeaderCode
@@ -241,6 +242,7 @@ template<TYPE>
 };
 
 
+// Dict to map<std::string, std::string>, including python-side type checking
 
 %MappedType std::map<std::string, std::string>
 {
