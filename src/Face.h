@@ -24,6 +24,9 @@
 class Face
 {
 public:
+    /**
+     * A face uses the index of 3 vertices to describe a triangle
+     */
     Face(int v1, int v2, int v3);
     ~Face();
 

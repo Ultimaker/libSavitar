@@ -25,6 +25,9 @@ namespace Savitar
     class SAVITAR_EXPORT Vertex
     {
     public:
+        /**
+         * A vertex is a point in 3D space.
+         */
         Vertex(float x, float y, float z);
         virtual ~Vertex();
 

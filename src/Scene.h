@@ -36,6 +36,9 @@ namespace Savitar
     class SAVITAR_EXPORT Scene
     {
     public:
+        /**
+         * A Scene is an object that holds a number of SceneNodes, but also has some meta data entries. It also defines a unit in which the data is expressed.
+         */
         Scene();
         virtual ~Scene();
 
@@ -75,6 +78,7 @@ namespace Savitar
 
         /**
         * Get the unit (milimeter, inch, etc) of the scene.
+        * This is in milimeter by default.
         */
         std::string getUnit();
 

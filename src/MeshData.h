@@ -37,6 +37,10 @@ namespace Savitar
     class SAVITAR_EXPORT MeshData
     {
     public:
+        /**
+         * MeshData holds all data regarding a mesh (vertices, faces, etc).
+         * It can be filled by means of a byte array by using setVerticesFromBytes or setFacesFromBytes.
+         */
         MeshData();
         virtual ~MeshData();
 
@@ -45,14 +49,23 @@ namespace Savitar
          */
         void fillByXMLNode(pugi::xml_node xml_node);
 
-
         /**
          * Serialise the meshData to xml_node
          */
         void toXmlNode(pugi::xml_node& xml_node);
 
+        /**
+         * Return the vertices as flattend bytes.
+         *
+         * If there for example is a single vertex, it will return a byte array containing 3 floats (so 3 * 4 bytes)
+         */
         PyObject* getVerticesAsBytes();
 
+        /**
+         * Return the faces as flattend bytes.
+         *
+         * If there for example is a single face, it will return a byte array containing 3 ints (so 3 * 4 bytes)
+         */
         PyObject* getFacesAsBytes();
 
         /**
@@ -61,8 +74,18 @@ namespace Savitar
          */
         PyObject* getFlatVerticesAsBytes();
 
+        /**
+         * Set the vertices of the meshdata by bytearray (as set from python)
+         *
+         * For every vertex it's assumed that there are 12 bytes (3 floats * 4).
+         */
         void setVerticesFromBytes(PyObject* py_bytes);
 
+        /**
+         * Set the faces of the meshdata by bytearray (as set from python)
+         *
+         * For every face it's assumed that there are 12 bytes (3 int * 4).
+         */
         void setFacesFromBytes(PyObject* py_bytes);
 
         std::vector<Vertex> getVertices();
