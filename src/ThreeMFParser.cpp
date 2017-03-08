@@ -20,13 +20,13 @@
 #include "Scene.h"
 #include <iostream>
 #include <sstream>
-
+#include <locale.h>
 
 using namespace Savitar;
 
 ThreeMFParser::ThreeMFParser()
 {
-
+    setlocale(LC_ALL, "C");
 }
 
 ThreeMFParser::~ThreeMFParser()
