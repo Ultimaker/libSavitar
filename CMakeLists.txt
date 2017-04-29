@@ -50,6 +50,7 @@ set(savitar_HDRS
     src/MeshData.h
     src/Vertex.h
     src/Face.h
+    src/SavitarExport.h
 )
 
 set(SAVITAR_VERSION 0.1.0)
