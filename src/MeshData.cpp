@@ -43,25 +43,25 @@ void MeshData::clear()
     this->vertices.clear();
 }
 
-PyObject* MeshData::getVerticesAsBytes()
+std::vector<char> MeshData::getVerticesAsBytes()
 {
-    std::string vertices_data;
+    std::vector<char> vertices_data;
 
     for(int i = 0; i < vertices.size(); i++)
     {
         float x = vertices.at(i).getX();
         float y = vertices.at(i).getY();
         float z = vertices.at(i).getZ();
-        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
     }
-    return PyBytes_FromStringAndSize(vertices_data.c_str(), vertices_data.size());
+    return vertices_data;
 }
 
-PyObject* MeshData::getFlatVerticesAsBytes()
+std::vector<char> MeshData::getFlatVerticesAsBytes()
 {
-    std::string vertices_data;
+    std::vector<char> vertices_data;
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
@@ -72,43 +72,43 @@ PyObject* MeshData::getFlatVerticesAsBytes()
         float x = vertices.at(v1).getX();
         float y = vertices.at(v1).getY();
         float z = vertices.at(v1).getZ();
-        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
 
         // Add vertices for face 2
         x = vertices.at(v2).getX();
         y = vertices.at(v2).getY();
         z = vertices.at(v2).getZ();
-        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
 
         // Add vertices for face 3
         x = vertices.at(v3).getX();
         y = vertices.at(v3).getY();
         z = vertices.at(v3).getZ();
-        vertices_data.append(reinterpret_cast<const char*>(&x), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&y), sizeof(float));
-        vertices_data.append(reinterpret_cast<const char*>(&z), sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
     }
-    return PyBytes_FromStringAndSize(vertices_data.c_str(), vertices_data.size());
+    return vertices_data;
 }
 
-PyObject* MeshData::getFacesAsBytes()
+std::vector<char> MeshData::getFacesAsBytes()
 {
-    std::string face_data;
+    std::vector<char> face_data;
 
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
         int v2 = faces.at(i).getV2();
         int v3 = faces.at(i).getV3();
-        face_data.append(reinterpret_cast<const char*>(&v1), sizeof(int));
-        face_data.append(reinterpret_cast<const char*>(&v2), sizeof(int));
-        face_data.append(reinterpret_cast<const char*>(&v3), sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v1), reinterpret_cast<const char*>(&v1) + sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v2), reinterpret_cast<const char*>(&v2) + sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v3), reinterpret_cast<const char*>(&v3) + sizeof(int));
     }
-    return PyBytes_FromStringAndSize(face_data.c_str(), face_data.size());
+    return face_data;
 }
 
 void MeshData::toXmlNode(pugi::xml_node& node)
@@ -132,20 +132,15 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 }
 
-void MeshData::setVerticesFromBytes(PyObject* py_bytes)
+void MeshData::setVerticesFromBytes(const std::vector<char> &data)
 {
-    if(py_bytes == nullptr)
-    {
-        return;
-    }
-
     vertices.clear();
-    char* bytes = PyBytes_AsString(py_bytes);
-    int num_bytes = PyBytes_Size(py_bytes);
+    const char* bytes = data.data();
+    int num_bytes = data.size();
     int num_floats = num_bytes / sizeof(float);
 
     //Interpret byte array as array of floats.
-    float* float_array = reinterpret_cast<float*>(bytes);
+    const float* float_array = reinterpret_cast<const float*>(bytes);
 
     for(int i = 0; i < num_floats; i +=3)
     {
@@ -154,20 +149,15 @@ void MeshData::setVerticesFromBytes(PyObject* py_bytes)
     }
 }
 
-void MeshData::setFacesFromBytes(PyObject* py_bytes)
+void MeshData::setFacesFromBytes(const std::vector<char> &data)
 {
-    if(py_bytes == nullptr)
-    {
-        return; 
-    }
-
     faces.clear();
-    char* bytes = PyBytes_AsString(py_bytes);
-    int num_bytes = PyBytes_Size(py_bytes);
+    const char* bytes = data.data();
+    int num_bytes = data.size();
     int num_ints = num_bytes / sizeof(int);
 
     //Interpret byte array as array of ints.
-    int* int_array = reinterpret_cast<int*>(bytes);
+    const int* int_array = reinterpret_cast<const int*>(bytes);
 
     for(int i = 0; i < num_ints; i +=3)
     {

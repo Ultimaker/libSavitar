@@ -1,10 +1,6 @@
 #ifndef SAVITAR_EXPORT_H
 #define SAVITAR_EXPORT_H
 
-// This is included here as a workaround for Python's library adding declarations that
-// conflict with C++'s standard library.
-#include <Python.h>
-
 #if _WIN32
     #ifdef MAKE_SAVITAR_LIB
         #define SAVITAR_EXPORT __declspec(dllexport)
