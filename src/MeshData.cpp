@@ -43,25 +43,25 @@ void MeshData::clear()
     this->vertices.clear();
 }
 
-std::vector<char> MeshData::getVerticesAsBytes()
+std::vector<uint8_t> MeshData::getVerticesAsBytes()
 {
-    std::vector<char> vertices_data;
+    std::vector<uint8_t> vertices_data;
 
     for(int i = 0; i < vertices.size(); i++)
     {
         float x = vertices.at(i).getX();
         float y = vertices.at(i).getY();
         float z = vertices.at(i).getZ();
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&x), reinterpret_cast<const uint8_t*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&y), reinterpret_cast<const uint8_t*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&z), reinterpret_cast<const uint8_t*>(&z) + sizeof(float));
     }
     return vertices_data;
 }
 
-std::vector<char> MeshData::getFlatVerticesAsBytes()
+std::vector<uint8_t> MeshData::getFlatVerticesAsBytes()
 {
-    std::vector<char> vertices_data;
+    std::vector<uint8_t> vertices_data;
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
@@ -72,41 +72,41 @@ std::vector<char> MeshData::getFlatVerticesAsBytes()
         float x = vertices.at(v1).getX();
         float y = vertices.at(v1).getY();
         float z = vertices.at(v1).getZ();
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&x), reinterpret_cast<const uint8_t*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&y), reinterpret_cast<const uint8_t*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&z), reinterpret_cast<const uint8_t*>(&z) + sizeof(float));
 
         // Add vertices for face 2
         x = vertices.at(v2).getX();
         y = vertices.at(v2).getY();
         z = vertices.at(v2).getZ();
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&x), reinterpret_cast<const uint8_t*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&y), reinterpret_cast<const uint8_t*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&z), reinterpret_cast<const uint8_t*>(&z) + sizeof(float));
 
         // Add vertices for face 3
         x = vertices.at(v3).getX();
         y = vertices.at(v3).getY();
         z = vertices.at(v3).getZ();
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&x), reinterpret_cast<const char*>(&x) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&y), reinterpret_cast<const char*>(&y) + sizeof(float));
-        vertices_data.insert(vertices_data.end(), reinterpret_cast<const char*>(&z), reinterpret_cast<const char*>(&z) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&x), reinterpret_cast<const uint8_t*>(&x) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&y), reinterpret_cast<const uint8_t*>(&y) + sizeof(float));
+        vertices_data.insert(vertices_data.end(), reinterpret_cast<const uint8_t*>(&z), reinterpret_cast<const uint8_t*>(&z) + sizeof(float));
     }
     return vertices_data;
 }
 
-std::vector<char> MeshData::getFacesAsBytes()
+std::vector<uint8_t> MeshData::getFacesAsBytes()
 {
-    std::vector<char> face_data;
+    std::vector<uint8_t> face_data;
 
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
         int v2 = faces.at(i).getV2();
         int v3 = faces.at(i).getV3();
-        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v1), reinterpret_cast<const char*>(&v1) + sizeof(int));
-        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v2), reinterpret_cast<const char*>(&v2) + sizeof(int));
-        face_data.insert(face_data.end(), reinterpret_cast<const char*>(&v3), reinterpret_cast<const char*>(&v3) + sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const uint8_t*>(&v1), reinterpret_cast<const uint8_t*>(&v1) + sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const uint8_t*>(&v2), reinterpret_cast<const uint8_t*>(&v2) + sizeof(int));
+        face_data.insert(face_data.end(), reinterpret_cast<const uint8_t*>(&v3), reinterpret_cast<const uint8_t*>(&v3) + sizeof(int));
     }
     return face_data;
 }
@@ -132,10 +132,10 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 }
 
-void MeshData::setVerticesFromBytes(const std::vector<char> &data)
+void MeshData::setVerticesFromBytes(const std::vector<uint8_t> &data)
 {
     vertices.clear();
-    const char* bytes = data.data();
+    const uint8_t* bytes = data.data();
     int num_bytes = data.size();
     int num_floats = num_bytes / sizeof(float);
 
@@ -149,10 +149,10 @@ void MeshData::setVerticesFromBytes(const std::vector<char> &data)
     }
 }
 
-void MeshData::setFacesFromBytes(const std::vector<char> &data)
+void MeshData::setFacesFromBytes(const std::vector<uint8_t> &data)
 {
     faces.clear();
-    const char* bytes = data.data();
+    const uint8_t* bytes = data.data();
     int num_bytes = data.size();
     int num_ints = num_bytes / sizeof(int);
 
