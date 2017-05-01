@@ -45,7 +45,7 @@ void MeshData::clear()
 
 std::vector<uint8_t> MeshData::getVerticesAsBytes()
 {
-    std::vector<uint8_t> vertices_data;
+    std::vector<uint8_t> vertices_data(vertices.size() * sizeof(float) * 3);
 
     for(int i = 0; i < vertices.size(); i++)
     {
@@ -61,7 +61,7 @@ std::vector<uint8_t> MeshData::getVerticesAsBytes()
 
 std::vector<uint8_t> MeshData::getFlatVerticesAsBytes()
 {
-    std::vector<uint8_t> vertices_data;
+    std::vector<uint8_t> vertices_data(faces.size() * sizeof(float) * 3 * 3);
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
@@ -97,7 +97,7 @@ std::vector<uint8_t> MeshData::getFlatVerticesAsBytes()
 
 std::vector<uint8_t> MeshData::getFacesAsBytes()
 {
-    std::vector<uint8_t> face_data;
+    std::vector<uint8_t> face_data(faces.size() * sizeof(int) * 3);
 
     for(int i = 0; i < faces.size(); i++)
     {
