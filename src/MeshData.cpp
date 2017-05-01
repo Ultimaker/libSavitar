@@ -142,7 +142,7 @@ void MeshData::setVerticesFromBytes(const std::vector<char> &data)
     //Interpret byte array as array of floats.
     const float* float_array = reinterpret_cast<const float*>(bytes);
 
-    for(int i = 0; i < num_floats; i +=3)
+    for(int i = 0; i + 2 < num_floats; i +=3)
     {
         Vertex temp_vertex = Vertex(float_array[i], float_array[i + 1], float_array[i + 2]);
         this->vertices.push_back(temp_vertex);
@@ -159,7 +159,7 @@ void MeshData::setFacesFromBytes(const std::vector<char> &data)
     //Interpret byte array as array of ints.
     const int* int_array = reinterpret_cast<const int*>(bytes);
 
-    for(int i = 0; i < num_ints; i +=3)
+    for(int i = 0; i + 2 < num_ints; i +=3)
     {
         Face temp_face = Face(int_array[i], int_array[i + 1], int_array[i + 2]);
         this->faces.push_back(temp_face);
