@@ -29,7 +29,7 @@ public:
 
     std::vector<uint8_t> getFlatVerticesAsBytes();
 
-    void setVerticesFromBytes(const std::vector<uint8_t> &data);
+    void setVerticesFromBytes(const std::vector<uint8_t>& data);
 
-    void setFacesFromBytes(const std::vector<uint8_t> &data);
+    void setFacesFromBytes(const std::vector<uint8_t>& data);
 };

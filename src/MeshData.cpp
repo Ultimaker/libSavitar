@@ -132,7 +132,7 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 }
 
-void MeshData::setVerticesFromBytes(const std::vector<uint8_t> &data)
+void MeshData::setVerticesFromBytes(const std::vector<uint8_t>& data)
 {
     vertices.clear();
     const uint8_t* bytes = data.data();
@@ -149,7 +149,7 @@ void MeshData::setVerticesFromBytes(const std::vector<uint8_t> &data)
     }
 }
 
-void MeshData::setFacesFromBytes(const std::vector<uint8_t> &data)
+void MeshData::setFacesFromBytes(const std::vector<uint8_t>& data)
 {
     faces.clear();
     const uint8_t* bytes = data.data();

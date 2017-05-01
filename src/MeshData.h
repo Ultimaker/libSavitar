@@ -79,14 +79,14 @@ namespace Savitar
          *
          * For every vertex it's assumed that there are 12 bytes (3 floats * 4).
          */
-        void setVerticesFromBytes(const std::vector<uint8_t> &data);
+        void setVerticesFromBytes(const std::vector<uint8_t>& data);
 
         /**
          * Set the faces of the meshdata by bytearray (as set from python)
          *
          * For every face it's assumed that there are 12 bytes (3 int * 4).
          */
-        void setFacesFromBytes(const std::vector<uint8_t> &data);
+        void setFacesFromBytes(const std::vector<uint8_t>& data);
 
         std::vector<Vertex> getVertices();
 
