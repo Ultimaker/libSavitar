@@ -23,6 +23,7 @@
 #include <string>
 #include <cstdint>
 
+#include "Types.h"
 #include "Vertex.h"
 #include "Face.h"
 
@@ -59,34 +60,34 @@ namespace Savitar
          *
          * If there for example is a single vertex, it will return a byte array containing 3 floats (so 3 * 4 bytes)
          */
-        std::vector<uint8_t> getVerticesAsBytes();
+        bytearray getVerticesAsBytes();
 
         /**
          * Return the faces as flattend bytes.
          *
          * If there for example is a single face, it will return a byte array containing 3 ints (so 3 * 4 bytes)
          */
-        std::vector<uint8_t> getFacesAsBytes();
+        bytearray getFacesAsBytes();
 
         /**
          * Instead of getting all unique vertices, this function returns a bytearray with 3 vertices per face.
          * This is usefull if you want to mimic the data type of STL files.
          */
-        std::vector<uint8_t> getFlatVerticesAsBytes();
+        bytearray getFlatVerticesAsBytes();
 
         /**
          * Set the vertices of the meshdata by bytearray (as set from python)
          *
          * For every vertex it's assumed that there are 12 bytes (3 floats * 4).
          */
-        void setVerticesFromBytes(const std::vector<uint8_t>& data);
+        void setVerticesFromBytes(const bytearray& data);
 
         /**
          * Set the faces of the meshdata by bytearray (as set from python)
          *
          * For every face it's assumed that there are 12 bytes (3 int * 4).
          */
-        void setFacesFromBytes(const std::vector<uint8_t>& data);
+        void setFacesFromBytes(const bytearray& data);
 
         std::vector<Vertex> getVertices();
 

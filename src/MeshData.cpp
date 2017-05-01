@@ -43,9 +43,9 @@ void MeshData::clear()
     this->vertices.clear();
 }
 
-std::vector<uint8_t> MeshData::getVerticesAsBytes()
+bytearray MeshData::getVerticesAsBytes()
 {
-    std::vector<uint8_t> vertices_data(vertices.size() * sizeof(float) * 3);
+    bytearray vertices_data(vertices.size() * sizeof(float) * 3);
 
     for(int i = 0; i < vertices.size(); i++)
     {
@@ -59,9 +59,9 @@ std::vector<uint8_t> MeshData::getVerticesAsBytes()
     return vertices_data;
 }
 
-std::vector<uint8_t> MeshData::getFlatVerticesAsBytes()
+bytearray MeshData::getFlatVerticesAsBytes()
 {
-    std::vector<uint8_t> vertices_data(faces.size() * sizeof(float) * 3 * 3);
+    bytearray vertices_data(faces.size() * sizeof(float) * 3 * 3);
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
@@ -95,9 +95,9 @@ std::vector<uint8_t> MeshData::getFlatVerticesAsBytes()
     return vertices_data;
 }
 
-std::vector<uint8_t> MeshData::getFacesAsBytes()
+bytearray MeshData::getFacesAsBytes()
 {
-    std::vector<uint8_t> face_data(faces.size() * sizeof(int) * 3);
+    bytearray face_data(faces.size() * sizeof(int) * 3);
 
     for(int i = 0; i < faces.size(); i++)
     {
@@ -132,7 +132,7 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 }
 
-void MeshData::setVerticesFromBytes(const std::vector<uint8_t>& data)
+void MeshData::setVerticesFromBytes(const bytearray& data)
 {
     vertices.clear();
     const uint8_t* bytes = data.data();
@@ -149,7 +149,7 @@ void MeshData::setVerticesFromBytes(const std::vector<uint8_t>& data)
     }
 }
 
-void MeshData::setFacesFromBytes(const std::vector<uint8_t>& data)
+void MeshData::setFacesFromBytes(const bytearray& data)
 {
     faces.clear();
     const uint8_t* bytes = data.data();

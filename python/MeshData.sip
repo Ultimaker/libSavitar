@@ -24,12 +24,12 @@ class MeshData
 public:
     MeshData();
     virtual ~MeshData();
-    std::vector<uint8_t> getVerticesAsBytes();
-    std::vector<uint8_t> getFacesAsBytes();
+    bytearray getVerticesAsBytes();
+    bytearray getFacesAsBytes();
 
-    std::vector<uint8_t> getFlatVerticesAsBytes();
+    bytearray getFlatVerticesAsBytes();
 
-    void setVerticesFromBytes(const std::vector<uint8_t>& data);
+    void setVerticesFromBytes(const bytearray& data);
 
-    void setFacesFromBytes(const std::vector<uint8_t>& data);
+    void setFacesFromBytes(const bytearray& data);
 };

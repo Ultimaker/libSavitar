@@ -168,11 +168,12 @@
  * Convert to and from byte arrays.
  * Uses the internal data vector directly to create/extract a PyBytes* instance.
  */
-%MappedType std::vector<uint8_t>
+%MappedType bytearray
 {
     %TypeHeaderCode
     #include <vector>
     #include <cstdint>
+    #include "Types.h"
     %End
 
     %ConvertFromTypeCode // From C++ to python
@@ -187,14 +188,14 @@
 
         if (sipPy == Py_None)
         {
-            *sipCppPtr = new std::vector<uint8_t>;
+            *sipCppPtr = new bytearray;
             return 1;
         }
 
         if (PyBytes_Check(sipPy))
         {
             uint8_t *buffer = reinterpret_cast<uint8_t *>(PyBytes_AS_STRING(sipPy));
-            *sipCppPtr = new std::vector<uint8_t>(buffer, buffer + PyBytes_GET_SIZE(sipPy));
+            *sipCppPtr = new bytearray(buffer, buffer + PyBytes_GET_SIZE(sipPy));
             return 1;
         }
         return 0;
