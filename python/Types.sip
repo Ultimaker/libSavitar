@@ -291,7 +291,7 @@ template<TYPE>
             return 0;
         }
 
-        *sipCppPtr = V;
+        *sipCppPtr = result_vector;
         return sipGetState(sipTransferObj);
     %End
 };
