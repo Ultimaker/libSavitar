@@ -45,7 +45,7 @@ void MeshData::clear()
 
 bytearray MeshData::getVerticesAsBytes()
 {
-    bytearray vertices_data(vertices.size() * sizeof(float) * 3);
+    bytearray vertices_data;
 
     for(int i = 0; i < vertices.size(); i++)
     {
@@ -61,7 +61,7 @@ bytearray MeshData::getVerticesAsBytes()
 
 bytearray MeshData::getFlatVerticesAsBytes()
 {
-    bytearray vertices_data(faces.size() * sizeof(float) * 3 * 3);
+    bytearray vertices_data;
     for(int i = 0; i < faces.size(); i++)
     {
         int v1 = faces.at(i).getV1();
@@ -97,7 +97,7 @@ bytearray MeshData::getFlatVerticesAsBytes()
 
 bytearray MeshData::getFacesAsBytes()
 {
-    bytearray face_data(faces.size() * sizeof(int) * 3);
+    bytearray face_data;
 
     for(int i = 0; i < faces.size(); i++)
     {
