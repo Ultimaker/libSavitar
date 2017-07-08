@@ -3,6 +3,11 @@ Introduction
 
 libSavitar is a c++ implementation of 3mf loading with SIP python bindings.
 
+Requirements
+------------
+
+libSavitar requires SIP version 4.19.2 or higher: https://www.riverbankcomputing.com/software/sip/download
+
 Build instructions Windows with MSVC
 ------------------------------------
 
