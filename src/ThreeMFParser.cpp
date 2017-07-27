@@ -61,7 +61,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
     {
         SceneNode* scene_node = scene.getAllSceneNodes().at(i);
-        scene_node->setId(std::to_string(i));
+        scene_node->setId(std::to_string(i + 1));
     }
 
     for(SceneNode* scene_node: scene.getAllSceneNodes())
