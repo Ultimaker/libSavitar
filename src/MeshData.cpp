@@ -17,7 +17,7 @@
  */
 
 #include "MeshData.h"
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 #include <iostream>
 
 using namespace Savitar;
@@ -85,7 +85,7 @@ bytearray MeshData::getFlatVerticesAsBytes()
         int v1 = faces.at(i).getV1();
         int v2 = faces.at(i).getV2();
         int v3 = faces.at(i).getV3();
-        
+
         // Add vertices for face 1
         float x = vertices.at(v1).getX();
         float y = vertices.at(v1).getY();
@@ -188,6 +188,3 @@ std::vector< Vertex > MeshData::getVertices()
 {
     return vertices;
 }
-
-
-

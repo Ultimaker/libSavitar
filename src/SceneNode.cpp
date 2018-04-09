@@ -17,7 +17,7 @@
  */
 
 #include "SceneNode.h"
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 #include <iostream>
 using namespace Savitar;
 
@@ -121,4 +121,3 @@ std::vector< SceneNode*> SceneNode::getAllChildren()
     }
     return all_children;
 }
-
