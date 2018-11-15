@@ -97,6 +97,13 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         {
             std::string key = std::string(setting.attribute("name").as_string());
             const size_t pos = key.find_first_of(':');
+
+            // Other namespaces can be in the metadata, not just Cura's, don't load those:
+            if (key.substr(0, pos).compare("cura") != 0)
+            {
+                continue;
+            }
+
             key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             std::string value = setting.text().as_string();
             settings[key] = value;
