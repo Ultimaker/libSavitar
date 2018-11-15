@@ -76,12 +76,28 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         mesh_data.clear();
         mesh_data.fillByXMLNode(xml_node.child("mesh"));
     }
+
+    // Read settings the old way -which didn't conform  to the 3MF standard- for backwards compat.:
     pugi::xml_node settings_node = xml_node.child("settings");
     if(settings_node)
     {
         for(pugi::xml_node setting = settings_node.child("setting"); setting; setting = setting.next_sibling("setting"))
         {
             std::string key = setting.attribute("key").as_string();
+            std::string value = setting.text().as_string();
+            settings[key] = value;
+        }
+    }
+
+    // Read settings the conformant way:
+    pugi::xml_node metadatagroup_node = xml_node.child("metadatagroup");
+    if (metadatagroup_node)
+    {
+        for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
+        {
+            std::string key = std::string(setting.attribute("name").as_string());
+            const size_t pos = key.find_first_of(':');
+            key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             std::string value = setting.text().as_string();
             settings[key] = value;
         }
