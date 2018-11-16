@@ -88,7 +88,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
                 setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
                 setting.text().set(setting_pair.second.c_str());
                 setting.append_attribute("preserve") = "true";
-                setting.append_attribute("type") = "xs::string";
+                setting.append_attribute("type") = "xs:string";
             }
         }
 
