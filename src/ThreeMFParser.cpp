@@ -56,6 +56,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
 
     model_node.append_attribute("unit") = scene.getUnit().c_str();
     model_node.append_attribute("xmlns") = "http://schemas.microsoft.com/3dmanufacturing/core/2015/02";
+    model_node.append_attribute("xmlns:cura") = "http://software.ultimaker.com/xml/cura/3mf/2015/10";
     model_node.append_attribute("xml:lang") ="en-US";
 
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
@@ -80,12 +81,14 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
         if(!per_object_settings.empty())
         {
-            pugi::xml_node settings = object.append_child("settings");
+            pugi::xml_node settings = object.append_child("metadatagroup");
             for(const std::pair<std::string, std::string> setting_pair: per_object_settings)
             {
-                pugi::xml_node setting = settings.append_child("setting");
-                setting.append_attribute("key") = setting_pair.first.c_str();
+                pugi::xml_node setting = settings.append_child("metadata");
+                setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
                 setting.text().set(setting_pair.second.c_str());
+                setting.append_attribute("preserve") = "true";
+                setting.append_attribute("type") = "xs:string";
             }
         }
 
