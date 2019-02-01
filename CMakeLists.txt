@@ -56,7 +56,7 @@ set(savitar_HDRS
     src/SavitarExport.h
 )
 
-set(SAVITAR_VERSION 0.1.0)
+set(SAVITAR_VERSION 0.1.1)
 set(SAVITAR_SOVERSION 0)
 
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
@@ -114,6 +114,27 @@ install(EXPORT Savitar-targets
 
 configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
+
+# List of tests. For each test there must be a file tests/${NAME}.cpp and a corresponding header-file.
+set(savitar_TEST
+  ThreeMFParserTest
+  MeshDataTest
+)
+
+# Compiling the test environment.
+if (BUILD_TESTS)
+    message(STATUS "Building tests...")
+
+    find_package(cppunit)
+
+    enable_testing()
+    foreach (test ${savitar_TEST})
+        add_executable(${test} tests/main.cpp tests/${test}.cpp)
+#       target_link_libraries(${test} _libSavitar cppunit)
+        target_link_libraries(${test} Savitar cppunit)
+        add_test(${test} ${test})
+    endforeach()
+endif()
 
 install(FILES
     ${CMAKE_BINARY_DIR}/SavitarConfig.cmake
