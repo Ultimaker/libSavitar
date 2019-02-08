@@ -18,6 +18,7 @@
 
 #include "MeshData.h"
 #include "../pugixml/src/pugixml.hpp"
+#include <cstring>
 #include <iostream>
 
 using namespace Savitar;
@@ -32,6 +33,15 @@ MeshData::~MeshData()
 
 }
 
+float parse_float(const pugi::xml_attribute& attribute)
+{
+    if(std::strchr(attribute.value(), ',') != nullptr)
+    {
+        std::setlocale(LC_NUMERIC, "nl_NL.UTF8");
+    }
+    return attribute.as_float();
+}
+
 void MeshData::fillByXMLNode(pugi::xml_node xml_node)
 {
     this->vertices.clear();
@@ -42,7 +52,7 @@ void MeshData::fillByXMLNode(pugi::xml_node xml_node)
     pugi::xml_node xml_vertices = xml_node.child("vertices");
     for(pugi::xml_node vertex = xml_vertices.child("vertex"); vertex; vertex = vertex.next_sibling("vertex"))
     {
-        Vertex temp_vertex = Vertex(vertex.attribute("x").as_float(), vertex.attribute("y").as_float(), vertex.attribute("z").as_float());
+        Vertex temp_vertex = Vertex(parse_float(vertex.attribute("x")), parse_float(vertex.attribute("y")), parse_float(vertex.attribute("z")));
         this->vertices.push_back(temp_vertex);
     }
 

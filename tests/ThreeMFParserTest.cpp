@@ -117,6 +117,8 @@ namespace Savitar
         CPPUNIT_ASSERT(! nodes.empty());
 
         SceneNode* node = *nodes.begin();
+        CPPUNIT_ASSERT(! node->getMeshData().getVertices().empty());
+
         CPPUNIT_ASSERT_DOUBLES_EQUAL(node->getMeshData().getVertices().begin()->getX(), -2.5f, 0.001f);
     }
 
