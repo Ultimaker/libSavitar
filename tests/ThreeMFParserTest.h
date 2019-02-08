@@ -20,6 +20,7 @@ class ThreeMFParserTest : public CppUnit::TestFixture
     CPPUNIT_TEST_SUITE(ThreeMFParserTest);
     CPPUNIT_TEST(parseTest);
     CPPUNIT_TEST(sceneToStringTest);
+    CPPUNIT_TEST(decimalSeparatorTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,6 +38,7 @@ public:
 
     void parseTest();
     void sceneToStringTest();
+    void decimalSeparatorTest();
 
 private:
     

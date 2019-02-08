@@ -40,17 +40,31 @@ namespace Savitar
 
         std::vector<SceneNode*> nodes = scene.getSceneNodes();
         CPPUNIT_ASSERT(! nodes.empty());
-        CPPUNIT_ASSERT_EQUAL(nodes.size(), 3UL);
+        CPPUNIT_ASSERT_EQUAL(nodes.size(), 4UL);
 
+        std::array<size_t, 4> expected_verts = {36UL, 8UL, 0UL, 0UL};
+        std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL};
+        std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL};
+        int i = -1;
         for (SceneNode* node : nodes)
         {
+            ++i;
             MeshData& data = node->getMeshData();
 
             const auto& verts = data.getVertices();
-            CPPUNIT_ASSERT_EQUAL(verts.size(), 36UL);
+            CPPUNIT_ASSERT_EQUAL(verts.size(), expected_verts[i]);
 
             const auto& tris = data.getFacesAsBytes();
-            CPPUNIT_ASSERT(! tris.empty());
+            CPPUNIT_ASSERT_EQUAL(tris.size(), expected_tris[i]);
+
+            const auto& children = node->getAllChildren();
+            CPPUNIT_ASSERT_EQUAL(children.size(), expected_child[i]);
+            for (SceneNode* child : children)
+            {
+                data = child->getMeshData();
+                CPPUNIT_ASSERT(! data.getVertices().empty());
+                CPPUNIT_ASSERT(! data.getFacesAsBytes().empty());
+            }
         }
         // NOTE: To/from for content of vertices/triangles is tested in MeshDataTest.
 
@@ -84,6 +98,26 @@ namespace Savitar
 
         const std::string scene_string = parser->sceneToString(scene);
         CPPUNIT_ASSERT(! scene_string.empty());
+    }
+
+    void ThreeMFParserTest::decimalSeparatorTest()
+    {
+        std::string xml_string_septest = "";
+        std::ifstream test_model_file("../tests/problem_model.xml");
+        if (test_model_file.is_open())
+        {
+            xml_string_septest = std::string(std::istreambuf_iterator<char>{test_model_file}, {});
+        }
+        ThreeMFParser parser_septest;
+
+        Scene scene;
+        CPPUNIT_ASSERT_NO_THROW(scene = parser_septest.parse(xml_string_septest));
+
+        std::vector<SceneNode*> nodes = scene.getSceneNodes();
+        CPPUNIT_ASSERT(! nodes.empty());
+
+        SceneNode* node = *nodes.begin();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(node->getMeshData().getVertices().begin()->getX(), -2.5f, 0.001f);
     }
 
 } // namespace Savitar
