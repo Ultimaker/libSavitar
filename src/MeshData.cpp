@@ -44,6 +44,8 @@ float parse_float(const pugi::xml_attribute& attribute)
 
 void MeshData::fillByXMLNode(pugi::xml_node xml_node)
 {
+    std::setlocale(LC_NUMERIC, "C");
+
     this->vertices.clear();
     this->faces.clear();
 
