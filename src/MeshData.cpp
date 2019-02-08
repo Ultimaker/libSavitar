@@ -141,6 +141,8 @@ bytearray MeshData::getFacesAsBytes()
 
 void MeshData::toXmlNode(pugi::xml_node& node)
 {
+    std::setlocale(LC_NUMERIC, "C");
+
     pugi::xml_node vertices_node = node.append_child("vertices");
     for(int i = 0; i < vertices.size(); i++)
     {
