@@ -37,15 +37,14 @@ float parse_float(const pugi::xml_attribute& attribute)
 {
     if(std::strchr(attribute.value(), ',') != nullptr)
     {
-        std::setlocale(LC_NUMERIC, "nl_NL.UTF8");
+        // Until the implementation of more robust error-handling, it'll have to be done this way:
+        throw std::runtime_error("Comma's should not be used as decimal separators, locale should be set to \"C\" for .3MF files.");
     }
     return attribute.as_float();
 }
 
 void MeshData::fillByXMLNode(pugi::xml_node xml_node)
 {
-    std::setlocale(LC_NUMERIC, "C");
-
     this->vertices.clear();
     this->faces.clear();
 
@@ -143,8 +142,6 @@ bytearray MeshData::getFacesAsBytes()
 
 void MeshData::toXmlNode(pugi::xml_node& node)
 {
-    std::setlocale(LC_NUMERIC, "C");
-
     pugi::xml_node vertices_node = node.append_child("vertices");
     for(int i = 0; i < vertices.size(); i++)
     {

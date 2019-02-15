@@ -102,6 +102,7 @@ namespace Savitar
 
     void ThreeMFParserTest::decimalSeparatorTest()
     {
+        // Don't accept a model that uses ','s for decimal separators.
         std::string xml_string_septest = "";
         std::ifstream test_model_file("../tests/problem_model.xml");
         if (test_model_file.is_open())
@@ -111,15 +112,7 @@ namespace Savitar
         ThreeMFParser parser_septest;
 
         Scene scene;
-        CPPUNIT_ASSERT_NO_THROW(scene = parser_septest.parse(xml_string_septest));
-
-        std::vector<SceneNode*> nodes = scene.getSceneNodes();
-        CPPUNIT_ASSERT(! nodes.empty());
-
-        SceneNode* node = *nodes.begin();
-        CPPUNIT_ASSERT(! node->getMeshData().getVertices().empty());
-
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(node->getMeshData().getVertices().begin()->getX(), -2.5f, 0.001f);
+        CPPUNIT_ASSERT_THROW(scene = parser_septest.parse(xml_string_septest), std::runtime_error);
     }
 
 } // namespace Savitar
