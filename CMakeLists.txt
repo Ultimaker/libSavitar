@@ -12,6 +12,13 @@ add_subdirectory(pugixml)
 
 if(BUILD_PYTHON)
     set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+    # Use FindPython 3 because if we use 3.4 for instance, it will prefer 3.4, even if there is another
+    # Python (say 3.5) in CMAKE_PREFIX_PATH which also meets the requirement. We prefer the Python in
+    # CMAKE_PREFIX_PATH if set for our building process, so we specify Python 3 here.
+    find_package(PythonInterp 3 REQUIRED)
+    find_package(PythonLibs 3 REQUIRED)
+
     find_package(SIP REQUIRED)
     if(NOT DEFINED LIB_SUFFIX)
         set(LIB_SUFFIX "")
