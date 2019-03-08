@@ -43,7 +43,7 @@ public:
     }
 };
 
-TEST_F(ThreeMFParserTest, parseTest)
+TEST_F(ThreeMFParserTest, parse)
 {
     ASSERT_FALSE(xml_string.empty());
 
@@ -103,7 +103,7 @@ TEST_F(ThreeMFParserTest, parseTest)
     EXPECT_FALSE(nodes[1]->getTransformation().empty());
 }
 
-TEST_F(ThreeMFParserTest, sceneToStringTest)
+TEST_F(ThreeMFParserTest, sceneToString)
 {
     ASSERT_FALSE(xml_string.empty());
     Scene scene = parser->parse(xml_string);
