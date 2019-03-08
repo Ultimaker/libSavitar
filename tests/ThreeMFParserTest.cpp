@@ -1,10 +1,12 @@
-#include "ThreeMFParserTest.h"
+//Copyright (c) 2019 Ultimaker B.V.
+//libSavitar is released under the terms of the AGPLv3 or higher.
 
 #include "../src/Scene.h"
 #include "../src/SceneNode.h"
 #include "../src/ThreeMFParser.h"
 
 #include <fstream>
+#include <gtest/gtest.h>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -12,9 +14,18 @@
 
 namespace Savitar
 {
-    CPPUNIT_TEST_SUITE_REGISTRATION(ThreeMFParserTest);
 
-    void ThreeMFParserTest::setUp()
+/*
+ * Fixture that loads a testing XML model and gives an instance of the parser to
+ * test with.
+ */
+class ThreeMFParserTest : public testing::Test
+{
+public:
+    std::string xml_string;
+    ThreeMFParser* parser;
+
+    void SetUp()
     {
         xml_string = "";
         std::ifstream test_model_file("../tests/test_model.xml");
@@ -26,93 +37,94 @@ namespace Savitar
         parser = new ThreeMFParser();
     }
 
-    void ThreeMFParserTest::tearDown()
+    void TearDown()
     {
         delete parser;
     }
+};
 
-    void ThreeMFParserTest::parseTest()
+TEST_F(ThreeMFParserTest, parseTest)
+{
+    ASSERT_FALSE(xml_string.empty());
+
+    Scene scene;
+    ASSERT_NO_THROW(scene = parser->parse(xml_string));
+
+    std::vector<SceneNode*> nodes = scene.getSceneNodes();
+    ASSERT_FALSE(nodes.empty());
+    ASSERT_EQ(nodes.size(), 4UL);
+
+    std::array<size_t, 4> expected_verts = {36UL, 8UL, 0UL, 0UL};
+    std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL};
+    std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL};
+    int i = -1;
+    for (SceneNode* node : nodes)
     {
-        CPPUNIT_ASSERT(! xml_string.empty());
+        ++i;
+        MeshData& data = node->getMeshData();
 
-        Scene scene;
-        CPPUNIT_ASSERT_NO_THROW(scene = parser->parse(xml_string));
+        const std::vector<Vertex>& verts = data.getVertices();
+        EXPECT_EQ(verts.size(), expected_verts[i]);
 
-        std::vector<SceneNode*> nodes = scene.getSceneNodes();
-        CPPUNIT_ASSERT(! nodes.empty());
-        CPPUNIT_ASSERT_EQUAL(nodes.size(), 4UL);
+        const bytearray& tris = data.getFacesAsBytes();
+        EXPECT_EQ(tris.size(), expected_tris[i]);
 
-        std::array<size_t, 4> expected_verts = {36UL, 8UL, 0UL, 0UL};
-        std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL};
-        std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL};
-        int i = -1;
-        for (SceneNode* node : nodes)
+        const std::vector<SceneNode*>& children = node->getAllChildren();
+        ASSERT_EQ(children.size(), expected_child[i]);
+        for (SceneNode* child : children)
         {
-            ++i;
-            MeshData& data = node->getMeshData();
-
-            const auto& verts = data.getVertices();
-            CPPUNIT_ASSERT_EQUAL(verts.size(), expected_verts[i]);
-
-            const auto& tris = data.getFacesAsBytes();
-            CPPUNIT_ASSERT_EQUAL(tris.size(), expected_tris[i]);
-
-            const auto& children = node->getAllChildren();
-            CPPUNIT_ASSERT_EQUAL(children.size(), expected_child[i]);
-            for (SceneNode* child : children)
-            {
-                data = child->getMeshData();
-                CPPUNIT_ASSERT(! data.getVertices().empty());
-                CPPUNIT_ASSERT(! data.getFacesAsBytes().empty());
-            }
+            data = child->getMeshData();
+            EXPECT_FALSE(data.getVertices().empty());
+            EXPECT_FALSE(data.getFacesAsBytes().empty());
         }
-        // NOTE: To/from for content of vertices/triangles is tested in MeshDataTest.
-
-        std::map<std::string, std::string> settings;
-
-        settings = nodes[0]->getSettings();
-        CPPUNIT_ASSERT(settings.find("extruder_nr") != settings.end());
-        CPPUNIT_ASSERT_EQUAL(settings["extruder_nr"].compare("0"), 0);
-        CPPUNIT_ASSERT(settings.find("bottom_layers") != settings.end());
-        CPPUNIT_ASSERT_EQUAL(settings["bottom_layers"].compare("20"), 0);
-        CPPUNIT_ASSERT(settings.find("infill_pattern") == settings.end());
-
-        settings = nodes[1]->getSettings();
-        CPPUNIT_ASSERT(settings.empty());
-
-        settings = nodes[2]->getSettings();
-        CPPUNIT_ASSERT(settings.find("extruder_nr") != settings.end());
-        CPPUNIT_ASSERT_EQUAL(settings["extruder_nr"].compare("1"), 0);
-        CPPUNIT_ASSERT(settings.find("bottom_layers") == settings.end());
-        CPPUNIT_ASSERT(settings.find("infill_pattern") != settings.end());
-        CPPUNIT_ASSERT_EQUAL(settings["infill_pattern"].compare("concentric"), 0);
-
-        CPPUNIT_ASSERT_EQUAL(nodes[1]->getId().compare("2"), 0);
-        CPPUNIT_ASSERT(! nodes[1]->getTransformation().empty());
     }
+    // NOTE: To/from for content of vertices/triangles is tested in MeshDataTest.
 
-    void ThreeMFParserTest::sceneToStringTest()
+    std::map<std::string, std::string> settings;
+
+    settings = nodes[0]->getSettings();
+    EXPECT_NE(settings.find("extruder_nr"), settings.end());
+    EXPECT_EQ(settings["extruder_nr"].compare("0"), 0);
+    EXPECT_NE(settings.find("bottom_layers"), settings.end());
+    EXPECT_EQ(settings["bottom_layers"].compare("20"), 0);
+    EXPECT_EQ(settings.find("infill_pattern"), settings.end());
+
+    settings = nodes[1]->getSettings();
+    EXPECT_TRUE(settings.empty());
+
+    settings = nodes[2]->getSettings();
+    EXPECT_NE(settings.find("extruder_nr"), settings.end());
+    EXPECT_EQ(settings["extruder_nr"].compare("1"), 0);
+    EXPECT_EQ(settings.find("bottom_layers"), settings.end());
+    EXPECT_NE(settings.find("infill_pattern"), settings.end());
+    EXPECT_EQ(settings["infill_pattern"].compare("concentric"), 0);
+
+    EXPECT_EQ(nodes[1]->getId().compare("2"), 0);
+    EXPECT_FALSE(nodes[1]->getTransformation().empty());
+}
+
+TEST_F(ThreeMFParserTest, sceneToStringTest)
+{
+    ASSERT_FALSE(xml_string.empty());
+    Scene scene = parser->parse(xml_string);
+
+    const std::string scene_string = parser->sceneToString(scene);
+    EXPECT_FALSE(scene_string.empty());
+}
+
+TEST_F(ThreeMFParserTest, decimalSeparatorTest)
+{
+    // Don't accept a model that uses ','s for decimal separators.
+    std::string xml_string_septest = "";
+    std::ifstream test_model_file("../tests/problem_model.xml");
+    if (test_model_file.is_open())
     {
-        CPPUNIT_ASSERT(! xml_string.empty());
-        Scene scene = parser->parse(xml_string);
-
-        const std::string scene_string = parser->sceneToString(scene);
-        CPPUNIT_ASSERT(! scene_string.empty());
+        xml_string_septest = std::string(std::istreambuf_iterator<char>{test_model_file}, {});
     }
+    ThreeMFParser parser_septest;
 
-    void ThreeMFParserTest::decimalSeparatorTest()
-    {
-        // Don't accept a model that uses ','s for decimal separators.
-        std::string xml_string_septest = "";
-        std::ifstream test_model_file("../tests/problem_model.xml");
-        if (test_model_file.is_open())
-        {
-            xml_string_septest = std::string(std::istreambuf_iterator<char>{test_model_file}, {});
-        }
-        ThreeMFParser parser_septest;
-
-        Scene scene;
-        CPPUNIT_ASSERT_THROW(scene = parser_septest.parse(xml_string_septest), std::runtime_error);
-    }
+    Scene scene;
+    ASSERT_THROW(scene = parser_septest.parse(xml_string_septest), std::runtime_error);
+}
 
 } // namespace Savitar
