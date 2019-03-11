@@ -128,11 +128,17 @@ if (BUILD_TESTS)
     find_package(cppunit)
 
     enable_testing()
+
+    #To make sure that the tests are built before running them, add the building of these tests as an additional test.
+    add_custom_target(build_all_tests)
+    add_test(BuildTests "${CMAKE_COMMAND}" --build ${CMAKE_CURRENT_BINARY_DIR} --target build_all_tests)
+
     foreach (test ${savitar_TEST})
         add_executable(${test} tests/main.cpp tests/${test}.cpp)
 #       target_link_libraries(${test} _libSavitar cppunit)
         target_link_libraries(${test} Savitar cppunit)
         add_test(${test} ${test})
+        add_dependencies(build_all_tests ${test}) #Make sure that this gets built as part of the build_all_tests target.
     endforeach()
 endif()
 
