@@ -1,5 +1,5 @@
 project(savitar)
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.0.0)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -67,7 +67,7 @@ else()
     add_library(Savitar SHARED ${savitar_SRCS})
 endif()
 
-target_link_libraries(Savitar PUBLIC pugixml)
+target_link_libraries(Savitar PUBLIC pthread pugixml)
 
 if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
     set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
@@ -115,23 +115,23 @@ install(EXPORT Savitar-targets
 configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
 
-# List of tests. For each test there must be a file tests/${NAME}.cpp and a corresponding header-file.
+# List of tests. For each test there must be a file tests/${NAME}.cpp.
 set(savitar_TEST
-  ThreeMFParserTest
-  MeshDataTest
+    ThreeMFParserTest
+    MeshDataTest
 )
 
 # Compiling the test environment.
 if (BUILD_TESTS)
     message(STATUS "Building tests...")
 
-    find_package(cppunit)
+    find_package(GTest REQUIRED)
+    include_directories(${GTEST_INCLUDE_DIR})
 
     enable_testing()
     foreach (test ${savitar_TEST})
         add_executable(${test} tests/main.cpp tests/${test}.cpp)
-#       target_link_libraries(${test} _libSavitar cppunit)
-        target_link_libraries(${test} Savitar cppunit)
+        target_link_libraries(${test} Savitar ${GTEST_BOTH_LIBRARIES})
         add_test(${test} ${test})
     endforeach()
 endif()
