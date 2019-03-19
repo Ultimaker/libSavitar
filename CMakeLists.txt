@@ -7,6 +7,16 @@ include(CMakePackageConfigHelpers)
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
 
+if(WIN32)
+  set(BUILD_WITH_THREADS_DEFAULT OFF)
+else()
+  set(BUILD_WITH_THREADS_DEFAULT ON)
+endif()
+option(BUILD_WITH_THREADS "Whether to link against threads or not." ${BUILD_WITH_THREADS_DEFAULT})
+
+if(BUILD_WITH_THREADS)
+    find_package(Threads)
+endif()
 
 add_subdirectory(pugixml)
 
@@ -34,7 +44,6 @@ endif()
 if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
 endif()
-
 
 set(savitar_SRCS
     src/ThreeMFParser.cpp
@@ -67,12 +76,15 @@ else()
     add_library(Savitar SHARED ${savitar_SRCS})
 endif()
 
-target_link_libraries(Savitar PUBLIC pthread pugixml)
+if(BUILD_WITH_THREADS)
+    target_link_libraries(Savitar PUBLIC pthread pugixml)
+else()
+    target_link_libraries(Savitar PUBLIC pugixml)
+endif()
 
 if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
     set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
 endif()
-
 
 if(BUILD_PYTHON)
     set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
