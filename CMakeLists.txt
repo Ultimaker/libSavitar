@@ -6,16 +6,12 @@ include(CMakePackageConfigHelpers)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
+option(BUILD_TESTS "Building the test-suite" OFF)
 
-if(WIN32)
-  set(BUILD_WITH_THREADS_DEFAULT OFF)
-else()
-  set(BUILD_WITH_THREADS_DEFAULT ON)
-endif()
-option(BUILD_WITH_THREADS "Whether to link against threads or not." ${BUILD_WITH_THREADS_DEFAULT})
-
-if(BUILD_WITH_THREADS)
-    find_package(Threads)
+if(BUILD_TESTS)
+    message(STATUS "Building with tests...")
+    find_package(GTest REQUIRED)
+    message(STATUS "Linking libraries additionally with: ${GTEST_BOTH_LIBRARIES}")
 endif()
 
 add_subdirectory(pugixml)
@@ -76,11 +72,7 @@ else()
     add_library(Savitar SHARED ${savitar_SRCS})
 endif()
 
-if(BUILD_WITH_THREADS)
-    target_link_libraries(Savitar PUBLIC pthread pugixml)
-else()
-    target_link_libraries(Savitar PUBLIC pugixml)
-endif()
+target_link_libraries(Savitar PUBLIC ${GTEST_BOTH_LIBRARIES} pugixml)
 
 if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
     set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
@@ -135,9 +127,6 @@ set(savitar_TEST
 
 # Compiling the test environment.
 if (BUILD_TESTS)
-    message(STATUS "Building tests...")
-
-    find_package(GTest REQUIRED)
     include_directories(${GTEST_INCLUDE_DIR})
 
     enable_testing()
