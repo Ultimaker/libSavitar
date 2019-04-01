@@ -6,4 +6,4 @@ stages:
 build-and-test:
   stage: build
   script:
-    - scripts/build.sh
+    - docker/build.sh
