@@ -7,3 +7,6 @@ build-and-test:
   stage: build
   script:
     - docker/build.sh
+  artifacts:
+    paths:
+      - build/
