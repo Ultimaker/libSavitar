@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.6)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
+include(GenerateExportHeader)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
@@ -61,7 +62,7 @@ set(savitar_HDRS
     src/MeshData.h
     src/Vertex.h
     src/Face.h
-    src/SavitarExport.h
+    ${CMAKE_CURRENT_BINARY_DIR}/src/ArcusExport.h
 )
 
 set(SAVITAR_VERSION 0.1.1)
@@ -109,7 +110,16 @@ set_target_properties(Savitar PROPERTIES
     SOVERSION ${SAVITAR_SOVERSION}
     PUBLIC_HEADER "${savitar_HDRS}"
     DEFINE_SYMBOL MAKE_SAVITAR_LIB
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN 1
 )
+
+generate_export_header(Savitar
+    EXPORT_FILE_NAME src/SavitarExport.h
+)
+# This is required when building out-of-tree.
+# The compiler won't find the generated header otherwise.
+include_directories(${CMAKE_BINARY_DIR}/src)
 
 install(TARGETS Savitar
     EXPORT Savitar-targets

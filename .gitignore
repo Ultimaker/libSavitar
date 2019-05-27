@@ -31,3 +31,6 @@ build
 
 # IDE
 .idea/
+
+# Generated headers
+/src/SavitarExport.h
