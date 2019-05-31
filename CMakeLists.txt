@@ -62,7 +62,7 @@ set(savitar_HDRS
     src/MeshData.h
     src/Vertex.h
     src/Face.h
-    ${CMAKE_CURRENT_BINARY_DIR}/src/ArcusExport.h
+    ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
 )
 
 set(SAVITAR_VERSION 0.1.1)
