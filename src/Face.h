@@ -19,7 +19,9 @@
 #ifndef FACE_H
 #define FACE_H
 
-class Face
+#include "SavitarExport.h"
+
+class SAVITAR_EXPORT Face
 {
 public:
     /**
