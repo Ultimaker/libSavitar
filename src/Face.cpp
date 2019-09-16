@@ -18,6 +18,8 @@
 
 #include "Face.h"
 
+using namespace Savitar;
+
 Face::Face(int v1, int v2, int v3)
 {
     vertex_1_index = v1;
