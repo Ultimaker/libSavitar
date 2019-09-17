@@ -21,23 +21,26 @@
 
 #include "SavitarExport.h"
 
-class SAVITAR_EXPORT Face
+namespace Savitar
 {
-public:
-    /**
-     * A face uses the index of 3 vertices to describe a triangle
-     */
-    Face(int v1, int v2, int v3);
-    ~Face();
+    class SAVITAR_EXPORT Face
+    {
+    public:
+        /**
+        * A face uses the index of 3 vertices to describe a triangle
+        */
+        Face(int v1, int v2, int v3);
+        ~Face();
 
-    int getV1();
-    int getV2();
-    int getV3();
+        int getV1();
+        int getV2();
+        int getV3();
 
-protected:
-    int vertex_1_index;
-    int vertex_2_index;
-    int vertex_3_index;
-};
+    protected:
+        int vertex_1_index;
+        int vertex_2_index;
+        int vertex_3_index;
+    };
+}
 
 #endif // FACE_H
