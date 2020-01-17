@@ -96,8 +96,11 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
     {
         for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
         {
+            // NOTE: In theory this could be slow, since we look up the entire ancestry tree for each setting.
+            //       In practice it's expected to be negligible compared to the parsing of the mesh.
             const xml_namespace::xmlns_map_t namespaces = xml_namespace::getAncestralNamespaces(setting);
-            const std::set<std::string> cura_equivalent_namespaces = xml_namespace::getNamesFor(namespaces, xml_namespace::getCuraUri());
+            std::set<std::string> cura_equivalent_namespaces = xml_namespace::getNamesFor(namespaces, xml_namespace::getCuraUri());
+            cura_equivalent_namespaces.insert("cura"); // <- Just to be sure: If there was ever a version out that uses 'cura' without the specification of the xmlns-id.
 
             std::string key = setting.attribute("name").as_string();
             const size_t pos = key.find_first_of(':');
