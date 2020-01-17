@@ -17,6 +17,7 @@
  */
 
 #include "SceneNode.h"
+#include "Namespace.h"
 #include "../pugixml/src/pugixml.hpp"
 #include <iostream>
 using namespace Savitar;
@@ -95,11 +96,14 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
     {
         for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
         {
+            const xml_namespace::xmlns_map_t namespaces = xml_namespace::getAncestralNamespaces(setting);
+            const std::set<std::string> cura_equivalent_namespaces = xml_namespace::getNamesFor(namespaces, xml_namespace::getCuraUri());
+
             std::string key = setting.attribute("name").as_string();
             const size_t pos = key.find_first_of(':');
 
-            // Other namespaces can be in the metadata, not just Cura's, don't load those:
-            if (key.substr(0, pos).compare("cura") != 0)
+            // Only accept namespaces cura and implied 'default':
+            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) < 1)
             {
                 continue;
             }

@@ -46,6 +46,7 @@ if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(savitar_SRCS
+    src/Namespace.cpp
     src/ThreeMFParser.cpp
     src/SceneNode.cpp
     src/Scene.cpp
@@ -55,6 +56,7 @@ set(savitar_SRCS
 )
 
 set(savitar_HDRS
+    src/Namespace.h
     src/ThreeMFParser.h
     src/Types.h
     src/SceneNode.h
