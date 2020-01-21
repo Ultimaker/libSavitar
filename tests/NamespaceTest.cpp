@@ -107,8 +107,9 @@ namespace xml_namespace
     {
         ASSERT_TRUE(main_xml_node);
         pugi::xml_node node = main_xml_node.child("multideep").child("sub").child("subber").child("subbest");
-        ASSERT_EQ(getNamesFor(node, "_w_").count("w"), 1);
-        ASSERT_EQ(getNamesFor(node, "_p_").size(), 0);
+        xml_namespace::xmlns_map_t map = xml_namespace::getAncestralNamespaces(node);
+        ASSERT_EQ(xml_namespace::getNamesFor(map, "_w_").count("w"), 1);
+        ASSERT_EQ(xml_namespace::getNamesFor(map, "_p_").size(), 0);
     }
 
 } // namespace xml_namespace
