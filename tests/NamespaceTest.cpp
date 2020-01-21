@@ -11,14 +11,13 @@
 
 namespace xml_namespace
 {
-    class NamespaceTest : public testing::TestWithParam<InfillTestParameters>
+    class NamespaceTest : public testing::Test
     {
     public:
         pugi::xml_node main_xml_node;
 
         void SetUp()
         {
-            xml_string = "";
             std::ifstream test_model_file("../tests/namespaces.xml");
             if (test_model_file.is_open())
             {
@@ -31,15 +30,13 @@ namespace xml_namespace
         }
     };
 
-    TEST_P(NamespaceTest, getAncestralNamespaces)
+    TEST_F(NamespaceTest, getAncestralNamespaces)
     {
         ASSERT_TRUE(main_xml_node);
-     
-        NamespaceTestParameters params = GetParam();
 
         pugi::xml_node node;
         xml_namespace::xmlns_map_t result;
-        
+
         node = main_xml_node.child("simple");
         result = xml_namespace::getAncestralNamespaces(node);
         ASSERT_EQ(result.size(), 2); // <-- including default namespace
@@ -97,7 +94,7 @@ namespace xml_namespace
         ASSERT_EQ(result.count("_e_"), 1);
         ASSERT_EQ(result.count("_q_"), 1);
         ASSERT_EQ(result.count("_r_"), 1);
-        
+
         node = main_xml_node.child("multideep").child("subbest");
         result = xml_namespace::getAncestralNamespaces(node);
         ASSERT_EQ(result.size(), 3);
@@ -106,9 +103,12 @@ namespace xml_namespace
     }
 
     // std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
-    TEST_F(NamesapceTest, getNamesFor)
+    TEST_F(NamespaceTest, getNamesFor)
     {
         ASSERT_TRUE(main_xml_node);
+        pugi::xml_node node = main_xml_node.child("multideep").child("sub").child("subber").child("subbest");
+        ASSERT_EQ(getNamesFor(node, "_w_").count("w"), 1);
+        ASSERT_EQ(getNamesFor(node, "_p_").size(), 0);
     }
 
 } // namespace xml_namespace
