@@ -5,6 +5,7 @@
 #include "../src/SceneNode.h"
 #include "../src/ThreeMFParser.h"
 
+#include <array>
 #include <fstream>
 #include <gtest/gtest.h>
 #include <iostream>

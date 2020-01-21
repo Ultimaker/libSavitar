@@ -142,6 +142,7 @@ write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake 
 set(savitar_TEST
     ThreeMFParserTest
     MeshDataTest
+    NamespaceTest
 )
 
 # Compiling the test environment.

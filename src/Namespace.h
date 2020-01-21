@@ -1,3 +1,6 @@
+//Copyright (c) 2020 Ultimaker B.V.
+//libSavitar is released under the terms of the AGPLv3 or higher.
+
 #include <map>
 #include <set>
 #include <string>

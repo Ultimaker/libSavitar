@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<main unit="millimeter" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xml:lang="en-US">
+
+    <simple xmlns:a="_a_"/>
+  
+    <multiple xmlns:a="_a_" xmlns:b="_c_" xmlns:c="_c_"/>
+  
+    <overwrite xmlns:b="_b_">
+      <sub xmlns:b="_c_"/>
+    </overwrite>
+
+    <combine xmlns:s="_s_">
+      <sub  xmlns:n="_s_"/>
+    </combine>
+  
+    <deep xmlns:x="_x_">
+      <sub xmlns:y="_y_">
+        <subber xmlns:z="_z_" xmlns:e="_e_">
+          <subbest xmlns:w="_w_">
+          </subbest>
+        </subber>
+      </sub>
+    </deep>
+
+  <multideep xmlns:x="_x_">
+    <sub xmlns:y="_y_">
+      <subber xmlns:z="_z_"  xmlns:e="_e_">
+        <subbest xmlns:w="_w_">
+        </subbest>
+      </subber>
+    </sub>
+    <subber xmlns:z="_q_"  xmlns:e="_e_">
+      <subbest xmlns:w="_r_">
+      </subbest>
+    </subber>
+    <subbest xmlns:w="_q_">
+    </subbest>
+  </multideep>
+  
+</main>
