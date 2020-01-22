@@ -3,7 +3,7 @@
 
     <simple xmlns:a="_a_"/>
   
-    <multiple xmlns:a="_a_" xmlns:b="_c_" xmlns:c="_c_"/>
+    <multiple xmlns:a="_a_" xmlns:b="_b_" xmlns:c="_c_"/>
   
     <overwrite xmlns:b="_b_">
       <sub xmlns:b="_c_"/>

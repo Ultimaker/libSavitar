@@ -9,8 +9,8 @@
 #include <string>
 #include "../pugixml/src/pugixml.hpp"
 
-//namespace xml_namespace
-//{
+namespace xml_namespace
+{
     class NamespaceTest : public testing::Test
     {
     public:
@@ -112,4 +112,4 @@
         ASSERT_EQ(xml_namespace::getNamesFor(map, "_p_").size(), 0);
     }
 
-//} // namespace xml_namespace
+} // namespace xml_namespace
