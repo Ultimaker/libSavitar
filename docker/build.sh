@@ -19,5 +19,5 @@ cmake3 \
     -DCMAKE_PREFIX_PATH="${CURA_BUILD_ENV_PATH}" \
     -DBUILD_TESTS=ON \
     ..
-make
+VEBOSE=1 make
 ctest3 --output-on-failure -T Test
