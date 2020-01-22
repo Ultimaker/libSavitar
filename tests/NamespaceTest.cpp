@@ -14,6 +14,7 @@ namespace xml_namespace
     class NamespaceTest : public testing::Test
     {
     public:
+        pugi::xml_document document;
         pugi::xml_node main_xml_node;
 
         void SetUp()
@@ -23,7 +24,6 @@ namespace xml_namespace
             {
                 const std::string xml_string(std::istreambuf_iterator<char>{test_model_file}, {});
 
-                pugi::xml_document document;
                 pugi::xml_parse_result result = document.load_string(xml_string.c_str());
                 main_xml_node = document.child("main");
             }
