@@ -18,6 +18,7 @@ cmake3 \
     -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_PREFIX_PATH="${CURA_BUILD_ENV_PATH}" \
     -DBUILD_TESTS=ON \
+    -DBUILD_STATIC=ON \
     ..
 VERBOSE=1 make
 ctest3 --output-on-failure -T Test
