@@ -20,5 +20,5 @@ cmake3 \
     -DBUILD_TESTS=ON \
     -DBUILD_STATIC=ON \
     ..
-VERBOSE=1 make
+make
 ctest3 --output-on-failure -T Test
