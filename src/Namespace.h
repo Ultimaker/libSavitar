@@ -1,6 +1,10 @@
 //Copyright (c) 2020 Ultimaker B.V.
 //libSavitar is released under the terms of the AGPLv3 or higher.
 
+#ifndef NAMESPACE_H
+#define NAMESPACE_H
+
+#include "SavitarExport.h"
 #include <map>
 #include <set>
 #include <string>
@@ -18,6 +22,8 @@ namespace xml_namespace
     std::string getCuraUri();
     std::string getDefaultUri();
 
-    xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node);
-    std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
+    xmlns_map_t SAVITAR_EXPORT getAncestralNamespaces(const pugi::xml_node& xml_node);
+    std::set<std::string> SAVITAR_EXPORT getNamesFor(const xmlns_map_t& map, const std::string& uri);
 } //namespace xml_namespace
+
+#endif
