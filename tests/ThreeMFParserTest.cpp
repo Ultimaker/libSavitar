@@ -100,6 +100,8 @@ TEST_F(ThreeMFParserTest, parse)
     EXPECT_NE(settings.find("infill_pattern"), settings.end());
     EXPECT_EQ(settings["infill_pattern"].compare("concentric"), 0);
 
+    EXPECT_EQ(nodes[0]->getName().compare("test_object"), 0);
+    EXPECT_EQ(nodes[1]->getName().compare(""), 0);
     EXPECT_EQ(nodes[1]->getId().compare("2"), 0);
     EXPECT_FALSE(nodes[1]->getTransformation().empty());
 }
