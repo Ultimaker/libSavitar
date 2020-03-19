@@ -71,6 +71,10 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         // Create item
         pugi::xml_node object = resources_node.append_child("object");
         object.append_attribute("id") = scene_node->getId().c_str();
+        if(!scene_node->getName().empty())
+        {
+            object.append_attribute("name") = scene_node->getName().c_str();
+        }
         object.append_attribute("type") = "model";
 
         if(scene_node->getMeshData().getVertices().size() != 0)

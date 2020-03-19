@@ -71,6 +71,7 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 {
     settings.clear();
     id = xml_node.attribute("id").as_string();
+    name = xml_node.attribute("name").as_string();
 
     if(xml_node.child("mesh"))
     {
@@ -126,6 +127,16 @@ std::string SceneNode::getId()
 void SceneNode::setId(std::string id)
 {
     this->id = id;
+}
+
+std::string SceneNode::getName()
+{
+    return this->name;
+}
+
+void SceneNode::setName(std::string name)
+{
+    this->name = name;
 }
 
 std::map< std::string, std::string > SceneNode::getSettings()

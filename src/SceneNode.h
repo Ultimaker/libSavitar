@@ -62,6 +62,13 @@ namespace Savitar
         void setId(std::string id);
 
         /**
+         * Get the (non-unique) display name of the node.
+         */
+        std::string getName();
+
+        void setName(std::string name);
+
+        /**
          * Get the (per-object) settings attached to this SceneNode.
          * Note that this is part of the Cura Extension and not 3mf Core.
          */
@@ -75,6 +82,7 @@ namespace Savitar
         MeshData mesh_data;
         std::map<std::string, std::string> settings;
         std::string id;
+        std::string name;
     };
 }
 
