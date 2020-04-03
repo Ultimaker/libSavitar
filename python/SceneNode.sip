@@ -31,12 +31,9 @@ public:
 
     std::string getTransformation();
     void setTransformation(std::string);
-    
+
     std::string getName();
     void setName(std::string name);
-
-    std::string getId();
-    void setId(std::string id);
 
     std::map<std::string, std::string> getSettings();
     void setSetting(std::string key, std::string value);
