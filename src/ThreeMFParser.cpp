@@ -56,8 +56,8 @@ std::string ThreeMFParser::sceneToString(Scene scene)
     pugi::xml_node build_node = model_node.append_child("build");
 
     model_node.append_attribute("unit") = scene.getUnit().c_str();
-    model_node.append_attribute("xmlns") = xml_namespace::getCuraUri().c_str();
-    model_node.append_attribute("xmlns:cura") = xml_namespace::getDefaultUri().c_str();
+    model_node.append_attribute("xmlns") = xml_namespace::getDefaultUri().c_str();
+    model_node.append_attribute("xmlns:cura") = xml_namespace::getCuraUri().c_str();
     model_node.append_attribute("xml:lang") ="en-US";
 
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
