@@ -42,5 +42,8 @@ public:
     void setSetting(std::string key, std::string value);
 
     bool addChild(SceneNode* child /Transfer/);
+    
+    std::string getType();
+    void setType(std::string type);
 };
 

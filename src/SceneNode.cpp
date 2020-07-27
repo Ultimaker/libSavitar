@@ -25,6 +25,7 @@ using namespace Savitar;
 SceneNode::SceneNode()
 {
     transformation = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0";
+    type = "model";
 }
 
 SceneNode::~SceneNode()
@@ -67,6 +68,19 @@ MeshData& SceneNode::getMeshData()
 void SceneNode::setMeshData(MeshData mesh_data)
 {
     this->mesh_data = mesh_data;
+}
+
+std::string SceneNode::getType()
+{
+    return this->type;
+}
+
+void SceneNode::setType(std::string type)
+{
+    if(type == "model" || type == "solidsupport" || type == "support" || type == "surface" || type == "other")
+    {
+        this->type = type;
+    }
 }
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)

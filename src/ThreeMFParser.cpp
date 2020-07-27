@@ -75,9 +75,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         {
             object.append_attribute("name") = scene_node->getName().c_str();
         }
-        object.append_attribute("type") = "model";
-
-        
+        object.append_attribute("type") = scene_node->getType().c_str();
 
         std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
         if(!per_object_settings.empty())

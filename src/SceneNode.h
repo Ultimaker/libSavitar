@@ -75,6 +75,13 @@ namespace Savitar
         std::map<std::string, std::string> getSettings();
 
         void setSetting(std::string key, std::string value);
+        
+        /**
+         * Type of the scene node. Can be "model", "solidsupport", "support", "surface", or "other". 
+         * This defaults to "model"
+         */
+        std::string getType();
+        void setType(std::string type);
 
     protected:
         std::string transformation;
@@ -83,6 +90,7 @@ namespace Savitar
         std::map<std::string, std::string> settings;
         std::string id;
         std::string name;
+        std::string type;
     };
 }
 
