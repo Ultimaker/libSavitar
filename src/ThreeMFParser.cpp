@@ -77,11 +77,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         }
         object.append_attribute("type") = "model";
 
-        if(scene_node->getMeshData().getVertices().size() != 0)
-        {
-            pugi::xml_node mesh = object.append_child("mesh");
-            scene_node->getMeshData().toXmlNode(mesh);
-        }
+        
 
         std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
         if(!per_object_settings.empty())
@@ -95,6 +91,12 @@ std::string ThreeMFParser::sceneToString(Scene scene)
                 setting.append_attribute("preserve") = "true";
                 setting.append_attribute("type") = "xs:string";
             }
+        }
+        
+        if(scene_node->getMeshData().getVertices().size() != 0)
+        {
+            pugi::xml_node mesh = object.append_child("mesh");
+            scene_node->getMeshData().toXmlNode(mesh);
         }
 
         if(scene_node->getChildren().size() != 0)
