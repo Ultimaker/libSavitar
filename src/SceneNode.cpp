@@ -48,13 +48,15 @@ std::vector<SceneNode*> SceneNode::getChildren()
     return this->children;
 }
 
-void SceneNode::addChild(SceneNode* node)
+bool SceneNode::addChild(SceneNode* node)
 {
-    if(node == nullptr)
+    if(node == nullptr // No node given
+        || this->mesh_data.getVertices().size() != 0) // This node already has mesh data, that means it can't have children!
     {
-        return;
+        return false;
     }
     this->children.push_back(node);
+    return true;
 }
 
 MeshData& SceneNode::getMeshData()

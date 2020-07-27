@@ -41,6 +41,6 @@ public:
     std::map<std::string, std::string> getSettings();
     void setSetting(std::string key, std::string value);
 
-    void addChild(SceneNode* child /Transfer/);
+    bool addChild(SceneNode* child /Transfer/);
 };
 

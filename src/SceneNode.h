@@ -44,7 +44,7 @@ namespace Savitar
 
         std::vector<SceneNode*> getChildren();
         std::vector<SceneNode*> getAllChildren();
-        void addChild(SceneNode* node);
+        bool addChild(SceneNode* node);
 
         MeshData& getMeshData();
         void setMeshData(MeshData mesh_data);
