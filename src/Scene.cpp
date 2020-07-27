@@ -109,12 +109,16 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
 std::vector<SceneNode*> Scene::getAllSceneNodes()
 {
     std::vector<SceneNode*> all_nodes;
-    all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
+    
     for(SceneNode* scene_node: scene_nodes)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_nodes.insert(all_nodes.end(), temp_children.begin(), temp_children.end());
     }
+    
+    // We put them at the end so that the "simplicity" rule of 3MF is kept:
+    // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
+    all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
     return all_nodes;
 }
 

@@ -155,13 +155,17 @@ void SceneNode::setSetting(std::string key, std::string value)
 std::vector< SceneNode*> SceneNode::getAllChildren()
 {
     std::vector<SceneNode*> all_children;
-    // Add all direct children to the result to return
-    all_children.insert(all_children.end(), children.begin(), children.end());
+    
     for(SceneNode* scene_node: children)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_children.insert(all_children.end(), temp_children.begin(), temp_children.end());
     }
+    
+    // Add all direct children to the result to return. 
+    // We put them at the end so that the "simplicity" rule of 3MF is kept:
+    // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
+    all_children.insert(all_children.end(), children.begin(), children.end());
     return all_children;
 }
 
