@@ -178,6 +178,11 @@ void SceneNode::setSetting(std::string key, std::string value)
     settings[key] = value;
 }
 
+void SceneNode::removeSetting(std::string key)
+{
+    settings.erase(key);
+}
+
 
 std::vector< SceneNode*> SceneNode::getAllChildren()
 {

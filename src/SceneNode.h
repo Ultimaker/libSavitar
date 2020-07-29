@@ -75,6 +75,7 @@ namespace Savitar
         std::map<std::string, std::string> getSettings();
 
         void setSetting(std::string key, std::string value);
+        void removeSetting(std::string key);
         
         /**
          * Type of the scene node. Can be "model", "solidsupport", "support", "surface", or "other". 
