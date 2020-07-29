@@ -83,10 +83,22 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     pugi::xml_node components = object_node.child("components");
     SceneNode* scene_node = new SceneNode();
     scene_node->fillByXMLNode(object_node);
+    
+    std::map<std::string, std::string>::iterator it;
+    bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
+    
+    std::string mesh_node_object_id = "";
+    
+    if(has_mesh_node)
+    {
+        mesh_node_object_id = scene_node->getSettings()["mesh_node_objectid"];
+    }
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
     if(components)
     {
+        
+        SceneNode* mesh_node = nullptr;
         for(pugi::xml_node component = components.child("component"); component; component = component.next_sibling("component"))
         {
             // This node has children. Add them one by one.
@@ -94,13 +106,26 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
             if(child_object_node)
             {
                 SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
-                child_node->setTransformation(component.attribute("transform").as_string());
-                scene_node->addChild(child_node);
+                if(has_mesh_node && mesh_node_object_id == component.attribute("objectid").as_string())
+                {
+                    // Don't add a node with the mesh_node_objectid metadata. Store it until last so we can copy it's mesh to the parent node
+                    mesh_node = child_node;
+                } else
+                {
+                    child_node->setTransformation(component.attribute("transform").as_string());
+                    scene_node->addChild(child_node);
+                }
             } else
             {
                 // TODO: ADD proper error handling here.
                 std::cout << "Child_object_node not found :( " << std::endl;
             }
+        }
+        
+        if(mesh_node != nullptr)
+        {
+            scene_node->setMeshData(mesh_node->getMeshData());
+            delete mesh_node;
         }
     }
     return scene_node;

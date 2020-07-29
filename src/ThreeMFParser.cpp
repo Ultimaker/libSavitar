@@ -107,6 +107,18 @@ std::string ThreeMFParser::sceneToString(Scene scene)
                 component.append_attribute("transform") = child_scene_node->getTransformation().c_str();
             }
         }
+        if(scene_node->getMeshNode() != nullptr)
+        {
+            if(object.child("metadatagroup"))
+            {
+                object.append_child("metadatagroup");
+            }
+            pugi::xml_node mesh_node_setting = object.child("metadatagroup").append_child("metadata");
+            mesh_node_setting.append_attribute("name") = "mesh_node_objectid";
+            mesh_node_setting.text().set(scene_node->getMeshNode()->getId().c_str());
+            mesh_node_setting.append_attribute("preserve") = "true";
+            mesh_node_setting.append_attribute("type") = "xs:string";
+        }
     }
 
     for(SceneNode* scene_node: scene.getSceneNodes())

@@ -26,6 +26,7 @@ SceneNode::SceneNode()
 {
     transformation = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0";
     type = "model";
+    mesh_node = nullptr;
 }
 
 SceneNode::~SceneNode()
@@ -43,6 +44,10 @@ void SceneNode::setTransformation(std::string transformation)
     this->transformation = transformation;
 }
 
+SceneNode* SceneNode::getMeshNode()
+{
+    return mesh_node;
+}
 
 std::vector<SceneNode*> SceneNode::getChildren()
 {
@@ -51,11 +56,19 @@ std::vector<SceneNode*> SceneNode::getChildren()
 
 bool SceneNode::addChild(SceneNode* node)
 {
-    if(node == nullptr // No node given
-        || this->mesh_data.getVertices().size() != 0) // This node already has mesh data, that means it can't have children!
+    if(node == nullptr) // No node given
     {
         return false;
     }
+    
+    if(this->mesh_data.getVertices().size() != 0) // This node already has mesh data, so we need to move that data to a child node
+    {
+        mesh_node = new SceneNode();
+        mesh_node->setMeshData(this->mesh_data); // Copy the data to the new child.
+        mesh_data.clear(); // Clear our own data
+        this->children.push_back(mesh_node);
+    }
+    
     this->children.push_back(node);
     return true;
 }

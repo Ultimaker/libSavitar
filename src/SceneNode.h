@@ -82,6 +82,8 @@ namespace Savitar
          */
         std::string getType();
         void setType(std::string type);
+        
+        SceneNode* getMeshNode();
 
     protected:
         std::string transformation;
@@ -91,6 +93,11 @@ namespace Savitar
         std::string id;
         std::string name;
         std::string type;
+        
+        // 3MF does not support having an Object that has a mesh and components.
+        // This is solved by the concept of the "mesh" node, which is added as a child.
+        // This then gets a bit of metadata set so we can restore the graph in the way that we expect it.
+        SceneNode* mesh_node;
     };
 }
 
