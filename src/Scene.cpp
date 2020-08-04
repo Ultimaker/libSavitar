@@ -83,10 +83,22 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     pugi::xml_node components = object_node.child("components");
     SceneNode* scene_node = new SceneNode();
     scene_node->fillByXMLNode(object_node);
+    
+    std::map<std::string, std::string>::iterator it;
+    const bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
+    
+    std::string mesh_node_object_id = "";
+    
+    if(has_mesh_node)
+    {
+        mesh_node_object_id = scene_node->getSettings()["mesh_node_objectid"];
+    }
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
     if(components)
     {
+        
+        SceneNode* mesh_node = nullptr;
         for(pugi::xml_node component = components.child("component"); component; component = component.next_sibling("component"))
         {
             // This node has children. Add them one by one.
@@ -94,13 +106,28 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
             if(child_object_node)
             {
                 SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
-                child_node->setTransformation(component.attribute("transform").as_string());
-                scene_node->addChild(child_node);
+                if(has_mesh_node && mesh_node_object_id == component.attribute("objectid").as_string())
+                {
+                    // Don't add a node with the mesh_node_objectid metadata. Store it until last so we can copy it's mesh to the parent node
+                    mesh_node = child_node;
+                } else
+                {
+                    child_node->setTransformation(component.attribute("transform").as_string());
+                    scene_node->addChild(child_node);
+                }
             } else
             {
                 // TODO: ADD proper error handling here.
                 std::cout << "Child_object_node not found :( " << std::endl;
             }
+        }
+        
+        if(mesh_node != nullptr)
+        {
+            scene_node->setMeshData(mesh_node->getMeshData());
+            scene_node->removeSetting("mesh_node_objectid"); // No need to keep it. It's job is done!
+            delete mesh_node;
+            mesh_node = nullptr;
         }
     }
     return scene_node;
@@ -109,12 +136,16 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
 std::vector<SceneNode*> Scene::getAllSceneNodes()
 {
     std::vector<SceneNode*> all_nodes;
-    all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
+    
     for(SceneNode* scene_node: scene_nodes)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_nodes.insert(all_nodes.end(), temp_children.begin(), temp_children.end());
     }
+    
+    // We put them at the end so that the "simplicity" rule of 3MF is kept:
+    // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
+    all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
     return all_nodes;
 }
 

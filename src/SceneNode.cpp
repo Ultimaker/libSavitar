@@ -24,7 +24,9 @@ using namespace Savitar;
 
 SceneNode::SceneNode()
 {
-
+    transformation = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0";
+    type = "model";
+    mesh_node = nullptr;
 }
 
 SceneNode::~SceneNode()
@@ -42,19 +44,33 @@ void SceneNode::setTransformation(std::string transformation)
     this->transformation = transformation;
 }
 
+SceneNode* SceneNode::getMeshNode()
+{
+    return mesh_node;
+}
 
 std::vector<SceneNode*> SceneNode::getChildren()
 {
     return this->children;
 }
 
-void SceneNode::addChild(SceneNode* node)
+bool SceneNode::addChild(SceneNode* node)
 {
-    if(node == nullptr)
+    if(node == nullptr) // No node given
     {
-        return;
+        return false;
     }
+    
+    if(this->mesh_data.getVertices().size() != 0) // This node already has mesh data, so we need to move that data to a child node
+    {
+        mesh_node = new SceneNode();
+        mesh_node->setMeshData(this->mesh_data); // Copy the data to the new child.
+        mesh_data.clear(); // Clear our own data
+        this->children.push_back(mesh_node);
+    }
+    
     this->children.push_back(node);
+    return true;
 }
 
 MeshData& SceneNode::getMeshData()
@@ -65,6 +81,19 @@ MeshData& SceneNode::getMeshData()
 void SceneNode::setMeshData(MeshData mesh_data)
 {
     this->mesh_data = mesh_data;
+}
+
+std::string SceneNode::getType()
+{
+    return this->type;
+}
+
+void SceneNode::setType(std::string type)
+{
+    if(type == "model" || type == "solidsupport" || type == "support" || type == "surface" || type == "other")
+    {
+        this->type = type;
+    }
 }
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
@@ -149,17 +178,26 @@ void SceneNode::setSetting(std::string key, std::string value)
     settings[key] = value;
 }
 
+void SceneNode::removeSetting(std::string key)
+{
+    settings.erase(key);
+}
+
 
 std::vector< SceneNode*> SceneNode::getAllChildren()
 {
     std::vector<SceneNode*> all_children;
-    // Add all direct children to the result to return
-    all_children.insert(all_children.end(), children.begin(), children.end());
+    
     for(SceneNode* scene_node: children)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_children.insert(all_children.end(), temp_children.begin(), temp_children.end());
     }
+    
+    // Add all direct children to the result to return. 
+    // We put them at the end so that the "simplicity" rule of 3MF is kept:
+    // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
+    all_children.insert(all_children.end(), children.begin(), children.end());
     return all_children;
 }
 
