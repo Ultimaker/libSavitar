@@ -127,6 +127,7 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
             scene_node->setMeshData(mesh_node->getMeshData());
             scene_node->removeSetting("mesh_node_objectid"); // No need to keep it. It's job is done!
             delete mesh_node;
+            mesh_node = nullptr;
         }
     }
     return scene_node;
