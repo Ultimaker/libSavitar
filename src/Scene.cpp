@@ -85,7 +85,7 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     scene_node->fillByXMLNode(object_node);
     
     std::map<std::string, std::string>::iterator it;
-    bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
+    const bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
     
     std::string mesh_node_object_id = "";
     
