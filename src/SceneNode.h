@@ -44,7 +44,7 @@ namespace Savitar
 
         std::vector<SceneNode*> getChildren();
         std::vector<SceneNode*> getAllChildren();
-        void addChild(SceneNode* node);
+        bool addChild(SceneNode* node);
 
         MeshData& getMeshData();
         void setMeshData(MeshData mesh_data);
@@ -75,6 +75,16 @@ namespace Savitar
         std::map<std::string, std::string> getSettings();
 
         void setSetting(std::string key, std::string value);
+        void removeSetting(std::string key);
+        
+        /**
+         * Type of the scene node. Can be "model", "solidsupport", "support", "surface", or "other". 
+         * This defaults to "model"
+         */
+        std::string getType();
+        void setType(std::string type);
+        
+        SceneNode* getMeshNode();
 
     protected:
         std::string transformation;
@@ -83,6 +93,12 @@ namespace Savitar
         std::map<std::string, std::string> settings;
         std::string id;
         std::string name;
+        std::string type;
+        
+        // 3MF does not support having an Object that has a mesh and components.
+        // This is solved by the concept of the "mesh" node, which is added as a child.
+        // This then gets a bit of metadata set so we can restore the graph in the way that we expect it.
+        SceneNode* mesh_node;
     };
 }
 
