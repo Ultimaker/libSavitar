@@ -24,46 +24,40 @@ if(APPLE)
     set(CMAKE_FIND_FRAMEWORK LAST)
 endif()
 
-# FIXME: Remove the code for CMake <3.12 once we have switched over completely.
-# FindPython3 is a new module since CMake 3.12. It deprecates FindPythonInterp and FindPythonLibs.
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-    # Use FindPythonInterp and FindPythonLibs for CMake <3.12
-    find_package(PythonInterp 3.4 REQUIRED)
-    find_package(PythonLibs 3.4 REQUIRED)
+# FIXME: Use the new FindPython3 module rather than these. New in CMake 3.12.
+# However currently that breaks on our CI server, since the CI server finds the built-in Python3.6 and then doesn't find the headers.
+find_package(PythonInterp 3.4 REQUIRED)
+find_package(PythonLibs 3.4 REQUIRED)
 
-    # Define variables that are available in FindPython3, so there's no need to branch off in the later part.
-    set(Python3_EXECUTABLE ${PYTHON_EXECUTABLE})
-    set(Python3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
-    set(Python3_LIBRARIES ${PYTHON_LIBRARIES})
+# Define variables that are available in FindPython3, so there's no need to branch off in the later part.
+set(Python3_EXECUTABLE ${PYTHON_EXECUTABLE})
+set(Python3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
+set(Python3_LIBRARIES ${PYTHON_LIBRARIES})
 
-    execute_process(
-        COMMAND ${Python3_EXECUTABLE} -c
-                "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=False,standard_lib=False))"
-        RESULT_VARIABLE _process_status
-        OUTPUT_VARIABLE _process_output
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(${_process_status} EQUAL 0)
-        string(STRIP ${_process_output} Python3_SITELIB)
-    else()
-        message(FATAL_ERROR "Failed to get Python3_SITELIB. Error: ${_process_output}")
-    endif()
-
-    execute_process(
-        COMMAND ${Python3_EXECUTABLE} -c
-                "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=True,standard_lib=False))"
-        RESULT_VARIABLE _process_status
-        OUTPUT_VARIABLE _process_output
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-    if(${_process_status} EQUAL 0)
-        string(STRIP ${_process_output} Python3_SITEARCH)
-    else()
-        message(FATAL_ERROR "Failed to get Python3_SITEARCH. Error: ${_process_output}")
-    endif()
+execute_process(
+   COMMAND ${Python3_EXECUTABLE} -c
+           "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=False,standard_lib=False))"
+   RESULT_VARIABLE _process_status
+   OUTPUT_VARIABLE _process_output
+   OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(${_process_status} EQUAL 0)
+   string(STRIP ${_process_output} Python3_SITELIB)
 else()
-    # Use FindPython3 for CMake >=3.12
-    find_package(Python3 3.4 REQUIRED COMPONENTS Interpreter Development)
+   message(FATAL_ERROR "Failed to get Python3_SITELIB. Error: ${_process_output}")
+endif()
+
+execute_process(
+   COMMAND ${Python3_EXECUTABLE} -c
+           "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=True,standard_lib=False))"
+   RESULT_VARIABLE _process_status
+   OUTPUT_VARIABLE _process_output
+   OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(${_process_status} EQUAL 0)
+   string(STRIP ${_process_output} Python3_SITEARCH)
+else()
+   message(FATAL_ERROR "Failed to get Python3_SITEARCH. Error: ${_process_output}")
 endif()
 
 get_filename_component(_python_binary_path ${Python3_EXECUTABLE} DIRECTORY)
