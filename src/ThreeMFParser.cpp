@@ -59,7 +59,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
     model_node.append_attribute("xmlns") = xml_namespace::getDefaultUri().c_str();
     model_node.append_attribute("xmlns:cura") = xml_namespace::getCuraUri().c_str();
     model_node.append_attribute("xml:lang") ="en-US";
-
+    
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
     {
         SceneNode* scene_node = scene.getAllSceneNodes().at(i);
@@ -127,7 +127,14 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         item.append_attribute("objectid") = scene_node->getId().c_str();
         item.append_attribute("transform") = scene_node->getTransformation().c_str();
     }
-
+    
+    for(const std::pair<std::string, std::string> metadata_pair: scene.getMetadata())
+    {
+        pugi::xml_node metadata_node = model_node.append_child("metadata");
+        metadata_node.append_attribute("name") = metadata_pair.first.c_str();
+        metadata_node.text().set(metadata_pair.second.c_str());
+    }
+    
     std::stringstream ss;
     document.save(ss);
     return ss.str();

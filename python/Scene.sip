@@ -31,6 +31,7 @@ public:
     void addSceneNode(SceneNode* node /Transfer/);
 
     std::map<std::string, std::string> getMetadata();
+    void setMetaDataEntry(std::string key, std::string value);
 
     std::string getUnit();
     void setUnit(std::string unit);
