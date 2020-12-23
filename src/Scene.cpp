@@ -68,6 +68,18 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         {
             SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
             temp_scene_node->setTransformation(item.attribute("transform").as_string());
+            
+            // Get all metadata from the item and update that.
+            const pugi::xml_node metadatagroup_node = item.child("metadatagroup");
+            if (metadatagroup_node)
+            {
+                for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
+                {
+                    std::string key = setting.attribute("name").as_string();
+                    temp_scene_node->setSetting(key, setting.text().as_string());
+                }
+            }
+            
             scene_nodes.push_back(temp_scene_node);
         }
         else
