@@ -77,16 +77,16 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         }
         object.append_attribute("type") = scene_node->getType().c_str();
 
-        std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
+        const std::map<std::string, MetadataEntry>& per_object_settings = scene_node->getSettings();
         if(!per_object_settings.empty())
         {
             pugi::xml_node settings = object.append_child("metadatagroup");
-            for(const std::pair<std::string, std::string> setting_pair: per_object_settings)
+            for(const std::pair<std::string, MetadataEntry>& setting_pair: per_object_settings)
             {
                 pugi::xml_node setting = settings.append_child("metadata");
                 setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
-                setting.text().set(setting_pair.second.c_str());
-                setting.append_attribute("preserve") = "true";
+                setting.text().set(setting_pair.second.value.c_str());
+                setting.append_attribute("preserve") = "true"; //TODO: Write correct preserve and type.
                 setting.append_attribute("type") = "xs:string";
             }
         }

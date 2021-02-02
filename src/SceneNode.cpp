@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -116,7 +116,7 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         {
             const std::string key = setting.attribute("key").as_string();
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            setSetting(key, value);
         }
     }
 
@@ -143,7 +143,8 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 
             key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            //TODO: Read type and preserve.
+            setSetting(key, value);
         }
     }
 }
@@ -168,14 +169,14 @@ void SceneNode::setName(std::string name)
     this->name = name;
 }
 
-std::map< std::string, std::string > SceneNode::getSettings()
+const std::map<std::string, MetadataEntry>& SceneNode::getSettings() const
 {
     return settings;
 }
 
-void SceneNode::setSetting(std::string key, std::string value)
+void SceneNode::setSetting(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
 {
-    settings[key] = value;
+    settings.emplace(key, MetadataEntry(value, type, preserve));
 }
 
 void SceneNode::removeSetting(std::string key)

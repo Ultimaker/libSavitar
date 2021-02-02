@@ -103,7 +103,7 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     
     if(has_mesh_node)
     {
-        mesh_node_object_id = scene_node->getSettings()["mesh_node_objectid"];
+        mesh_node_object_id = scene_node->getSettings().at("mesh_node_objectid").value;
     }
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
