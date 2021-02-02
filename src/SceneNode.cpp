@@ -143,8 +143,14 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 
             key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             const std::string value = setting.text().as_string();
-            //TODO: Read type and preserve.
-            setSetting(key, value);
+            std::string type = setting.attribute("type").as_string();
+            if(type == "")
+            {
+                type = "xs:string";
+            }
+            std::string preserve_str = setting.attribute("preserve").as_string(); //as_bool is too strict. Any non-zero value evaluates as true. Parse this ourselves.
+            const bool preserve = (preserve_str != "" && preserve_str != "0");
+            setSetting(key, value, type, preserve);
         }
     }
 }

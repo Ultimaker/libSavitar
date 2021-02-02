@@ -86,8 +86,14 @@ std::string ThreeMFParser::sceneToString(Scene scene)
                 pugi::xml_node setting = settings.append_child("metadata");
                 setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
                 setting.text().set(setting_pair.second.value.c_str());
-                setting.append_attribute("preserve") = "true"; //TODO: Write correct preserve and type.
-                setting.append_attribute("type") = "xs:string";
+                if(setting_pair.second.type != "xs:string") //xs:string is the default type and doesn't need to be written.
+                {
+                    setting.append_attribute("type") = setting_pair.second.type.c_str();
+                }
+                if(setting_pair.second.preserve)
+                {
+                    setting.append_attribute("preserve") = "true";
+                }
             }
         }
         
@@ -117,7 +123,6 @@ std::string ThreeMFParser::sceneToString(Scene scene)
             mesh_node_setting.append_attribute("name") = "mesh_node_objectid";
             mesh_node_setting.text().set(scene_node->getMeshNode()->getId().c_str());
             mesh_node_setting.append_attribute("preserve") = "true";
-            mesh_node_setting.append_attribute("type") = "xs:string";
         }
     }
 
@@ -133,7 +138,14 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         pugi::xml_node metadata_node = model_node.append_child("metadata");
         metadata_node.append_attribute("name") = metadata_pair.first.c_str();
         metadata_node.text().set(metadata_pair.second.value.c_str());
-        //TODO: Set other metadata properties for type and preserve.
+        if(metadata_pair.second.type != "xs:string") //xs:string is the default and doesn't need to get written then.
+        {
+            metadata_node.append_attribute("type") = metadata_pair.second.type.c_str();
+        }
+        if(metadata_pair.second.preserve)
+        {
+            metadata_node.append_attribute("preserve") = "true";
+        }
     }
     
     std::stringstream ss;
