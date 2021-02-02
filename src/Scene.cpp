@@ -56,7 +56,16 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
     // Handle metadata:
     for(pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
     {
-        setMetaDataEntry(metadata_node.attribute("name").as_string(), metadata_node.text().as_string());
+        const std::string key = metadata_node.attribute("name").as_string();
+        const std::string value = metadata_node.text().as_string();
+        std::string type = metadata_node.attribute("type").as_string();
+        if(type == "")
+        {
+            type = "xs:string"; //Fill in the default type if it's not present.
+        }
+        const std::string preserve_str = metadata_node.attribute("preserve").as_string(); //Don't use as_bool since 3MF's boolean parsing is more lenient.
+        const bool preserve = (preserve_str != "" && preserve_str != "0");
+        setMetaDataEntry(key, value, type, preserve);
     }
 
     pugi::xml_node build = xml_node.child("build");
