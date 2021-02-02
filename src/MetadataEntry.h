@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include "SavitarExport.h"
+
 namespace Savitar
 {
 
@@ -47,15 +49,15 @@ struct SAVITAR_EXPORT MetadataEntry
     std::string type;
 
     /*!
-     * Whether the data must be preserved when saving the scene to a new 3MF
+     * Whether the data should be preserved when saving the scene to a new 3MF
      * document.
      */
-    bool must_preserve;
+    bool preserve;
 
-    MetadataEntry(const std::string& value, const std::string& type, const bool must_preserve)
+    MetadataEntry(const std::string& value, const std::string& type = "xs:string", const bool preserve = false)
         : value(value)
         , type(type)
-        , must_preserve(must_preserve)
+        , preserve(preserve)
     {}
 };
 
