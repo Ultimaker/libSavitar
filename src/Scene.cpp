@@ -178,6 +178,11 @@ std::vector<SceneNode*> Scene::getAllSceneNodes()
     return all_nodes;
 }
 
+void Scene::setMetaDataEntry(const std::string& key, const MetadataEntry& entry)
+{
+    metadata.emplace(key, entry);
+}
+
 void Scene::setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
 {
     metadata.emplace(key, MetadataEntry(value, type, preserve));

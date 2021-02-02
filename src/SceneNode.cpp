@@ -180,6 +180,11 @@ const std::map<std::string, MetadataEntry>& SceneNode::getSettings() const
     return settings;
 }
 
+void SceneNode::setSetting(const std::string& key, const MetadataEntry& entry)
+{
+    settings.emplace(key, entry);
+}
+
 void SceneNode::setSetting(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
 {
     settings.emplace(key, MetadataEntry(value, type, preserve));

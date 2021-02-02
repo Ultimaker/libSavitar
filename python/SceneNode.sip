@@ -39,6 +39,7 @@ public:
     void setId(std::string id);
 
     std::map<std::string, MetadataEntry> getSettings();
+    void setSetting(std::string key, MetadataEntry entry);
     void setSetting(std::string key, std::string value);
     void setSetting(std::string key, std::string value, std::string type);
     void setSetting(std::string key, std::string value, std::string type, bool preserve);

@@ -75,6 +75,7 @@ namespace Savitar
          */
         const std::map<std::string, MetadataEntry>& getSettings() const;
 
+        void setSetting(const std::string& key, const MetadataEntry& entry);
         void setSetting(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
         void removeSetting(std::string key);
 

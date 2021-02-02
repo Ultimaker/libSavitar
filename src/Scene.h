@@ -62,12 +62,23 @@ namespace Savitar
         void fillByXMLNode(pugi::xml_node xml_node);
 
         /**
+         * Store a metadata entry as metadata.
+         * @param key The key of the metadata.
+         * @param entry A MetadataEntry object containing metadata and
+         * additional properties.
+         */
+        void setMetaDataEntry(const std::string& key, const MetadataEntry& entry);
+
+        /**
          * Set a meta data entry of the scene.
          *
          * Note that this not adhere to the full 3mf spec yet. All keys are accepted.
          *
-         * \param key The key of the meta data.
-         * \param value The value of the meta data.
+         * \param key The key of the metadata.
+         * \param value The value of the metadata.
+         * \param type The data type of the metadata.
+         * \param preserve Whether the metadata entry needs to be preserved
+         * through save-load loops of the 3MF document.
          */
         void setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
 

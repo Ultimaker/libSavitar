@@ -31,6 +31,7 @@ public:
     void addSceneNode(SceneNode* node /Transfer/);
 
     std::map<std::string, MetadataEntry> getMetadata();
+    void setMetaDataEntry(std::string key, MetadataEntry entry);
     void setMetaDataEntry(std::string key, std::string value);
     void setMetaDataEntry(std::string key, std::string value, std::string type);
     void setMetaDataEntry(std::string key, std::string value, std::string type, bool preserve);
