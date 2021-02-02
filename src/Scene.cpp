@@ -75,8 +75,16 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
             {
                 for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
                 {
-                    std::string key = setting.attribute("name").as_string();
-                    temp_scene_node->setSetting(key, setting.text().as_string());
+                    const std::string key = setting.attribute("name").as_string();
+                    const std::string value = setting.text().as_string();
+                    std::string type = setting.attribute("type").as_string();
+                    if(type == "") //Not specified.
+                    {
+                        type = "xs:string";
+                    }
+                    const std::string preserve_str = setting.attribute("preserve").as_string(); //Needs to be true if string is not "0", which is less strict than .as_bool();
+                    const bool preserve = (preserve_str != "" && preserve_str != "0");
+                    temp_scene_node->setSetting(key, value, type, preserve);
                 }
             }
             
