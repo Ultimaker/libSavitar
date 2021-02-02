@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -161,9 +161,9 @@ std::vector<SceneNode*> Scene::getAllSceneNodes()
     return all_nodes;
 }
 
-void Scene::setMetaDataEntry(std::string key, std::string value)
+void Scene::setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
 {
-    metadata[key] = value;
+    metadata.emplace(key, MetadataEntry(value, type, preserve));
 }
 
 std::string Scene::getUnit()
@@ -171,7 +171,7 @@ std::string Scene::getUnit()
     return unit;
 }
 
-std::map< std::string, std::string > Scene::getMetadata()
+const std::map<std::string, MetadataEntry>& Scene::getMetadata() const
 {
     return metadata;
 }

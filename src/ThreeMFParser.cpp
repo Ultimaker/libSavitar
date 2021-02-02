@@ -128,11 +128,12 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         item.append_attribute("transform") = scene_node->getTransformation().c_str();
     }
     
-    for(const std::pair<std::string, std::string> metadata_pair: scene.getMetadata())
+    for(const std::pair<std::string, MetadataEntry>& metadata_pair: scene.getMetadata())
     {
         pugi::xml_node metadata_node = model_node.append_child("metadata");
         metadata_node.append_attribute("name") = metadata_pair.first.c_str();
-        metadata_node.text().set(metadata_pair.second.c_str());
+        metadata_node.text().set(metadata_pair.second.value.c_str());
+        //TODO: Set other metadata properties for type and preserve.
     }
     
     std::stringstream ss;

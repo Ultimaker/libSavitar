@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -69,12 +69,12 @@ namespace Savitar
          * \param key The key of the meta data.
          * \param value The value of the meta data.
          */
-        void setMetaDataEntry(std::string key, std::string value);
+        void setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
 
         /**
          * Get all meta data entries
          */
-        std::map<std::string, std::string> getMetadata();
+        const std::map<std::string, MetadataEntry>& getMetadata() const;
 
         /**
         * Get the unit (milimeter, inch, etc) of the scene.
@@ -86,7 +86,7 @@ namespace Savitar
 
     protected:
         std::vector< SceneNode*> scene_nodes;
-        std::map<std::string, std::string> metadata;
+        std::map<std::string, MetadataEntry> metadata;
         std::string unit;
 
         /**
