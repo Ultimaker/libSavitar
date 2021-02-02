@@ -16,28 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-%Module(name = Savitar, call_super_init = True)
-
-%Include Types.sip
-%Include MetadataEntry.sip
-%Include SceneNode.sip
-%Include Scene.sip
-%Include MeshData.sip
-
-%ModuleHeaderCode
-namespace Savitar{} //Ensure that the namespace already exists
-using namespace Savitar;
-%End
-
-class ThreeMFParser
+class MetadataEntry
 {
     %TypeHeaderCode
-    #include "ThreeMFParser.h"
+    #include "MetadataEntry.h"
     %End
 
 public:
-    ThreeMFParser();
-    virtual ~ThreeMFParser();
-    Scene parse(std::string xml_string);
-    std::string sceneToString(Scene scene);
+    MetadataEntry(std::string value);
+    MetadataEntry(std::string value, std::string type);
+    MetadataEntry(std::string value, std::string type, bool preserve);
+
+    std::string value;
+    std::string type;
+    bool preserve;
 };
