@@ -135,13 +135,11 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
             std::string key = setting.attribute("name").as_string();
             const size_t pos = key.find_first_of(':');
 
-            // Only accept namespaces cura and implied 'default':
-            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) < 1)
+            //Make 'cura' namespace behave like the default.
+            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) == 1)
             {
-                continue;
+                key = key.substr(pos + 1);
             }
-
-            key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             const std::string value = setting.text().as_string();
             std::string type = setting.attribute("type").as_string();
             if(type == "")
