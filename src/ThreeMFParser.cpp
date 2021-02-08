@@ -84,7 +84,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
             for(const std::pair<std::string, MetadataEntry>& setting_pair: per_object_settings)
             {
                 pugi::xml_node setting = settings.append_child("metadata");
-                setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
+                setting.append_attribute("name") = setting_pair.first.c_str();
                 setting.text().set(setting_pair.second.value.c_str());
                 if(setting_pair.second.type != "xs:string") //xs:string is the default type and doesn't need to be written.
                 {
