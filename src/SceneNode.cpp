@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -116,7 +116,7 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         {
             const std::string key = setting.attribute("key").as_string();
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            setSetting(key, value);
         }
     }
 
@@ -135,15 +135,20 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
             std::string key = setting.attribute("name").as_string();
             const size_t pos = key.find_first_of(':');
 
-            // Only accept namespaces cura and implied 'default':
-            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) < 1)
+            //Make 'cura' namespace behave like the default.
+            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) == 1)
             {
-                continue;
+                key = key.substr(pos + 1);
             }
-
-            key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            std::string type = setting.attribute("type").as_string();
+            if(type == "")
+            {
+                type = "xs:string";
+            }
+            std::string preserve_str = setting.attribute("preserve").as_string(); //as_bool is too strict. Any non-zero value evaluates as true. Parse this ourselves.
+            const bool preserve = (preserve_str != "" && preserve_str != "0");
+            setSetting(key, value, type, preserve);
         }
     }
 }
@@ -168,14 +173,19 @@ void SceneNode::setName(std::string name)
     this->name = name;
 }
 
-std::map< std::string, std::string > SceneNode::getSettings()
+const std::map<std::string, MetadataEntry>& SceneNode::getSettings() const
 {
     return settings;
 }
 
-void SceneNode::setSetting(std::string key, std::string value)
+void SceneNode::setSetting(const std::string& key, const MetadataEntry& entry)
 {
-    settings[key] = value;
+    settings.emplace(key, entry);
+}
+
+void SceneNode::setSetting(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
+{
+    settings.emplace(key, MetadataEntry(value, type, preserve));
 }
 
 void SceneNode::removeSetting(std::string key)

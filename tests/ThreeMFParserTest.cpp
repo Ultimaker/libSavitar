@@ -81,13 +81,13 @@ TEST_F(ThreeMFParserTest, parse)
     }
     // NOTE: To/from for content of vertices/triangles is tested in MeshDataTest.
 
-    std::map<std::string, std::string> settings;
+    std::map<std::string, MetadataEntry> settings;
 
     settings = nodes[0]->getSettings();
     EXPECT_NE(settings.find("extruder_nr"), settings.end());
-    EXPECT_EQ(settings["extruder_nr"].compare("0"), 0);
+    EXPECT_EQ(settings.at("extruder_nr").value.compare("0"), 0);
     EXPECT_NE(settings.find("bottom_layers"), settings.end());
-    EXPECT_EQ(settings["bottom_layers"].compare("20"), 0);
+    EXPECT_EQ(settings.at("bottom_layers").value.compare("20"), 0);
     EXPECT_EQ(settings.find("infill_pattern"), settings.end());
 
     settings = nodes[1]->getSettings();
@@ -95,10 +95,10 @@ TEST_F(ThreeMFParserTest, parse)
 
     settings = nodes[2]->getSettings();
     EXPECT_NE(settings.find("extruder_nr"), settings.end());
-    EXPECT_EQ(settings["extruder_nr"].compare("1"), 0);
+    EXPECT_EQ(settings.at("extruder_nr").value.compare("1"), 0);
     EXPECT_EQ(settings.find("bottom_layers"), settings.end());
     EXPECT_NE(settings.find("infill_pattern"), settings.end());
-    EXPECT_EQ(settings["infill_pattern"].compare("concentric"), 0);
+    EXPECT_EQ(settings.at("infill_pattern").value.compare("concentric"), 0);
 
     EXPECT_EQ(nodes[0]->getName().compare("test_object"), 0);
     EXPECT_EQ(nodes[1]->getName().compare(""), 0);

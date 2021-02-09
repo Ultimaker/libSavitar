@@ -59,7 +59,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
     model_node.append_attribute("xmlns") = xml_namespace::getDefaultUri().c_str();
     model_node.append_attribute("xmlns:cura") = xml_namespace::getCuraUri().c_str();
     model_node.append_attribute("xml:lang") ="en-US";
-
+    
     for(int i = 0; i < scene.getAllSceneNodes().size(); i++)
     {
         SceneNode* scene_node = scene.getAllSceneNodes().at(i);
@@ -77,17 +77,23 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         }
         object.append_attribute("type") = scene_node->getType().c_str();
 
-        std::map<std::string, std::string> per_object_settings = scene_node->getSettings();
+        const std::map<std::string, MetadataEntry>& per_object_settings = scene_node->getSettings();
         if(!per_object_settings.empty())
         {
             pugi::xml_node settings = object.append_child("metadatagroup");
-            for(const std::pair<std::string, std::string> setting_pair: per_object_settings)
+            for(const std::pair<std::string, MetadataEntry>& setting_pair: per_object_settings)
             {
                 pugi::xml_node setting = settings.append_child("metadata");
-                setting.append_attribute("name") = (std::string("cura:") + setting_pair.first).c_str();
-                setting.text().set(setting_pair.second.c_str());
-                setting.append_attribute("preserve") = "true";
-                setting.append_attribute("type") = "xs:string";
+                setting.append_attribute("name") = setting_pair.first.c_str();
+                setting.text().set(setting_pair.second.value.c_str());
+                if(setting_pair.second.type != "xs:string") //xs:string is the default type and doesn't need to be written.
+                {
+                    setting.append_attribute("type") = setting_pair.second.type.c_str();
+                }
+                if(setting_pair.second.preserve)
+                {
+                    setting.append_attribute("preserve") = "true";
+                }
             }
         }
         
@@ -117,7 +123,6 @@ std::string ThreeMFParser::sceneToString(Scene scene)
             mesh_node_setting.append_attribute("name") = "mesh_node_objectid";
             mesh_node_setting.text().set(scene_node->getMeshNode()->getId().c_str());
             mesh_node_setting.append_attribute("preserve") = "true";
-            mesh_node_setting.append_attribute("type") = "xs:string";
         }
     }
 
@@ -127,7 +132,22 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         item.append_attribute("objectid") = scene_node->getId().c_str();
         item.append_attribute("transform") = scene_node->getTransformation().c_str();
     }
-
+    
+    for(const std::pair<std::string, MetadataEntry>& metadata_pair: scene.getMetadata())
+    {
+        pugi::xml_node metadata_node = model_node.append_child("metadata");
+        metadata_node.append_attribute("name") = metadata_pair.first.c_str();
+        metadata_node.text().set(metadata_pair.second.value.c_str());
+        if(metadata_pair.second.type != "xs:string") //xs:string is the default and doesn't need to get written then.
+        {
+            metadata_node.append_attribute("type") = metadata_pair.second.type.c_str();
+        }
+        if(metadata_pair.second.preserve)
+        {
+            metadata_node.append_attribute("preserve") = "true";
+        }
+    }
+    
     std::stringstream ss;
     document.save(ss);
     return ss.str();

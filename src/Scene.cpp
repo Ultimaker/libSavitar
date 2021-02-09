@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -56,7 +56,16 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
     // Handle metadata:
     for(pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
     {
-        setMetaDataEntry(metadata_node.attribute("name").as_string(), metadata_node.text().as_string());
+        const std::string key = metadata_node.attribute("name").as_string();
+        const std::string value = metadata_node.text().as_string();
+        std::string type = metadata_node.attribute("type").as_string();
+        if(type == "")
+        {
+            type = "xs:string"; //Fill in the default type if it's not present.
+        }
+        const std::string preserve_str = metadata_node.attribute("preserve").as_string(); //Don't use as_bool since 3MF's boolean parsing is more lenient.
+        const bool preserve = (preserve_str != "" && preserve_str != "0");
+        setMetaDataEntry(key, value, type, preserve);
     }
 
     pugi::xml_node build = xml_node.child("build");
@@ -68,6 +77,26 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         {
             SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
             temp_scene_node->setTransformation(item.attribute("transform").as_string());
+            
+            // Get all metadata from the item and update that.
+            const pugi::xml_node metadatagroup_node = item.child("metadatagroup");
+            if (metadatagroup_node)
+            {
+                for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
+                {
+                    const std::string key = setting.attribute("name").as_string();
+                    const std::string value = setting.text().as_string();
+                    std::string type = setting.attribute("type").as_string();
+                    if(type == "") //Not specified.
+                    {
+                        type = "xs:string";
+                    }
+                    const std::string preserve_str = setting.attribute("preserve").as_string(); //Needs to be true if string is not "0", which is less strict than .as_bool();
+                    const bool preserve = (preserve_str != "" && preserve_str != "0");
+                    temp_scene_node->setSetting(key, value, type, preserve);
+                }
+            }
+            
             scene_nodes.push_back(temp_scene_node);
         }
         else
@@ -91,7 +120,7 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     
     if(has_mesh_node)
     {
-        mesh_node_object_id = scene_node->getSettings()["mesh_node_objectid"];
+        mesh_node_object_id = scene_node->getSettings().at("mesh_node_objectid").value;
     }
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
@@ -149,9 +178,14 @@ std::vector<SceneNode*> Scene::getAllSceneNodes()
     return all_nodes;
 }
 
-void Scene::setMetaDataEntry(std::string key, std::string value)
+void Scene::setMetaDataEntry(const std::string& key, const MetadataEntry& entry)
 {
-    metadata[key] = value;
+    metadata.emplace(key, entry);
+}
+
+void Scene::setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
+{
+    metadata.emplace(key, MetadataEntry(value, type, preserve));
 }
 
 std::string Scene::getUnit()
@@ -159,7 +193,7 @@ std::string Scene::getUnit()
     return unit;
 }
 
-std::map< std::string, std::string > Scene::getMetadata()
+const std::map<std::string, MetadataEntry>& Scene::getMetadata() const
 {
     return metadata;
 }

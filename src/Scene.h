@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -62,19 +62,30 @@ namespace Savitar
         void fillByXMLNode(pugi::xml_node xml_node);
 
         /**
+         * Store a metadata entry as metadata.
+         * @param key The key of the metadata.
+         * @param entry A MetadataEntry object containing metadata and
+         * additional properties.
+         */
+        void setMetaDataEntry(const std::string& key, const MetadataEntry& entry);
+
+        /**
          * Set a meta data entry of the scene.
          *
          * Note that this not adhere to the full 3mf spec yet. All keys are accepted.
          *
-         * \param key The key of the meta data.
-         * \param value The value of the meta data.
+         * \param key The key of the metadata.
+         * \param value The value of the metadata.
+         * \param type The data type of the metadata.
+         * \param preserve Whether the metadata entry needs to be preserved
+         * through save-load loops of the 3MF document.
          */
-        void setMetaDataEntry(std::string key, std::string value);
+        void setMetaDataEntry(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
 
         /**
          * Get all meta data entries
          */
-        std::map<std::string, std::string> getMetadata();
+        const std::map<std::string, MetadataEntry>& getMetadata() const;
 
         /**
         * Get the unit (milimeter, inch, etc) of the scene.
@@ -86,7 +97,7 @@ namespace Savitar
 
     protected:
         std::vector< SceneNode*> scene_nodes;
-        std::map<std::string, std::string> metadata;
+        std::map<std::string, MetadataEntry> metadata;
         std::string unit;
 
         /**
