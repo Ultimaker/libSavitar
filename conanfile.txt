@@ -1,0 +1,11 @@
+[requires]
+SIP/4.19.25@jellespijker/testing
+pugixml/1.8.1@bincrafters/stable
+
+[build_requires]
+gtest/1.11.0
+
+[generators]
+cmake_find_package
+
+[options]

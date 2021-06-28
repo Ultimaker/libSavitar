@@ -9,13 +9,18 @@ option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
 option(BUILD_TESTS "Building the test-suite" OFF)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
+
 if(BUILD_TESTS)
     message(STATUS "Building with tests...")
     find_package(GTest REQUIRED)
     find_package(Threads QUIET)
 endif()
 
-add_subdirectory(pugixml)
+find_package(pugixml 1.8)
+if(NOT pugixml_FOUND)
+    add_subdirectory(pugixml)
+endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
