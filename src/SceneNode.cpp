@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,9 @@ using namespace Savitar;
 
 SceneNode::SceneNode()
 {
-
+    transformation = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0";
+    type = "model";
+    mesh_node = nullptr;
 }
 
 SceneNode::~SceneNode()
@@ -42,19 +44,33 @@ void SceneNode::setTransformation(std::string transformation)
     this->transformation = transformation;
 }
 
+SceneNode* SceneNode::getMeshNode()
+{
+    return mesh_node;
+}
 
 std::vector<SceneNode*> SceneNode::getChildren()
 {
     return this->children;
 }
 
-void SceneNode::addChild(SceneNode* node)
+bool SceneNode::addChild(SceneNode* node)
 {
-    if(node == nullptr)
+    if(node == nullptr) // No node given
     {
-        return;
+        return false;
     }
+    
+    if(this->mesh_data.getVertices().size() != 0) // This node already has mesh data, so we need to move that data to a child node
+    {
+        mesh_node = new SceneNode();
+        mesh_node->setMeshData(this->mesh_data); // Copy the data to the new child.
+        mesh_data.clear(); // Clear our own data
+        this->children.push_back(mesh_node);
+    }
+    
     this->children.push_back(node);
+    return true;
 }
 
 MeshData& SceneNode::getMeshData()
@@ -65,6 +81,19 @@ MeshData& SceneNode::getMeshData()
 void SceneNode::setMeshData(MeshData mesh_data)
 {
     this->mesh_data = mesh_data;
+}
+
+std::string SceneNode::getType()
+{
+    return this->type;
+}
+
+void SceneNode::setType(std::string type)
+{
+    if(type == "model" || type == "solidsupport" || type == "support" || type == "surface" || type == "other")
+    {
+        this->type = type;
+    }
 }
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
@@ -87,7 +116,7 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
         {
             const std::string key = setting.attribute("key").as_string();
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            setSetting(key, value);
         }
     }
 
@@ -106,15 +135,20 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
             std::string key = setting.attribute("name").as_string();
             const size_t pos = key.find_first_of(':');
 
-            // Only accept namespaces cura and implied 'default':
-            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) < 1)
+            //Make 'cura' namespace behave like the default.
+            if (pos != std::string::npos && cura_equivalent_namespaces.count(key.substr(0, pos)) == 1)
             {
-                continue;
+                key = key.substr(pos + 1);
             }
-
-            key = (pos != std::string::npos) ? key.substr(pos + 1) : key;
             const std::string value = setting.text().as_string();
-            settings[key] = value;
+            std::string type = setting.attribute("type").as_string();
+            if(type == "")
+            {
+                type = "xs:string";
+            }
+            std::string preserve_str = setting.attribute("preserve").as_string(); //as_bool is too strict. Any non-zero value evaluates as true. Parse this ourselves.
+            const bool preserve = (preserve_str != "" && preserve_str != "0");
+            setSetting(key, value, type, preserve);
         }
     }
 }
@@ -139,27 +173,41 @@ void SceneNode::setName(std::string name)
     this->name = name;
 }
 
-std::map< std::string, std::string > SceneNode::getSettings()
+const std::map<std::string, MetadataEntry>& SceneNode::getSettings() const
 {
     return settings;
 }
 
-void SceneNode::setSetting(std::string key, std::string value)
+void SceneNode::setSetting(const std::string& key, const MetadataEntry& entry)
 {
-    settings[key] = value;
+    settings.emplace(key, entry);
+}
+
+void SceneNode::setSetting(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
+{
+    settings.emplace(key, MetadataEntry(value, type, preserve));
+}
+
+void SceneNode::removeSetting(std::string key)
+{
+    settings.erase(key);
 }
 
 
 std::vector< SceneNode*> SceneNode::getAllChildren()
 {
     std::vector<SceneNode*> all_children;
-    // Add all direct children to the result to return
-    all_children.insert(all_children.end(), children.begin(), children.end());
+    
     for(SceneNode* scene_node: children)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_children.insert(all_children.end(), temp_children.begin(), temp_children.end());
     }
+    
+    // Add all direct children to the result to return. 
+    // We put them at the end so that the "simplicity" rule of 3MF is kept:
+    // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
+    all_children.insert(all_children.end(), children.begin(), children.end());
     return all_children;
 }
 

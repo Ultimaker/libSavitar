@@ -1,7 +1,7 @@
 /*
  * This file is part of libSavitar
  *
- * Copyright (C) 2017 Ultimaker b.v. <j.vankessel@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -21,6 +21,7 @@
 
 #include "SavitarExport.h"
 #include "MeshData.h"
+#include "MetadataEntry.h"
 
 #include <string>
 #include <vector>
@@ -44,7 +45,7 @@ namespace Savitar
 
         std::vector<SceneNode*> getChildren();
         std::vector<SceneNode*> getAllChildren();
-        void addChild(SceneNode* node);
+        bool addChild(SceneNode* node);
 
         MeshData& getMeshData();
         void setMeshData(MeshData mesh_data);
@@ -72,17 +73,34 @@ namespace Savitar
          * Get the (per-object) settings attached to this SceneNode.
          * Note that this is part of the Cura Extension and not 3mf Core.
          */
-        std::map<std::string, std::string> getSettings();
+        const std::map<std::string, MetadataEntry>& getSettings() const;
 
-        void setSetting(std::string key, std::string value);
+        void setSetting(const std::string& key, const MetadataEntry& entry);
+        void setSetting(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
+        void removeSetting(std::string key);
+
+        /**
+         * Type of the scene node. Can be "model", "solidsupport", "support", "surface", or "other". 
+         * This defaults to "model"
+         */
+        std::string getType();
+        void setType(std::string type);
+        
+        SceneNode* getMeshNode();
 
     protected:
         std::string transformation;
         std::vector<SceneNode*> children;
         MeshData mesh_data;
-        std::map<std::string, std::string> settings;
+        std::map<std::string, MetadataEntry> settings;
         std::string id;
         std::string name;
+        std::string type;
+        
+        // 3MF does not support having an Object that has a mesh and components.
+        // This is solved by the concept of the "mesh" node, which is added as a child.
+        // This then gets a bit of metadata set so we can restore the graph in the way that we expect it.
+        SceneNode* mesh_node;
     };
 }
 

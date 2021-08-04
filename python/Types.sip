@@ -2,7 +2,7 @@
  * This file is part of libSavitar.
  *
  * Parts of this code have been copied from libArcus
- * Copyright (C) 2016 Ultimaker b.v. <a.hiemstra@ultimaker.com>
+ * Copyright (C) 2021 Ultimaker B.V. <r.dulek@ultimaker.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -94,7 +94,7 @@
         for (int i = 0; i < (int)sipCpp->size(); ++i)
         {
             SceneNode *cpp = new SceneNode(*sipCpp->at(i));
-            PyObject *pobj = sipConvertFromInstance(cpp, sipClass_SceneNode, sipTransferObj);
+            PyObject *pobj = sipConvertFromType(cpp, sipType_SceneNode, sipTransferObj);
 
             // Get the Python wrapper for the Type instance, creating a new
             // one if necessary, and handle any ownership transfer.
@@ -132,7 +132,7 @@
 
         while ((item = PyIter_Next(iterator)))
         {
-            if (!sipCanConvertToInstance(item, sipClass_SceneNode, SIP_NOT_NONE))
+            if (!sipCanConvertToType(item, sipType_SceneNode, SIP_NOT_NONE))
             {
                 PyErr_Format(PyExc_TypeError, "object in iterable cannot be converted to SceneNode");
                 *sipIsErr = 1;
@@ -140,14 +140,14 @@
             }
 
             int state;
-            SceneNode* p = reinterpret_cast<SceneNode*>(sipConvertToInstance(item, sipClass_SceneNode, 0, SIP_NOT_NONE, &state, sipIsErr));
+            SceneNode* p = reinterpret_cast<SceneNode*>(sipConvertToType(item, sipType_SceneNode, 0, SIP_NOT_NONE, &state, sipIsErr));
 
             if (!*sipIsErr)
             {
                 result_vector->push_back(p);
             }
 
-            sipReleaseInstance(p, sipClass_SceneNode, state);
+            sipReleaseType(p, sipType_SceneNode, state);
             Py_DECREF(item);
         }
 
@@ -226,7 +226,7 @@ template<TYPE>
         for (int i = 0; i < (int)sipCpp->size(); ++i)
         {
             TYPE *cpp = new TYPE(sipCpp->at(i));
-            PyObject *pobj = sipConvertFromInstance(cpp, sipClass_TYPE, sipTransferObj);
+            PyObject *pobj = sipConvertFromType(cpp, sipType_TYPE, sipTransferObj);
 
             // Get the Python wrapper for the Type instance, creating a new
             // one if necessary, and handle any ownership transfer.
@@ -264,7 +264,7 @@ template<TYPE>
 
         while ((item = PyIter_Next(iterator)))
         {
-            if (!sipCanConvertToInstance(item, sipClass_TYPE, SIP_NOT_NONE))
+            if (!sipCanConvertToType(item, sipType_TYPE, SIP_NOT_NONE))
             {
                 PyErr_Format(PyExc_TypeError, "object in iterable cannot be converted to TYPE");
                 *sipIsErr = 1;
@@ -272,14 +272,14 @@ template<TYPE>
             }
 
             int state;
-            TYPE* p = reinterpret_cast<TYPE*>(sipConvertToInstance(item, sipClass_TYPE, 0, SIP_NOT_NONE, &state, sipIsErr));
+            TYPE* p = reinterpret_cast<TYPE*>(sipConvertToType(item, sipType_TYPE, 0, SIP_NOT_NONE, &state, sipIsErr));
 
             if (!*sipIsErr)
             {
                 result_vector->push_back(*p);
             }
 
-            sipReleaseInstance(p, sipClass_TYPE, state);
+            sipReleaseType(p, sipType_TYPE, state);
             Py_DECREF(item);
         }
 
@@ -407,6 +407,131 @@ template<TYPE>
             }
 
             (*std_map)[*key] = *value;
+
+            sipReleaseType(key, sipType_std_string, key_state);
+            sipReleaseType(value, sipType_std_string, value_state);
+        }
+
+        *sipCppPtr = std_map;
+
+        return sipGetState(sipTransferObj);
+    %End
+};
+
+
+
+
+/**
+ * Convert a (Python) dict of metadata entries to std::map of MetadataEntry
+ * objects.
+ */
+%MappedType std::map<std::string, MetadataEntry>
+{
+    %TypeHeaderCode
+    #include <map>
+    %End
+
+    %ConvertFromTypeCode // From C++ to python
+        // Create the dictionary.
+        PyObject *result_dict = PyDict_New();
+
+        if (!result_dict)
+        {
+            return NULL;
+        }
+
+        // Set the dictionary elements.
+        std::map<std::string, MetadataEntry>::const_iterator i = sipCpp->begin();
+
+        while(i != sipCpp->end())
+        {
+            std::string* key = new std::string((*i).first);
+            MetadataEntry* value = new MetadataEntry((*i).second);
+
+            PyObject *key_object = sipConvertFromNewType(key, sipType_std_string, sipTransferObj);
+            PyObject *value_object = sipConvertFromInstance(value, sipClass_MetadataEntry, sipTransferObj);
+
+            if (key_object == NULL || value_object == NULL || PyDict_SetItem(result_dict, key_object, value_object) < 0)
+            {
+                Py_DECREF(result_dict);
+
+                if (key_object)
+                {
+                    Py_DECREF(key_object);
+                }
+                else
+                {
+                    delete key;
+                }
+
+                if (value_object)
+                {
+                    Py_DECREF(value_object);
+                }
+                else
+                {
+                    delete value;
+                }
+
+                return nullptr;
+            }
+
+            Py_DECREF(key_object);
+            Py_DECREF(value_object);
+
+            ++i;
+        }
+
+        return result_dict;
+    %End
+
+    %ConvertToTypeCode // From python to C++
+        PyObject *key_object, *value_object;
+        SIP_SSIZE_T i = 0;
+
+        // Check the type if that is all that is required.
+        if (sipIsErr == nullptr)
+        {
+            if (!PyDict_Check(sipPy))
+            {
+                return 0;
+            }
+
+            while (PyDict_Next(sipPy, &i, &key_object, &value_object))
+            {
+                if (!sipCanConvertToType(key_object, sipType_std_string, SIP_NOT_NONE))
+                {
+                    return 0;
+                }
+
+                if (!sipCanConvertToInstance(value_object, sipClass_MetadataEntry, SIP_NOT_NONE))
+                {
+                    return 0;
+                }
+            }
+
+            return 1;
+        }
+
+        std::map<std::string, MetadataEntry> *std_map = new std::map<std::string, MetadataEntry>;
+
+        while (PyDict_Next(sipPy, &i, &key_object, &value_object))
+        {
+            int key_state, value_state;
+
+            std::string *key = reinterpret_cast<std::string *>(sipConvertToType(key_object, sipType_std_string, sipTransferObj, SIP_NOT_NONE, &key_state, sipIsErr));
+            MetadataEntry *value = reinterpret_cast<MetadataEntry*>(sipConvertToInstance(value_object, sipClass_MetadataEntry, 0, SIP_NOT_NONE, &value_state, sipIsErr));
+
+            if (*sipIsErr)
+            {
+                sipReleaseType(key, sipType_std_string, key_state);
+                sipReleaseInstance(value, sipClass_MetadataEntry, value_state);
+
+                delete std_map;
+                return 0;
+            }
+
+            (*std_map).emplace(*key, *value);
 
             sipReleaseType(key, sipType_std_string, key_state);
             sipReleaseType(value, sipType_std_string, value_state);

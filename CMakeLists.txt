@@ -1,5 +1,5 @@
 project(savitar)
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.8)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -23,9 +23,11 @@ if(BUILD_PYTHON)
     # FIXME: Remove the code for CMake <3.12 once we have switched over completely.
     # FindPython3 is a new module since CMake 3.12. It deprecates FindPythonInterp and FindPythonLibs.
     if(${CMAKE_VERSION} VERSION_LESS 3.12)
-        # Use FindPythonInterp and FindPythonLibs for CMake <3.12
+        # FIXME: Use FindPython3 to find Python, new in CMake 3.12.
+        # However currently on our CI server it finds the wrong Python version and then doesn't find the headers.
         find_package(PythonInterp 3.4 REQUIRED)
         find_package(PythonLibs 3.4 REQUIRED)
+
     else()
         # Use FindPython3 for CMake >=3.12
         find_package(Python3 3.4 REQUIRED COMPONENTS Interpreter Development)
@@ -39,7 +41,7 @@ if(BUILD_PYTHON)
     include_directories(python/ src/ ${SIP_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS})
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
@@ -67,7 +69,7 @@ set(savitar_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
 )
 
-set(SAVITAR_VERSION 0.1.1)
+set(SAVITAR_VERSION 0.1.2)
 set(SAVITAR_SOVERSION 0)
 
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
@@ -91,7 +93,7 @@ endif()
 if(BUILD_PYTHON)
     set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
     #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
-    set(SIP_EXTRA_OPTIONS -g) # -g means always release the GIL before calling C++ methods.
+    set(SIP_EXTRA_OPTIONS -g -n PyQt5.sip) # -g means always release the GIL before calling C++ methods. -n PyQt5.sip is required to not get the PyCapsule error
     add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)
 endif()
 
