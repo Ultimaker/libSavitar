@@ -19,6 +19,7 @@
 #include "ThreeMFParser.h"
 #include "Namespace.h"
 #include "Scene.h"
+#include <pugixml.hpp>
 #include <iostream>
 #include <sstream>
 #include <locale.h>

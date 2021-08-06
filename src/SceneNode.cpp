@@ -18,7 +18,7 @@
 
 #include "SceneNode.h"
 #include "Namespace.h"
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 #include <iostream>
 using namespace Savitar;
 

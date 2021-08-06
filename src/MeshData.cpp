@@ -16,8 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <pugixml.hpp>
+
 #include "MeshData.h"
-#include "../pugixml/src/pugixml.hpp"
 #include <cstring>
 #include <iostream>
 #include <stdexcept> //For std::runtime_error.

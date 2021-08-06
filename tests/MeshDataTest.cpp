@@ -10,7 +10,7 @@
 #include <iterator>
 #include <string>
 
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 
 namespace Savitar
 {

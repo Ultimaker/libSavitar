@@ -34,3 +34,6 @@ build
 
 # Generated headers
 /src/SavitarExport.h
+
+cmake-build-*/
+tmp/*

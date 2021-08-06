@@ -17,7 +17,7 @@
  */
 
 #include "Scene.h"
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 #include <iostream>
 #include <string>
 using namespace Savitar;

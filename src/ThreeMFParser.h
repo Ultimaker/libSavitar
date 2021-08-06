@@ -21,7 +21,6 @@
 
 #include "SavitarExport.h"
 #include "SceneNode.h"
-#include "../pugixml/src/pugixml.hpp"
 
 #include <string>
 namespace Savitar

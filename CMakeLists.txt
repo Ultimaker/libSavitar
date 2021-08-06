@@ -1,51 +1,16 @@
+cmake_minimum_required(VERSION 3.13)
 project(savitar)
-cmake_minimum_required(VERSION 3.8)
-
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-include(GenerateExportHeader)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
 option(BUILD_TESTS "Building the test-suite" OFF)
 
-if(BUILD_TESTS)
-    message(STATUS "Building with tests...")
-    find_package(GTest REQUIRED)
-    find_package(Threads QUIET)
-endif()
+include(cmake/StandardProjectSettings.cmake)
+include(CMakePackageConfigHelpers)
+include(GenerateExportHeader)
 
-add_subdirectory(pugixml)
-
-if(BUILD_PYTHON)
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
-    # FIXME: Remove the code for CMake <3.12 once we have switched over completely.
-    # FindPython3 is a new module since CMake 3.12. It deprecates FindPythonInterp and FindPythonLibs.
-    if(${CMAKE_VERSION} VERSION_LESS 3.12)
-        # FIXME: Use FindPython3 to find Python, new in CMake 3.12.
-        # However currently on our CI server it finds the wrong Python version and then doesn't find the headers.
-        find_package(PythonInterp 3.4 REQUIRED)
-        find_package(PythonLibs 3.4 REQUIRED)
-
-    else()
-        # Use FindPython3 for CMake >=3.12
-        find_package(Python3 3.4 REQUIRED COMPONENTS Interpreter Development)
-    endif()
-
-    find_package(SIP REQUIRED)
-    if(NOT DEFINED LIB_SUFFIX)
-        set(LIB_SUFFIX "")
-    endif()
-
-    include_directories(python/ src/ ${SIP_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS})
-endif()
-
-set(CMAKE_CXX_STANDARD 17)
-
-if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-endif()
+set(SAVITAR_VERSION 0.1.2)
+set(SAVITAR_SOVERSION 0)
 
 set(savitar_SRCS
     src/Namespace.cpp
@@ -69,38 +34,57 @@ set(savitar_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
 )
 
-set(SAVITAR_VERSION 0.1.2)
-set(SAVITAR_SOVERSION 0)
-
-set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
-
-if(BUILD_STATIC)
-    add_library(Savitar STATIC ${savitar_SRCS})
-else()
+if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
+else()
+    add_library(Savitar STATIC ${savitar_SRCS})
 endif()
 
-set(Savitar_LINK_LIBRARIES pugixml)
-if(CMAKE_USE_PTHREADS_INIT)
-    list(APPEND Savitar_LINK_LIBRARIES pthread)
-endif()
-target_link_libraries(Savitar PUBLIC ${Savitar_LINK_LIBRARIES})
+use_threads(Savitar)
 
-if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
-    set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
+set_project_standards(Savitar)
+set_project_warnings(Savitar)
+
+set(USE_SHIPPED_PUGIXML ON CACHE BOOL "Use the shipped pugixml library")
+if(USE_SHIPPED_PUGIXML)
+    message(STATUS "Using shipped pugixml library")
+    add_subdirectory(pugixml)
+else()
+    find_package(pugixml 1.8 REQUIRED)
 endif()
+
+target_link_libraries(Savitar PRIVATE pugixml::pugixml)
+
+generate_export_header(Savitar EXPORT_FILE_NAME src/SavitarExport.h)
+target_include_directories(Savitar
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src> # Include SavitarExport.h
+        )
 
 if(BUILD_PYTHON)
-    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
-    #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
-    set(SIP_EXTRA_OPTIONS -g -n PyQt5.sip) # -g means always release the GIL before calling C++ methods. -n PyQt5.sip is required to not get the PyCapsule error
-    add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)
-endif()
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-target_include_directories(Savitar PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+    find_package(SIP REQUIRED)
+
+    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
+    set(SIP_EXTRA_OPTIONS -y Savitar.pyi -o -g -n PyQt5.sip)
+
+    add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)
+
+    set_project_standards(python_module_Savitar)
+    set_project_warnings(python_module_Savitar)
+    use_python(python_module_Savitar Interpreter Development)
+
+    target_link_libraries(python_module_Savitar PRIVATE SIP::SIP)
+    target_include_directories(python_module_Savitar
+            PRIVATE
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/python>
+                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src> # Include SavitarExport.h
+            )
+endif()
 
 if(${CMAKE_BUILD_TYPE})
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
@@ -118,13 +102,6 @@ set_target_properties(Savitar PROPERTIES
     VISIBILITY_INLINES_HIDDEN 1
 )
 
-generate_export_header(Savitar
-    EXPORT_FILE_NAME src/SavitarExport.h
-)
-# This is required when building out-of-tree.
-# The compiler won't find the generated header otherwise.
-include_directories(${CMAKE_BINARY_DIR}/src)
-
 install(TARGETS Savitar
     EXPORT Savitar-targets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -133,23 +110,22 @@ install(TARGETS Savitar
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Savitar
 )
 
-install(EXPORT Savitar-targets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-)
+install(EXPORT Savitar-targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
 
 configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
 
-# List of tests. For each test there must be a file tests/${NAME}.cpp.
-set(savitar_TEST
-    ThreeMFParserTest
-    MeshDataTest
-    NamespaceTest
-)
-
 # Compiling the test environment.
 if (BUILD_TESTS)
-    include_directories(${GTEST_INCLUDE_DIR})
+    message(STATUS "Building with tests...")
+    find_package(GTest CONFIG REQUIRED)
+
+    # List of tests. For each test there must be a file tests/${NAME}.cpp.
+    set(savitar_TEST
+            ThreeMFParserTest
+            MeshDataTest
+            NamespaceTest
+            )
 
     enable_testing()
 
@@ -159,7 +135,9 @@ if (BUILD_TESTS)
 
     foreach (test ${savitar_TEST})
         add_executable(${test} tests/main.cpp tests/${test}.cpp)
-        target_link_libraries(${test} Savitar ${GTEST_BOTH_LIBRARIES})
+        set_project_standards(${test})
+        set_project_warnings(${test})
+        target_link_libraries(${test} PRIVATE Savitar GTest::gtest GTest::gmock pugixml::pugixml)
         add_test(${test} ${test})
         add_dependencies(build_all_tests ${test}) #Make sure that this gets built as part of the build_all_tests target.
     endforeach()

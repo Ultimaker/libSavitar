@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 #include <string>
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 
 namespace xml_namespace
 {
