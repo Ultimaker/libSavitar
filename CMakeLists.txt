@@ -44,6 +44,7 @@ use_threads(Savitar)
 
 set_project_standards(Savitar)
 set_project_warnings(Savitar)
+enable_sanitizers(Savitar)
 
 set(USE_SHIPPED_PUGIXML ON CACHE BOOL "Use the shipped pugixml library")
 if(USE_SHIPPED_PUGIXML)
