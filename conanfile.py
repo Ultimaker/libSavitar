@@ -85,6 +85,7 @@ class SavitarConan(ConanFile):
             tc.blocks["generic_system"].values["generator_platform"] = None
             tc.blocks["generic_system"].values["toolset"] = None
 
+        tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
         tc.variables["SIP_MODULE_SITE_PATH"] = "site-packages"
         tc.variables["USE_SHIPPED_PUGIXML"] = False
         tc.variables["Python_VERSION"] = self.options.python_version
