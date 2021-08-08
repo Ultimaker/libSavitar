@@ -54,14 +54,13 @@ else()
     find_package(pugixml 1.8 REQUIRED)
 endif()
 
-target_link_libraries(Savitar PRIVATE pugixml::pugixml)
+target_link_libraries(Savitar PUBLIC pugixml::pugixml)
 
-generate_export_header(Savitar EXPORT_FILE_NAME src/SavitarExport.h)
+generate_export_header(Savitar EXPORT_FILE_NAME ${CMAKE_SOURCE_DIR}/src/SavitarExport.h)
 target_include_directories(Savitar
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
             $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src> # Include SavitarExport.h
         )
 
 if(BUILD_PYTHON)
@@ -78,12 +77,11 @@ if(BUILD_PYTHON)
     set_project_warnings(python_module_Savitar)
     use_python(python_module_Savitar Interpreter Development)
 
-    target_link_libraries(python_module_Savitar PRIVATE SIP::SIP)
+    target_link_libraries(python_module_Savitar PRIVATE SIP::SIP Savitar)
     target_include_directories(python_module_Savitar
             PRIVATE
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
                 $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/python>
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src> # Include SavitarExport.h
             )
 endif()
 

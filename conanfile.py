@@ -57,7 +57,7 @@ class SavitarConan(ConanFile):
     def configure(self):
         self.options["SIP"].shared = self.options.shared
         self.options["SIP"].python_version = self.options.python_version
-        self.options["pugixml"].shared = self.options.shared
+        self.options["pugixml"].header_only = True
         if self.options.shared or self.settings.compiler == "Visual Studio":
             del self.options.fPIC
 
@@ -90,6 +90,11 @@ class SavitarConan(ConanFile):
         tc.variables["USE_SHIPPED_PUGIXML"] = False
         tc.variables["Python_VERSION"] = self.options.python_version
         tc.variables["BUILD_TESTS"] = self.options.tests
+
+        # FIXME: Otherwise it throws: error LNK2001: unresolved external symbol "__declspec(dllimport)
+        tc.variables["BUILD_STATIC"] = not self.options.shared if self.settings.os != "Windows" else True
+        tc.variables["BUILD_SHARED_LIBS"] = self.options.shared if self.settings.os != "Windows" else False
+
         tc.generate()
 
     _cmake = None
