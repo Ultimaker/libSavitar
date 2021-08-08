@@ -31,7 +31,7 @@ set(savitar_HDRS
     src/MeshData.h
     src/Vertex.h
     src/Face.h
-    ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
+    src/SavitarExport.h
 )
 
 if(BUILD_SHARED_LIBS)
