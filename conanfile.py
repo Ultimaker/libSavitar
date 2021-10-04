@@ -58,7 +58,7 @@ class SavitarConan(ConanFile):
         if self.options.build_python:
             self.requires("SIP/[>=4.19.24]@riverbankcomputing/testing")
             self.requires("Python/3.8.10@python/testing")
-        self.requires("pugixml/1.8.1@bincrafters/stable")
+        self.requires("pugixml/1.11")
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
