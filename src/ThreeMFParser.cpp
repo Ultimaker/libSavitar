@@ -115,7 +115,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         }
         if(scene_node->getMeshNode() != nullptr)
         {
-            if(object.child("metadatagroup"))
+            if(!object.child("metadatagroup"))
             {
                 object.append_child("metadatagroup");
             }
