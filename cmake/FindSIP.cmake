@@ -26,52 +26,33 @@ endif()
 
 # FIXME: Use the new FindPython3 module rather than these. New in CMake 3.12.
 # However currently that breaks on our CI server, since the CI server finds the built-in Python3.6 and then doesn't find the headers.
-find_package(PythonInterp 3.5 REQUIRED)
-find_package(PythonLibs 3.5 REQUIRED)
-
-# Define variables that are available in FindPython3, so there's no need to branch off in the later part.
-set(Python3_EXECUTABLE ${PYTHON_EXECUTABLE})
-set(Python3_INCLUDE_DIRS ${PYTHON_INCLUDE_DIRS})
-set(Python3_LIBRARIES ${PYTHON_LIBRARIES})
+find_package(Python 3.5 COMPONENTS Interpreter Development REQUIRED)
 
 execute_process(
-   COMMAND ${Python3_EXECUTABLE} -c
-           "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=False,standard_lib=False))"
-   RESULT_VARIABLE _process_status
-   OUTPUT_VARIABLE _process_output
-   OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-if(${_process_status} EQUAL 0)
-   string(STRIP ${_process_output} Python3_SITELIB)
-else()
-   message(FATAL_ERROR "Failed to get Python3_SITELIB. Error: ${_process_output}")
-endif()
-
-execute_process(
-   COMMAND ${Python3_EXECUTABLE} -c
+   COMMAND ${Python_EXECUTABLE} -c
            "import distutils.sysconfig; print(distutils.sysconfig.get_python_lib(plat_specific=True,standard_lib=False))"
    RESULT_VARIABLE _process_status
    OUTPUT_VARIABLE _process_output
    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 if(${_process_status} EQUAL 0)
-   string(STRIP ${_process_output} Python3_SITEARCH)
+   string(STRIP ${_process_output} Python_SITEARCH)
 else()
-   message(FATAL_ERROR "Failed to get Python3_SITEARCH. Error: ${_process_output}")
+   message(FATAL_ERROR "Failed to get Python_SITEARCH. Error: ${_process_output}")
 endif()
 
-get_filename_component(_python_binary_path ${Python3_EXECUTABLE} DIRECTORY)
+get_filename_component(_python_binary_path ${Python_EXECUTABLE} DIRECTORY)
 
 find_program(SIP_EXECUTABLE sip
-    HINTS ${CMAKE_PREFIX_PATH}/bin ${CMAKE_INSTALL_PATH}/bin ${_python_binary_path} ${Python3_SITELIB}/PyQt5
+    HINTS ${CMAKE_PREFIX_PATH}/bin ${CMAKE_INSTALL_PATH}/bin ${_python_binary_path} ${Python_SITELIB}/PyQt5
 )
 
 find_path(SIP_INCLUDE_DIRS sip.h
-    HINTS ${CMAKE_PREFIX_PATH}/include ${CMAKE_INSTALL_PATH}/include ${Python3_INCLUDE_DIRS} ${Python3_SITELIB}/PyQt5
+    HINTS ${CMAKE_PREFIX_PATH}/include ${CMAKE_INSTALL_PATH}/include ${Python_INCLUDE_DIRS} ${Python_SITELIB}/PyQt5
 )
 
 execute_process(
-    COMMAND ${Python3_EXECUTABLE} -c "import sip; print(sip.SIP_VERSION_STR)"
+    COMMAND ${Python_EXECUTABLE} -c "import sip; print(sip.SIP_VERSION_STR)"
     RESULT_VARIABLE _process_status
     OUTPUT_VARIABLE _process_output
     OUTPUT_STRIP_TRAILING_WHITESPACE
