@@ -17,29 +17,6 @@ endif()
 
 add_subdirectory(pugixml)
 
-if(BUILD_PYTHON)
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-    
-    if(NOT DEFINED Python_VERSION)
-        set(Python_VERSION
-                3.10
-                CACHE STRING "Python Version" FORCE)
-        message(STATUS "Setting Python version to ${Python_VERSION}. Set Python_VERSION if you want to compile against an other version.")
-    endif()
-    if(APPLE)
-        set(Python_FIND_FRAMEWORK NEVER)
-    endif()
-    find_package(Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Interpreter)
-    message(STATUS "Linking and building ${project_name} against Python ${Python_VERSION}")
-
-    find_package(SIP REQUIRED)
-    if(NOT DEFINED LIB_SUFFIX)
-        set(LIB_SUFFIX "")
-    endif()
-
-    include_directories(python/ src/ ${SIP_INCLUDE_DIRS} ${Python3_INCLUDE_DIRS})
-endif()
-
 set(CMAKE_CXX_STANDARD 17)
 
 if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -90,10 +67,35 @@ if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(BUILD_PYTHON)
-    set(SIP_EXTRA_FILES_DEPEND python/Types.sip python/MeshData.sip python/SceneNode.sip python/Scene.sip)
-    #set(SIP_EXTRA_SOURCE_FILES python/Types.cpp)
-    set(SIP_EXTRA_OPTIONS -g -n PyQt5.sip) # -g means always release the GIL before calling C++ methods. -n PyQt5.sip is required to not get the PyCapsule error
-    add_sip_python_module(Savitar python/ThreeMFParser.sip Savitar)
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+    if(NOT DEFINED Python_VERSION)
+        set(Python_VERSION
+                3.10
+                CACHE STRING "Python Version" FORCE)
+        message(STATUS "Setting Python version to ${Python_VERSION}. Set Python_VERSION if you want to compile against an other version.")
+    endif()
+    if(APPLE)
+        set(Python_FIND_FRAMEWORK NEVER)
+    endif()
+    find_package(Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development)
+    message(STATUS "Linking and building ${project_name} against Python ${Python_VERSION}")
+
+    find_package(SIP REQUIRED 6.5.0)
+
+    add_library(pySavitar INTERFACE)
+
+    target_include_directories(pySavitar
+            INTERFACE
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
+            )
+
+    target_compile_features(pySavitar INTERFACE cxx_std_17)
+    target_link_libraries(pySavitar INTERFACE Savitar Python::Python)
+
+    add_sip_module(pySavitar)
+    install_sip_module(pySavitar)
 endif()
 
 target_include_directories(Savitar PUBLIC
