@@ -3,26 +3,19 @@
 
 set(SIP_ARGS --pep484-pyi --no-protected-is-public)
 
-macro(sanitize_list var_list)
-    if(${var_list})
-        list(REMOVE_DUPLICATES ${var_list})
-        list(REMOVE_ITEM ${var_list} "")
-        list(TRANSFORM ${var_list} PREPEND "\"")
-        list(TRANSFORM ${var_list} APPEND "\"")
-        list(JOIN ${var_list} ", " ${var_list})
-        set(${var_list} "${${var_list}}, ")
-    else()
-        set(${var_list} "")
-    endif()
-endmacro()
-
 function(add_sip_module MODULE_TARGET)
+    if(NOT SIP_BUILD_EXECUTABLE)
+        set(SIP_BUILD_EXECUTABLE ${CMAKE_PREFIX_PATH}/Scripts/sip-build)
+    endif()
+
     message(STATUS "SIP: Generating pyproject.toml")
     configure_file(${CMAKE_SOURCE_DIR}/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml)
     configure_file(${CMAKE_SOURCE_DIR}/cmake/CMakeBuilder.py ${CMAKE_CURRENT_BINARY_DIR}/CMakeBuilder.py)
     if(WIN32)
+        set(ext .pyd)
         set(env_path_sep ";")
     else()
+        set(ext .so)
         set(env_path_sep ":")
     endif()
 
@@ -57,15 +50,15 @@ function(add_sip_module MODULE_TARGET)
     # create the target library and link all the files (generated and user specified
     message(STATUS "SIP: Linking the interface target against the shared library")
     set(sip_sources "${sip_c}" "${sip_cpp}")
-    if(usr_src)
-        list(APPEND sip_source "${usr_src}")
+    if(${usr_src})
+        list(APPEND sip_sources "${usr_src}")
     endif()
     add_library("sip_${MODULE_TARGET}" SHARED ${sip_sources})
 
     # Make sure that the library name of the target is the same as the MODULE_TARGET with the appropriate extension
     target_link_libraries("sip_${MODULE_TARGET}" PRIVATE "${MODULE_TARGET}")
     set_target_properties("sip_${MODULE_TARGET}" PROPERTIES PREFIX "")
-    set_target_properties("sip_${MODULE_TARGET}" PROPERTIES SUFFIX ${Python_SOABI})
+    set_target_properties("sip_${MODULE_TARGET}" PROPERTIES SUFFIX ${ext})
     set_target_properties("sip_${MODULE_TARGET}" PROPERTIES OUTPUT_NAME "${MODULE_TARGET}")
 
     # Add the custom command to (re-)generate the files and mark them as dirty. This allows the user to actually work
