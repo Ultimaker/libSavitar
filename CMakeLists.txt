@@ -1,9 +1,11 @@
 project(savitar)
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.18)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
