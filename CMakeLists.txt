@@ -1,11 +1,10 @@
 project(savitar)
 cmake_minimum_required(VERSION 3.18)
+include(cmake/StandardProjectSettings.cmake)
+AssureOutOfSourceBuilds()
 
-include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
@@ -18,12 +17,6 @@ if(BUILD_TESTS)
 endif()
 
 add_subdirectory(pugixml)
-
-set(CMAKE_CXX_STANDARD 17)
-
-if(APPLE AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
-endif()
 
 set(savitar_SRCS
     src/Namespace.cpp
@@ -50,23 +43,23 @@ set(savitar_HDRS
 set(SAVITAR_VERSION 0.1.2)
 set(SAVITAR_SOVERSION 0)
 
-set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR})
-
 if(BUILD_STATIC)
     add_library(Savitar STATIC ${savitar_SRCS})
 else()
     add_library(Savitar SHARED ${savitar_SRCS})
 endif()
 
-set(Savitar_LINK_LIBRARIES pugixml)
-if(CMAKE_USE_PTHREADS_INIT)
-    list(APPEND Savitar_LINK_LIBRARIES pthread)
-endif()
-target_link_libraries(Savitar PUBLIC ${Savitar_LINK_LIBRARIES})
+set_project_standards(Savitar)
+use_threads(Savitar)
+set_rpath(TARGETS
+            Savitar
+          PATHS
+            "$<$<PLATFORM_ID:Linux>:usr/bin>"
+            "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
+            "$<$<PLATFORM_ID:Darwin>:../lib>"
+           RELATIVE)
 
-if(NOT WIN32 OR CMAKE_COMPILER_IS_GNUCXX)
-    set_target_properties(Savitar PROPERTIES COMPILE_FLAGS -fPIC)
-endif()
+target_link_libraries(Savitar PUBLIC pugixml)
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -86,6 +79,15 @@ if(BUILD_PYTHON)
     find_package(SIP REQUIRED 6.5.0)
 
     add_library(pySavitar INTERFACE)
+    set_project_standards(pySavitar)
+    set_rpath(TARGETS
+                pySavitar
+              PATHS
+                "$<$<PLATFORM_ID:Linux>:usr/bin>"
+                "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
+                "$<$<PLATFORM_ID:Darwin>:../lib>"
+               RELATIVE)
+    use_threads(pySavitar)
 
     target_include_directories(pySavitar
             INTERFACE
@@ -107,7 +109,7 @@ target_include_directories(Savitar PUBLIC
 
 if(${CMAKE_BUILD_TYPE})
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        add_definitions(-DSAVITAR_DEBUG)
+        target_compile_definitions(Savitar -DSAVITAR_DEBUG)
     endif()
 endif()
 
