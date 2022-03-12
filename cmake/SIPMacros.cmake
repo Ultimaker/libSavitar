@@ -124,6 +124,12 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
         SET_TARGET_PROPERTIES(${_logical_name} PROPERTIES SUFFIX ".pyd" IMPORT_PREFIX "_")
     ENDIF (WIN32)
 
-    INSTALL(TARGETS ${_logical_name} DESTINATION "${Python3_SITEARCH}/${_parent_module_path}")
+    if(EXISTS /etc/debian_version)
+        set(PYTHON_SITE_INSTALL_PATH lib${LIB_SUFFIX}/python${Python3_VERSION_MAJOR}/dist-packages)
+    else()
+        set(PYTHON_SITE_INSTALL_PATH lib${LIB_SUFFIX}/python${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}/site-packages)
+    endif()
+
+    INSTALL(TARGETS ${_logical_name} DESTINATION "${PYTHON_SITE_INSTALL_PATH}/${_parent_module_path}")
 
 ENDMACRO(ADD_SIP_PYTHON_MODULE)
