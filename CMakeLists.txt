@@ -109,7 +109,11 @@ if(BUILD_PYTHON)
     target_link_libraries(pySavitar INTERFACE Savitar Python::Python)
 
     add_sip_module(pySavitar)
-    install_sip_module(pySavitar)
+    if(Python_SITELIB_LOCAL)
+        install_sip_module(pySavitar ${Python_SITELIB_LOCAL})
+    else()
+        install_sip_module(pySavitar)
+    endif()
 endif()
 
 target_include_directories(Savitar PUBLIC
