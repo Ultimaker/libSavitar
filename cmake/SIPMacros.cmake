@@ -78,7 +78,6 @@ function(add_sip_module MODULE_TARGET)
     add_custom_command(
             TARGET "sip_${MODULE_TARGET}"
             COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=${PYTHONPATH}${env_path_sep}$ENV{PYTHONPATH}${env_path_sep}${CMAKE_CURRENT_BINARY_DIR}" ${SIP_BUILD_EXECUTABLE} ${SIP_ARGS}
-            COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/
             MAIN_DEPENDENCY ${MODULE_SIP}
             DEPENDS ${sip_sources}
