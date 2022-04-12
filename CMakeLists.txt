@@ -14,7 +14,6 @@ option(BUILD_TESTS "Building the test-suite" OFF)
 if(BUILD_TESTS)
     message(STATUS "Building with tests...")
     find_package(GTest REQUIRED)
-    find_package(Threads QUIET)
 endif()
 
 add_subdirectory(pugixml)
