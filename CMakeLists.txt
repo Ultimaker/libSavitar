@@ -40,8 +40,8 @@ set(savitar_HDRS
     ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
 )
 
-set(SAVITAR_VERSION 0.1.2)
-set(SAVITAR_SOVERSION 0)
+set(SAVITAR_VERSION 5.0.0)
+set(SAVITAR_SOVERSION 5)
 
 if(BUILD_STATIC)
     add_library(Savitar STATIC ${savitar_SRCS})
