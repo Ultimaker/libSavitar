@@ -5,7 +5,6 @@ AssureOutOfSourceBuilds()
 
 include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
-generate_export_header(Savitar EXPORT_FILE_NAME src/SavitarExport.h)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_STATIC "Build as a static library" OFF)
@@ -136,6 +135,13 @@ set_target_properties(Savitar PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN 1
 )
+
+generate_export_header(Savitar
+    EXPORT_FILE_NAME src/SavitarExport.h
+)
+# This is required when building out-of-tree.
+# The compiler won't find the generated header otherwise.
+include_directories(${CMAKE_BINARY_DIR}/src)
 
 install(TARGETS Savitar
     EXPORT Savitar-targets
