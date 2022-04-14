@@ -7,7 +7,6 @@ include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
 
 option(BUILD_PYTHON "Build " ON)
-option(BUILD_STATIC "Build as a static library" OFF)
 option(BUILD_TESTS "Building the test-suite" OFF)
 
 if(BUILD_TESTS)
@@ -42,10 +41,10 @@ set(savitar_HDRS
 set(SAVITAR_VERSION 5.0.0)
 set(SAVITAR_SOVERSION 5)
 
-if(BUILD_STATIC)
-    add_library(Savitar STATIC ${savitar_SRCS})
-else()
+if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
+else()
+    add_library(Savitar STATIC ${savitar_SRCS})
 endif()
 
 set_project_standards(Savitar)
