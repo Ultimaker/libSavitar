@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-%Module(name = Savitar, call_super_init = True)
+%Module(name = pySavitar, call_super_init = True)
 
 %Include Types.sip
 %Include MetadataEntry.sip
