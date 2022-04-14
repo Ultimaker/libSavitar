@@ -48,7 +48,7 @@ else()
 endif()
 
 set_project_standards(Savitar)
-use_threads(Savitar)
+
 set_rpath(TARGETS
             Savitar
           PATHS
@@ -95,7 +95,6 @@ if(BUILD_PYTHON)
                 "$<$<PLATFORM_ID:Darwin>:../lib>"
                 "../../"
                RELATIVE)
-    use_threads(pySavitar)
 
     target_include_directories(pySavitar
             INTERFACE
