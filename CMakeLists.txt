@@ -93,7 +93,7 @@ if(BUILD_PYTHON)
                 "$<$<PLATFORM_ID:Linux>:usr/bin>"
                 "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
                 "$<$<PLATFORM_ID:Darwin>:../lib>"
-                "../../"
+                "../../" # In distributions of Cura, the libSavitar dependency is 2 directories up from where pySavitar gets installed.
                RELATIVE)
 
     target_include_directories(pySavitar
