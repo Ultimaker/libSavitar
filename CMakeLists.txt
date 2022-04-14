@@ -102,7 +102,6 @@ if(BUILD_PYTHON)
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
             )
 
-    target_compile_features(pySavitar INTERFACE cxx_std_17)
     target_link_libraries(pySavitar INTERFACE Savitar Python::Python)
 
     add_sip_module(pySavitar)
