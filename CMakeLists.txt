@@ -1,3 +1,6 @@
+# For MSVC flags, will be ignored on non-Windows OS's
+cmake_policy(SET CMP0091 NEW)
+
 project(savitar)
 cmake_minimum_required(VERSION 3.20)
 include(cmake/StandardProjectSettings.cmake)
