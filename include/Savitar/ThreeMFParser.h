@@ -19,7 +19,7 @@
 #ifndef THREEMFPARSER_H
 #define THREEMFPARSER_H
 
-#include "SceneNode.h"
+#include "Savitar/SceneNode.h"
 #include <pugixml.hpp>
 
 #include <string>

@@ -19,8 +19,8 @@
 #ifndef SAVITAR_SCENENODE_H
 #define SAVITAR_SCENENODE_H
 
-#include "MeshData.h"
-#include "MetadataEntry.h"
+#include "Savitar/MeshData.h"
+#include "Savitar/MetadataEntry.h"
 
 #include <string>
 #include <vector>

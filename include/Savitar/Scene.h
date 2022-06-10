@@ -19,7 +19,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "SceneNode.h"
+#include "Savitar/SceneNode.h"
 
 #include <vector> // For std::vector
 #include <map> // For std::map
