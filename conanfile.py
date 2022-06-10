@@ -106,8 +106,6 @@ class SavitarConan(ConanFile):
         self.cpp.package.components["libsavitar"].bindirs = ["bin"]
         self.cpp.package.components["libsavitar"].includedirs = ["include"]
         self.cpp.package.components["libsavitar"].requires = ["pugixml::pugixml"]
-        if self.settings.os in ["Linux", "FreeBSD", "Macos"]:
-            self.cpp.package.components["libsavitar"].system_libs = ["pthread"]
 
         # pyarcus component
         if self.options.build_python:
@@ -119,8 +117,6 @@ class SavitarConan(ConanFile):
             py_version = tools.Version(self.options.python_version)
             py_build_type = "d" if self.settings.build_type == "Debug" else ""
             self.cpp.package.components["pysavitar"].system_libs = [f"Python{py_version.major}.{py_version.minor}{py_build_type}"]
-            if self.settings.os in ["Linux", "FreeBSD", "Macos"]:
-                self.cpp.package.components["pysavitar"].system_libs.append("pthread")
 
     def build(self):
         cmake = CMake(self)
