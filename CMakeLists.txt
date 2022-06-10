@@ -45,6 +45,7 @@ if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
     if(WIN32)
         set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+        set_target_properties(Savitar PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
     endif()
 else()
     add_library(Savitar STATIC ${savitar_SRCS})
@@ -52,16 +53,21 @@ endif()
 
 set_project_standards(Savitar)
 
-set_rpath(TARGETS
-            Savitar
-          PATHS
-            "$<$<PLATFORM_ID:Linux>:usr/bin>"
-            "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
-            "$<$<PLATFORM_ID:Darwin>:../lib>"
-            "$<$<PLATFORM_ID:Darwin>:../Resources/lib>"
-           RELATIVE)
-
 target_link_libraries(Savitar PUBLIC pugixml::pugixml)
+
+target_include_directories(Savitar
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        )
+
+if(${CMAKE_BUILD_TYPE})
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+        target_compile_definitions(Savitar -DSAVITAR_DEBUG)
+    endif()
+endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -90,14 +96,6 @@ if(BUILD_PYTHON)
 
     add_library(pySavitar INTERFACE)
     set_project_standards(pySavitar)
-    set_rpath(TARGETS
-                pySavitar
-              PATHS
-                "$<$<PLATFORM_ID:Linux>:usr/bin>"
-                "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
-                "$<$<PLATFORM_ID:Darwin>:../lib>"
-                "../../" # In distributions of Cura, the libSavitar dependency is 2 directories up from where pySavitar gets installed.
-               RELATIVE)
 
     target_include_directories(pySavitar
             INTERFACE
@@ -105,28 +103,14 @@ if(BUILD_PYTHON)
             $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
             )
 
-    target_link_libraries(pySavitar INTERFACE Savitar Python::Python)
+    target_link_libraries(pySavitar INTERFACE Savitar pugixml::pugixml Python::Python)
 
     add_sip_module(pySavitar)
-    if(Python_SITELIB_LOCAL)
+    if (DEFINED Python_SITELIB_LOCAL)
         install_sip_module(pySavitar ${Python_SITELIB_LOCAL})
     else()
         install_sip_module(pySavitar)
-    endif()
-endif()
-
-target_include_directories(Savitar
-        PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-        PRIVATE
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-)
-
-if(${CMAKE_BUILD_TYPE})
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        target_compile_definitions(Savitar -DSAVITAR_DEBUG)
-    endif()
+    endif ()
 endif()
 
 set_target_properties(Savitar PROPERTIES
@@ -138,7 +122,6 @@ set_target_properties(Savitar PROPERTIES
     CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN 1
 )
-
 
 install(TARGETS Savitar
     EXPORT Savitar-targets
@@ -154,6 +137,12 @@ install(EXPORT Savitar-targets
 
 configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
 write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
+
+install(FILES
+        ${CMAKE_BINARY_DIR}/SavitarConfig.cmake
+        ${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
+        )
 
 # List of tests. For each test there must be a file tests/${NAME}.cpp.
 set(savitar_TEST
@@ -179,9 +168,3 @@ if (BUILD_TESTS)
         add_dependencies(build_all_tests ${test}) #Make sure that this gets built as part of the build_all_tests target.
     endforeach()
 endif()
-
-install(FILES
-    ${CMAKE_BINARY_DIR}/SavitarConfig.cmake
-    ${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-)

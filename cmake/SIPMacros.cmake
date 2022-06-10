@@ -46,13 +46,13 @@ function(add_sip_module MODULE_TARGET)
     # Add the user specified source files
     message(STATUS "SIP: Collecting the user specified source files")
     get_target_property(usr_src ${MODULE_TARGET} SOURCES)
+    if (NOT usr_src)
+        set(usr_src )
+    endif ()
 
     # create the target library and link all the files (generated and user specified
-    message(STATUS "SIP: Linking the interface target against the shared library")
-    set(sip_sources "${sip_c}" "${sip_cpp}")
-    if(${usr_src})
-        list(APPEND sip_sources "${usr_src}")
-    endif()
+    message(STATUS "SIP: Linking the interface target against the library")
+    set(sip_sources "${sip_c}" "${sip_cpp}" "${usr_src}" ${sip_hdr})
 
     if (BUILD_SHARED_LIBS)
         add_library("sip_${MODULE_TARGET}" SHARED ${sip_sources})
@@ -80,9 +80,13 @@ function(add_sip_module MODULE_TARGET)
 
     # Add the custom command to (re-)generate the files and mark them as dirty. This allows the user to actually work
     # on the sip definition files without having to reconfigure the complete project.
+    if (NOT DEFINED PYTHONPATH)
+        set(PYTHONPATH "")
+    endif ()
     add_custom_command(
             TARGET "sip_${MODULE_TARGET}"
             COMMAND ${CMAKE_COMMAND} -E env "PYTHONPATH=${PYTHONPATH}${env_path_sep}$ENV{PYTHONPATH}${env_path_sep}${CMAKE_CURRENT_BINARY_DIR}" ${SIP_BUILD_EXECUTABLE} ${SIP_ARGS}
+            COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/
             MAIN_DEPENDENCY ${MODULE_SIP}
             DEPENDS ${sip_sources}
@@ -96,7 +100,7 @@ endfunction()
 
 function(install_sip_module MODULE_TARGET)
     if(DEFINED ARGV1)
-        set(_install_path ${ARGV1})
+        set(_install_path ${CMAKE_INSTALL_PREFIX}/${ARGV1})
     else()
         if(DEFINED Python_SITEARCH)
             set(_install_path ${Python_SITEARCH})
