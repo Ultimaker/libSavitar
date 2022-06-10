@@ -19,7 +19,7 @@
 class MeshData
 {
     %TypeHeaderCode
-    #include "MeshData.h"
+    #include "Savitar/MeshData.h"
     %End
 public:
     MeshData();

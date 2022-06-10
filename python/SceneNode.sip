@@ -19,7 +19,7 @@
 class SceneNode
 {
     %TypeHeaderCode
-    #include "SceneNode.h"
+    #include "Savitar/SceneNode.h"
     %End
 public:
     SceneNode();

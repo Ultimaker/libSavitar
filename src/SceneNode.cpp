@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SceneNode.h"
-#include "Namespace.h"
-#include "../pugixml/src/pugixml.hpp"
+#include "Savitar/SceneNode.h"
+#include "Savitar/Namespace.h"
+#include <pugixml.hpp>
 #include <iostream>
 using namespace Savitar;
 

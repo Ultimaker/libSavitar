@@ -1,9 +1,9 @@
 //Copyright (c) 2019 Ultimaker B.V.
 //libSavitar is released under the terms of the AGPLv3 or higher.
 
-#include "../src/Scene.h"
-#include "../src/SceneNode.h"
-#include "../src/ThreeMFParser.h"
+#include "Savitar/Scene.h"
+#include "Savitar/SceneNode.h"
+#include "Savitar/ThreeMFParser.h"
 
 #include <array>
 #include <fstream>

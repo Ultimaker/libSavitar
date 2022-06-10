@@ -1,9 +1,9 @@
 //Copyright (c) 2020 Ultimaker B.V.
 //libSavitar is released under the terms of the AGPLv3 or higher.
 
-#include "Namespace.h"
+#include "Savitar/Namespace.h"
 
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 
 namespace xml_namespace
 {

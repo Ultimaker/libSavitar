@@ -16,7 +16,7 @@ if(BUILD_TESTS)
     find_package(GTest REQUIRED)
 endif()
 
-add_subdirectory(pugixml)
+find_package(pugixml REQUIRED)
 
 set(savitar_SRCS
     src/Namespace.cpp
@@ -60,7 +60,7 @@ set_rpath(TARGETS
             "$<$<PLATFORM_ID:Darwin>:../Resources/lib>"
            RELATIVE)
 
-target_link_libraries(Savitar PUBLIC pugixml)
+target_link_libraries(Savitar PUBLIC pugixml::pugixml)
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -114,9 +114,12 @@ if(BUILD_PYTHON)
     endif()
 endif()
 
-target_include_directories(Savitar PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+target_include_directories(Savitar
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        PRIVATE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
 if(${CMAKE_BUILD_TYPE})
@@ -147,7 +150,7 @@ install(TARGETS Savitar
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Savitar
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(EXPORT Savitar-targets
