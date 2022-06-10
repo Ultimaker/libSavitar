@@ -128,14 +128,14 @@ jobs:
         run: conan export . savitar/${{ needs.get-semver.outputs.semver_full }}@${{ needs.get-semver.outputs.user }}/${{ needs.get-semver.outputs.channel }}
 
       - name: Create the latest alias
-        if: ${{ github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'CURA-9365_fix_building_main' ) }}
+        if: ${{ github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'CURA-9365_fix_building_cura_main' ) }}
         run: conan alias savitar/latest@${{ needs.get-semver.outputs.user }}/${{ needs.get-semver.outputs.channel }} savitar/${{ needs.get-semver.outputs.semver_full }}@${{ needs.get-semver.outputs.user }}/${{ needs.get-semver.outputs.channel }}
 
       - name: Upload the Package(s)
         run: conan upload "*" -r ultimaker --all -c
 
   conan-package-create:
-    if: ${{ github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'CURA-9365_fix_building_main') }}
+    if: ${{ github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'CURA-9365_fix_building_cura_main') }}
     runs-on: ${{ matrix.os }}
 
     needs: [ get-semver, conan-package-export ]
