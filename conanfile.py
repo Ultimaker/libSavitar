@@ -100,11 +100,11 @@ class SavitarConan(ConanFile):
         self.cpp.build.components["libsavitar"].libs = ["Savitar"]
         self.cpp.build.components["libsavitar"].libdirs = ["."]
         self.cpp.build.components["libsavitar"].bindirs = ["."]
-        self.cpp.build.components["libsavitar"].includedirs = ["."]
 
         self.cpp.package.components["libsavitar"].libs = ["Savitar"]
         self.cpp.package.components["libsavitar"].libdirs = ["lib"]
         self.cpp.package.components["libsavitar"].bindirs = ["bin"]
+        self.cpp.package.components["libsavitar"].includedirs = ["include"]
         self.cpp.package.components["libsavitar"].requires = ["pugixml::pugixml"]
         if self.settings.os in ["Linux", "FreeBSD", "Macos"]:
             self.cpp.package.components["libsavitar"].system_libs = ["pthread"]
