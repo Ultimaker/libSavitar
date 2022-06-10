@@ -18,11 +18,10 @@
 
 #ifndef VERTEX_H
 #define VERTEX_H
-#include "SavitarExport.h"
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT Vertex
+    class Vertex
     {
     public:
         /**

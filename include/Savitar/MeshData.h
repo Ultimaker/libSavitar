@@ -18,7 +18,7 @@
 
 #ifndef MESHDATA_H
 #define MESHDATA_H
-#include "SavitarExport.h"
+
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -35,7 +35,7 @@ namespace pugi
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT MeshData
+    class MeshData
     {
     public:
         /**

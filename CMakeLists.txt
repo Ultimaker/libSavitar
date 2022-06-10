@@ -6,7 +6,6 @@ cmake_minimum_required(VERSION 3.20)
 include(cmake/StandardProjectSettings.cmake)
 
 include(CMakePackageConfigHelpers)
-include(GenerateExportHeader)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_TESTS "Building the test-suite" OFF)
@@ -29,15 +28,14 @@ set(savitar_SRCS
 )
 
 set(savitar_HDRS
-    src/Namespace.h
-    src/ThreeMFParser.h
-    src/Types.h
-    src/SceneNode.h
-    src/Scene.h
-    src/MeshData.h
-    src/Vertex.h
-    src/Face.h
-    ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
+    include/Savitar/Namespace.h
+    include/Savitar/ThreeMFParser.h
+    include/Savitar/Types.h
+    include/Savitar/SceneNode.h
+    include/Savitar/Scene.h
+    include/Savitar/MeshData.h
+    include/Savitar/Vertex.h
+    include/Savitar/Face.h
 )
 
 set(SAVITAR_VERSION 5.0.0)
@@ -45,6 +43,9 @@ set(SAVITAR_SOVERSION 5)
 
 if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
+    if(WIN32)
+        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    endif()
 else()
     add_library(Savitar STATIC ${savitar_SRCS})
 endif()
@@ -138,12 +139,6 @@ set_target_properties(Savitar PROPERTIES
     VISIBILITY_INLINES_HIDDEN 1
 )
 
-generate_export_header(Savitar
-    EXPORT_FILE_NAME src/SavitarExport.h
-)
-# This is required when building out-of-tree.
-# The compiler won't find the generated header otherwise.
-include_directories(${CMAKE_BINARY_DIR}/src)
 
 install(TARGETS Savitar
     EXPORT Savitar-targets

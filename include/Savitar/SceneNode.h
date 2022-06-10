@@ -19,7 +19,6 @@
 #ifndef SAVITAR_SCENENODE_H
 #define SAVITAR_SCENENODE_H
 
-#include "SavitarExport.h"
 #include "MeshData.h"
 #include "MetadataEntry.h"
 
@@ -34,7 +33,7 @@ namespace pugi
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT SceneNode
+    class SceneNode
     {
     public:
         SceneNode();
