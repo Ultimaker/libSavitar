@@ -52,6 +52,12 @@ else()
 endif()
 
 set_project_standards(Savitar)
+set_rpath(TARGETS
+            Savitar
+        PATHS
+            "."
+            "../lib"
+        RELATIVE)
 
 target_link_libraries(Savitar PUBLIC pugixml::pugixml)
 
@@ -96,6 +102,13 @@ if(BUILD_PYTHON)
 
     add_library(pySavitar INTERFACE)
     set_project_standards(pySavitar)
+    set_rpath(TARGETS
+                pySavitar
+            PATHS
+                "."
+                "../lib"
+                "../.."
+            RELATIVE)
 
     target_include_directories(pySavitar
             INTERFACE
