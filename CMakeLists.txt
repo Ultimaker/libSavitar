@@ -5,8 +5,6 @@ project(savitar)
 cmake_minimum_required(VERSION 3.20)
 include(cmake/StandardProjectSettings.cmake)
 
-include(CMakePackageConfigHelpers)
-
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_TESTS "Building the test-suite" OFF)
 
@@ -27,20 +25,6 @@ set(savitar_SRCS
     src/Face.cpp
 )
 
-set(savitar_HDRS
-    include/Savitar/Namespace.h
-    include/Savitar/ThreeMFParser.h
-    include/Savitar/Types.h
-    include/Savitar/SceneNode.h
-    include/Savitar/Scene.h
-    include/Savitar/MeshData.h
-    include/Savitar/Vertex.h
-    include/Savitar/Face.h
-)
-
-set(SAVITAR_VERSION 5.0.0)
-set(SAVITAR_SOVERSION 5)
-
 if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
     if(WIN32)
@@ -50,14 +34,7 @@ if(BUILD_SHARED_LIBS)
 else()
     add_library(Savitar STATIC ${savitar_SRCS})
 endif()
-
-set_project_standards(Savitar)
-set_rpath(TARGETS
-            Savitar
-        PATHS
-            "."
-            "../lib"
-        RELATIVE)
+set_project_warnings(Savitar)
 
 target_link_libraries(Savitar PUBLIC pugixml::pugixml)
 
@@ -69,9 +46,9 @@ target_include_directories(Savitar
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         )
 
-if(${CMAKE_BUILD_TYPE})
+if(CMAKE_BUILD_TYPE)
     if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        target_compile_definitions(Savitar -DSAVITAR_DEBUG)
+        target_compile_definitions(Savitar PUBLIC -DSAVITAR_DEBUG)
     endif()
 endif()
 
@@ -101,14 +78,16 @@ if(BUILD_PYTHON)
     find_package(SIP REQUIRED 6.5.0)
 
     add_library(pySavitar INTERFACE)
-    set_project_standards(pySavitar)
-    set_rpath(TARGETS
-                pySavitar
-            PATHS
-                "."
-                "../lib"
-                "../.."
-            RELATIVE)
+#    set_project_warnings(pySavitar)
+
+#    set_project_standards(pySavitar)
+#    set_rpath(TARGETS
+#                pySavitar
+#            PATHS
+#                "."
+#                "../lib"
+#                "../.."
+#            RELATIVE)
 
     target_include_directories(pySavitar
             INTERFACE
@@ -125,37 +104,6 @@ if(BUILD_PYTHON)
         install_sip_module(pySavitar)
     endif ()
 endif()
-
-set_target_properties(Savitar PROPERTIES
-    FRAMEWORK FALSE
-    VERSION ${SAVITAR_VERSION}
-    SOVERSION ${SAVITAR_SOVERSION}
-    PUBLIC_HEADER "${savitar_HDRS}"
-    DEFINE_SYMBOL MAKE_SAVITAR_LIB
-    CXX_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN 1
-)
-
-install(TARGETS Savitar
-    EXPORT Savitar-targets
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(EXPORT Savitar-targets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-)
-
-configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
-write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
-
-install(FILES
-        ${CMAKE_BINARY_DIR}/SavitarConfig.cmake
-        ${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-        )
 
 # List of tests. For each test there must be a file tests/${NAME}.cpp.
 set(savitar_TEST
