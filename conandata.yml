@@ -1,0 +1,5 @@
+requirements:
+    "5.1.0-beta":
+    - "pugixml/1.12.1"
+    "5.1.0-cura_9365":
+    - "pugixml/1.12.1"
