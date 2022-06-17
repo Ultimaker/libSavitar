@@ -43,10 +43,6 @@ class SavitarConan(ConanFile):
         version = tools.Version(self.version)
         return f"{version.major}.{version.minor}.{version.patch}-{version.prerelease}"
 
-    def build_requirements(self):
-        self.tool_requires("ninja/[>=1.10.0]")
-        self.tool_requires("cmake/[>=3.23.0]")
-
     def requirements(self):
         for req in self.conan_data["requirements"][self._conan_data_version]:
             self.requires(req)
@@ -86,7 +82,7 @@ class SavitarConan(ConanFile):
         if self.options.build_python:
             tc.variables["Python_VERSION"] = self.options.python_version
             tc.variables["Python_USE_STATIC_LIBS"] = not self.options.shared
-        if self.options.shared and self.settings.os == "Windows":
+            if self.options.shared and self.settings.os == "Windows":
                 tc.variables["Python_SITELIB_LOCAL"] = self.cpp.build.bindirs[0]
             else:
                 tc.variables["Python_SITELIB_LOCAL"] = self.cpp.build.libdirs[0]
