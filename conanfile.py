@@ -25,13 +25,11 @@ class SavitarConan(ConanFile):
 
     options = {
         "build_python": [True, False],
-        "python_version": "ANY",
         "shared": [True, False],
         "fPIC": [True, False]
     }
     default_options = {
         "build_python": True,
-        "python_version": "system",
         "shared": True,
         "fPIC": True,
     }
@@ -49,15 +47,9 @@ class SavitarConan(ConanFile):
             for req in self._um_data(self.version)["requirements_pysavitar"]:
                 self.requires(req)
 
-    def system_requirements(self):
-        pass  # Add Python here ???
-
     def config_options(self):
         if self.options.shared and self.settings.compiler == "Visual Studio":
             del self.options.fPIC
-        if self.options.python_version == "system":
-            from platform import python_version
-            self.options.python_version = python_version()
 
     def configure(self):
         self.options["*"].shared = self.options.shared
@@ -75,9 +67,6 @@ class SavitarConan(ConanFile):
         if self.settings.compiler == "Visual Studio":
             tc.blocks["generic_system"].values["generator_platform"] = None
             tc.blocks["generic_system"].values["toolset"] = None
-
-        if self.settings.os == "Macos":
-            tc.blocks["rpath"].skip_rpath = True
 
         tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
         tc.variables["BUILD_PYTHON"] = self.options.build_python
