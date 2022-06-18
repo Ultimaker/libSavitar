@@ -54,7 +54,7 @@ endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-    find_package(cpython ${Python_VERSION} QUIET COMPONENTS Interpreter Development)
+    find_package(cpython ${Python_VERSION} REQUIRED)
 
     find_package(SIP REQUIRED 6.5.0)
 
