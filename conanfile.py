@@ -62,7 +62,7 @@ class SavitarConan(ConanFile):
         cmake = CMakeDeps(self)
         cmake.generate()
 
-        tc = CMakeToolchain(self, generator = "Ninja")
+        tc = CMakeToolchain(self)
 
         if self.settings.compiler == "Visual Studio":
             tc.blocks["generic_system"].values["generator_platform"] = None
