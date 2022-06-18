@@ -54,48 +54,19 @@ endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
-    if(NOT DEFINED Python_VERSION)
-        set(Python_VERSION
-                3.10
-                CACHE STRING "Python Version" FORCE)
-        message(STATUS "Setting Python version to ${Python_VERSION}. Set Python_VERSION if you want to compile against an other version.")
-    endif()
-    if(APPLE)
-        set(Python_FIND_FRAMEWORK NEVER)
-    endif()
     find_package(cpython ${Python_VERSION} QUIET COMPONENTS Interpreter Development)
-    if(NOT TARGET cpython::cpython)
-        find_package(Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development)
-    else()
-        add_library(Python::Python ALIAS cpython::cpython)
-        set(Python_SITEARCH "${CMAKE_INSTALL_PREFIX}/lib/python${Python_VERSION}/site-packages")
-        set(Python_EXECUTABLE ${cpython_PACKAGE_FOLDER_RELEASE}/bin/python3)
-        set(ENV{PYTHONPATH} ${Python_SITEARCH})
-    endif()
-    message(STATUS "Linking and building ${project_name} against Python ${Python_VERSION}")
 
     find_package(SIP REQUIRED 6.5.0)
 
     add_library(pySavitar INTERFACE)
-#    set_project_warnings(pySavitar)
-
-#    set_project_standards(pySavitar)
-#    set_rpath(TARGETS
-#                pySavitar
-#            PATHS
-#                "."
-#                "../lib"
-#                "../.."
-#            RELATIVE)
 
     target_include_directories(pySavitar
             INTERFACE
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
             )
 
-    target_link_libraries(pySavitar INTERFACE Savitar pugixml::pugixml Python::Python)
+    target_link_libraries(pySavitar INTERFACE Savitar pugixml::pugixml cpython::cpython)
 
     add_sip_module(pySavitar)
     if (DEFINED Python_SITELIB_LOCAL)

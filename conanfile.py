@@ -45,6 +45,9 @@ class SavitarConan(ConanFile):
     def requirements(self):
         for req in self._um_data(self.version)["requirements"]:
             self.requires(req)
+        if self.options.build_python:
+            for req in self._um_data(self.version)["requirements_pysavitar"]:
+                self.requires(req)
 
     def system_requirements(self):
         pass  # Add Python here ???
@@ -79,8 +82,14 @@ class SavitarConan(ConanFile):
         tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
         tc.variables["BUILD_PYTHON"] = self.options.build_python
         if self.options.build_python:
-            tc.variables["Python_VERSION"] = self.options.python_version
-            tc.variables["Python_USE_STATIC_LIBS"] = not self.options.shared
+            tc.variables["Python_EXECUTABLE"] = self.deps_user_info["cpython"].python
+            tc.variables["Python_USE_STATIC_LIBS"] = not self.options["cpython"].shared
+            tc.variables["Python_ROOT_DIR"] = self.deps_cpp_info["cpython"].rootpath
+            tc.variables["Python_FIND_FRAMEWORK"] = "NEVER"
+            tc.variables["Python_FIND_REGISTRY"] = "NEVER"
+            tc.variables["Python_FIND_IMPLEMENTATIONS"] = "CPython"
+            tc.variables["Python_FIND_STRATEGY"] = "LOCATION"
+
             if self.options.shared and self.settings.os == "Windows":
                 tc.variables["Python_SITELIB_LOCAL"] = self.cpp.build.bindirs[0]
             else:
@@ -120,11 +129,7 @@ class SavitarConan(ConanFile):
             self.cpp.build.components["pysavitar"].libdirs = [".", os.path.join("pySavitar", "pySavitar")]
 
             self.cpp.package.components["pysavitar"].libdirs = ["site-packages"]
-            self.cpp.package.components["pysavitar"].requires = ["libsavitar"]
-
-            py_version = tools.Version(self.options.python_version)
-            py_build_type = "d" if self.settings.build_type == "Debug" else ""
-            self.cpp.package.components["pysavitar"].system_libs = [f"Python{py_version.major}.{py_version.minor}{py_build_type}"]
+            self.cpp.package.components["pysavitar"].requires = ["libsavitar", "cpython::cpython"]
 
     def build(self):
         cmake = CMake(self)
