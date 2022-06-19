@@ -9,10 +9,10 @@ requirements:
         - "pugixml/1.12.1"
 requirements_pysavitar:
     "None":
-        - "cpython/3.10.4@ultimaker/testing"
+        - "cpython/3.10.4"
     "5.1.0":
-        - "cpython/3.10.4@ultimaker/testing"
+        - "cpython/3.10.4"
     "5.1.0-beta":
-        - "cpython/3.10.4@ultimaker/testing"
+        - "cpython/3.10.4"
     "5.1.0-cura_9365":
-        - "cpython/3.10.4@ultimaker/testing"
+        - "cpython/3.10.4"
