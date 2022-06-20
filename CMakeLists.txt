@@ -54,9 +54,8 @@ endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+    include(cmake/SIPMacros.cmake)
     find_package(cpython ${Python_VERSION} REQUIRED)
-
-    find_package(SIP REQUIRED 6.5.0)
 
     add_library(pySavitar INTERFACE)
 

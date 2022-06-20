@@ -20,7 +20,7 @@ class SavitarConan(ConanFile):
     revision_mode = "scm"
     exports = "LICENSE*"
 
-    python_requires = "umbase/0.1@ultimaker/testing"
+    python_requires = "umbase/0.1@ultimaker/testing", "sipbuildtool/0.1@ultimaker/testing"
     python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
@@ -71,6 +71,10 @@ class SavitarConan(ConanFile):
         tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
         tc.variables["BUILD_PYTHON"] = self.options.build_python
         if self.options.build_python:
+            sip = self.python_requires["sipbuildtool"].module.SipBuildTool(self)
+            sip.configure()
+            sip.generate("pySavitar")
+
             tc.variables["Python_EXECUTABLE"] = self.deps_user_info["cpython"].python
             tc.variables["Python_USE_STATIC_LIBS"] = not self.options["cpython"].shared
             tc.variables["Python_ROOT_DIR"] = self.deps_cpp_info["cpython"].rootpath
