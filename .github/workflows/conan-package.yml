@@ -18,36 +18,36 @@ name: conan-package
 on:
     push:
         paths:
-        - 'src/**'
-        - 'include/**'
-        - 'python/**'
-        - 'test_package/**'
-        - 'tests/**'
-        - 'cmake/**'
-        - 'conanfile.py'
-        - 'CMakeLists.txt'
-        - '.github/workflows/conan-package.yml'
-        - 'GitVersion.yml'
+            - 'src/**'
+            - 'include/**'
+            - 'python/**'
+            - 'test_package/**'
+            - 'tests/**'
+            - 'cmake/**'
+            - 'conanfile.py'
+            - 'CMakeLists.txt'
+            - '.github/workflows/conan-package.yml'
+            - 'GitVersion.yml'
         branches:
-        - main
-        - 'CURA-*'
+            - main
+            - 'CURA-*'
         tags:
-        - '![1-4].[0-9]+*'
+            - '[1-9]+.[0-9]+.[0-9]+'
 
     pull_request:
         paths:
-        - 'src/**'
-        - 'include/**'
-        - 'python/**'
-        - 'test_package/**'
-        - 'tests/**'
-        - 'cmake/**'
-        - 'conanfile.py'
-        - 'CMakeLists.txt'
-        - '.github/workflows/conan-package.yml'
-        - 'GitVersion.yml'
+            - 'src/**'
+            - 'include/**'
+            - 'python/**'
+            - 'test_package/**'
+            - 'tests/**'
+            - 'cmake/**'
+            - 'conanfile.py'
+            - 'CMakeLists.txt'
+            - '.github/workflows/conan-package.yml'
+            - 'GitVersion.yml'
         branches:
-        - main
+            - main
 
 jobs:
     conan-recipe-version:
