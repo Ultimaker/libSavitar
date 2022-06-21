@@ -79,6 +79,7 @@ jobs:
             python_version: '3.10.4'
             conan_config_branch: 'CURA-9177_Fix_CI_CD'
             conan_logging_level: 'info'
+            conan_clean_local_cache: 'true'
         secrets: inherit
 
     conan-package-create-windows:
@@ -93,6 +94,7 @@ jobs:
             python_version: '3.10.4'
             conan_config_branch: 'CURA-9177_Fix_CI_CD'
             conan_logging_level: 'info'
+            conan_clean_local_cache: 'true'
         secrets: inherit
 
     conan-package-create-linux:
@@ -107,6 +109,7 @@ jobs:
             python_version: '3.10.4'
             conan_config_branch: 'CURA-9177_Fix_CI_CD'
             conan_logging_level: 'info'
+            conan_clean_local_cache: 'true'
         secrets: inherit
 
     notify:
@@ -116,7 +119,7 @@ jobs:
 
         uses: ultimaker/cura/.github/workflows/notify.yml@CURA-9365_fix_building_cura_main
         with:
-            success: ${{ contains(join(needs.*.result, ','), 'success') }}
+            success: "${{ contains(join(needs.*.result, ','), 'success') }}"
             success_title: "New binaries created for ${{ github.repository }}"
             success_body: "New binaries created for ${{ github.repository }}"
             failure_title: "Failed to create binaries ${{ github.repository }}"
