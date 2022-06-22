@@ -1,4 +1,3 @@
-
 "None":
     requirements:
         - "pugixml/1.12.1"
