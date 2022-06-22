@@ -4,7 +4,7 @@
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.1"
+        - "mpdecimal/2.5.0"
         - "tcl/8.6.10"
         - "tk/8.6.10"
 "5.1.0":
@@ -12,7 +12,7 @@
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.1"
+        - "mpdecimal/2.5.0"
         - "tcl/8.6.10"
         - "tk/8.6.10"
 "5.1.0-beta":
@@ -20,7 +20,7 @@
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.1"
+        - "mpdecimal/2.5.0"
         - "tcl/8.6.10"
         - "tk/8.6.10"
 "5.1.0-alpha":
@@ -28,6 +28,6 @@
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.1"
+        - "mpdecimal/2.5.0"
         - "tcl/8.6.10"
         - "tk/8.6.10"
