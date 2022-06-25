@@ -3,30 +3,18 @@
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.0"
-        - "tcl/8.6.10"
-        - "tk/8.6.10"
 "5.1.0":
     requirements:
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.0"
-        - "tcl/8.6.10"
-        - "tk/8.6.10"
 "5.1.0-beta":
     requirements:
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.0"
-        - "tcl/8.6.10"
-        - "tk/8.6.10"
 "5.1.0-alpha":
     requirements:
         - "pugixml/1.12.1"
     requirements_pysavitar:
         - "cpython/3.10.4"
-        - "mpdecimal/2.5.0"
-        - "tcl/8.6.10"
-        - "tk/8.6.10"

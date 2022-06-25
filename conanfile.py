@@ -52,12 +52,7 @@ class SavitarConan(ConanFile):
             del self.options.fPIC
 
     def configure(self):
-        self.options["*"].shared = self.options.shared
-        if self.settings.os == "Windows":
-            # Needed to compile CPython on Windows with our configuration voor Visual Studio
-            self.options["mpdecimal"].cxx = True
-            self.options["mpdecimal"].shared = False
-            self.options["libffi"].shared = False
+        self.options["pugixml"].shared = self.options.shared
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
@@ -77,7 +72,7 @@ class SavitarConan(ConanFile):
         tc.variables["BUILD_PYTHON"] = self.options.build_python
         if self.options.build_python:
             sip = self.python_requires["sipbuildtool"].module.SipBuildTool(self)
-            sip.configure()
+            sip.configure(python_interpreter = self.deps_user_info["cpython"].python)
             sip.generate("pySavitar")
 
             tc.variables["Python_EXECUTABLE"] = self.deps_user_info["cpython"].python
