@@ -53,6 +53,7 @@ class SavitarConan(ConanFile):
 
     def configure(self):
         self.options["pugixml"].shared = self.options.shared
+        self.options["cpython"].shared = True
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
