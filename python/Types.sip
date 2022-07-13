@@ -173,7 +173,7 @@
     %TypeHeaderCode
     #include <vector>
     #include <cstdint>
-    #include "Types.h"
+    #include "Savitar/Types.h"
     %End
 
     %ConvertFromTypeCode // From C++ to python

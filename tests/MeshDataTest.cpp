@@ -1,7 +1,7 @@
 //Copyright (c) 2019 Ultimaker B.V.
 //libSavitar is released under the terms of the AGPLv3 or higher.
 
-#include "../src/MeshData.h"
+#include "Savitar/MeshData.h"
 
 #include <array>
 #include <fstream>
@@ -10,7 +10,7 @@
 #include <iterator>
 #include <string>
 
-#include "../pugixml/src/pugixml.hpp"
+#include <pugixml.hpp>
 
 namespace Savitar
 {

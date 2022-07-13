@@ -18,8 +18,8 @@
 
 #ifndef SCENE_H
 #define SCENE_H
-#include "SavitarExport.h"
-#include "SceneNode.h"
+
+#include "Savitar/SceneNode.h"
 
 #include <vector> // For std::vector
 #include <map> // For std::map
@@ -33,7 +33,7 @@ namespace pugi
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT Scene
+    class Scene
     {
     public:
         /**

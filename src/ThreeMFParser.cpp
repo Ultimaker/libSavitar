@@ -16,9 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ThreeMFParser.h"
-#include "Namespace.h"
-#include "Scene.h"
+#include "Savitar/ThreeMFParser.h"
+#include "Savitar/Namespace.h"
+#include "Savitar/Scene.h"
 #include <iostream>
 #include <sstream>
 #include <locale.h>

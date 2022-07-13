@@ -32,7 +32,7 @@ using namespace Savitar;
 class ThreeMFParser
 {
     %TypeHeaderCode
-    #include "ThreeMFParser.h"
+    #include "Savitar/ThreeMFParser.h"
     %End
 
 public:

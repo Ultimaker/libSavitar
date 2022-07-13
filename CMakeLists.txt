@@ -1,9 +1,9 @@
+# For MSVC flags, will be ignored on non-Windows OS's
+cmake_policy(SET CMP0091 NEW)
+
 project(savitar)
 cmake_minimum_required(VERSION 3.20)
 include(cmake/StandardProjectSettings.cmake)
-
-include(CMakePackageConfigHelpers)
-include(GenerateExportHeader)
 
 option(BUILD_PYTHON "Build " ON)
 option(BUILD_TESTS "Building the test-suite" OFF)
@@ -13,7 +13,7 @@ if(BUILD_TESTS)
     find_package(GTest REQUIRED)
 endif()
 
-add_subdirectory(pugixml)
+find_package(pugixml REQUIRED)
 
 set(savitar_SRCS
     src/Namespace.cpp
@@ -25,134 +25,55 @@ set(savitar_SRCS
     src/Face.cpp
 )
 
-set(savitar_HDRS
-    src/Namespace.h
-    src/ThreeMFParser.h
-    src/Types.h
-    src/SceneNode.h
-    src/Scene.h
-    src/MeshData.h
-    src/Vertex.h
-    src/Face.h
-    ${CMAKE_CURRENT_BINARY_DIR}/src/SavitarExport.h
-)
-
-set(SAVITAR_VERSION 5.0.0)
-set(SAVITAR_SOVERSION 5)
-
 if(BUILD_SHARED_LIBS)
     add_library(Savitar SHARED ${savitar_SRCS})
+    if(WIN32)
+        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+        set_target_properties(Savitar PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    endif()
 else()
     add_library(Savitar STATIC ${savitar_SRCS})
 endif()
+set_project_warnings(Savitar)
 
-set_project_standards(Savitar)
+target_link_libraries(Savitar PUBLIC pugixml::pugixml)
 
-set_rpath(TARGETS
-            Savitar
-          PATHS
-            "$<$<PLATFORM_ID:Linux>:usr/bin>"
-            "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
-            "$<$<PLATFORM_ID:Darwin>:../lib>"
-            "$<$<PLATFORM_ID:Darwin>:../Resources/lib>"
-           RELATIVE)
+target_include_directories(Savitar
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        )
 
-target_link_libraries(Savitar PUBLIC pugixml)
+if(CMAKE_BUILD_TYPE)
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+        target_compile_definitions(Savitar PUBLIC -DSAVITAR_DEBUG)
+    endif()
+endif()
 
 if(BUILD_PYTHON)
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
-    if(NOT DEFINED Python_VERSION)
-        set(Python_VERSION
-                3.10
-                CACHE STRING "Python Version" FORCE)
-        message(STATUS "Setting Python version to ${Python_VERSION}. Set Python_VERSION if you want to compile against an other version.")
-    endif()
-    if(APPLE)
-        set(Python_FIND_FRAMEWORK NEVER)
-    endif()
-    find_package(cpython ${Python_VERSION} QUIET COMPONENTS Interpreter Development)
-    if(NOT TARGET cpython::cpython)
-        find_package(Python ${Python_VERSION} EXACT REQUIRED COMPONENTS Interpreter Development)
-    else()
-        add_library(Python::Python ALIAS cpython::cpython)
-        set(Python_SITEARCH "${CMAKE_INSTALL_PREFIX}/lib/python${Python_VERSION}/site-packages")
-        set(Python_EXECUTABLE ${cpython_PACKAGE_FOLDER_RELEASE}/bin/python3)
-        set(ENV{PYTHONPATH} ${Python_SITEARCH})
-    endif()
-    message(STATUS "Linking and building ${project_name} against Python ${Python_VERSION}")
-
-    find_package(SIP REQUIRED 6.5.0)
+    include(cmake/SIPMacros.cmake)
+    find_package(cpython ${Python_VERSION} REQUIRED)
 
     add_library(pySavitar INTERFACE)
-    set_project_standards(pySavitar)
-    set_rpath(TARGETS
-                pySavitar
-              PATHS
-                "$<$<PLATFORM_ID:Linux>:usr/bin>"
-                "$<$<PLATFORM_ID:Linux>:usr/bin/lib>"
-                "$<$<PLATFORM_ID:Darwin>:../lib>"
-                "../../" # In distributions of Cura, the libSavitar dependency is 2 directories up from where pySavitar gets installed.
-               RELATIVE)
 
     target_include_directories(pySavitar
             INTERFACE
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
+                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
             )
 
-    target_link_libraries(pySavitar INTERFACE Savitar Python::Python)
+    target_link_libraries(pySavitar INTERFACE Savitar pugixml::pugixml cpython::cpython)
 
     add_sip_module(pySavitar)
-    if(Python_SITELIB_LOCAL)
+    if (DEFINED Python_SITELIB_LOCAL)
         install_sip_module(pySavitar ${Python_SITELIB_LOCAL})
     else()
         install_sip_module(pySavitar)
-    endif()
+    endif ()
 endif()
-
-target_include_directories(Savitar PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
-
-if(${CMAKE_BUILD_TYPE})
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        target_compile_definitions(Savitar -DSAVITAR_DEBUG)
-    endif()
-endif()
-
-set_target_properties(Savitar PROPERTIES
-    FRAMEWORK FALSE
-    VERSION ${SAVITAR_VERSION}
-    SOVERSION ${SAVITAR_SOVERSION}
-    PUBLIC_HEADER "${savitar_HDRS}"
-    DEFINE_SYMBOL MAKE_SAVITAR_LIB
-    CXX_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN 1
-)
-
-generate_export_header(Savitar
-    EXPORT_FILE_NAME src/SavitarExport.h
-)
-# This is required when building out-of-tree.
-# The compiler won't find the generated header otherwise.
-include_directories(${CMAKE_BINARY_DIR}/src)
-
-install(TARGETS Savitar
-    EXPORT Savitar-targets
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/Savitar
-)
-
-install(EXPORT Savitar-targets
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-)
-
-configure_package_config_file(SavitarConfig.cmake.in ${CMAKE_BINARY_DIR}/SavitarConfig.cmake INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar)
-write_basic_package_version_file(${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake VERSION ${SAVITAR_VERSION} COMPATIBILITY SameMajorVersion)
 
 # List of tests. For each test there must be a file tests/${NAME}.cpp.
 set(savitar_TEST
@@ -178,9 +99,3 @@ if (BUILD_TESTS)
         add_dependencies(build_all_tests ${test}) #Make sure that this gets built as part of the build_all_tests target.
     endforeach()
 endif()
-
-install(FILES
-    ${CMAKE_BINARY_DIR}/SavitarConfig.cmake
-    ${CMAKE_BINARY_DIR}/SavitarConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Savitar
-)

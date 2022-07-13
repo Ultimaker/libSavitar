@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Scene.h"
-#include "../pugixml/src/pugixml.hpp"
+#include "Savitar/Scene.h"
+#include <pugixml.hpp>
 #include <iostream>
 #include <string>
 using namespace Savitar;

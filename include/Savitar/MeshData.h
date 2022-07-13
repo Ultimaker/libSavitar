@@ -18,14 +18,14 @@
 
 #ifndef MESHDATA_H
 #define MESHDATA_H
-#include "SavitarExport.h"
+
 #include <vector>
 #include <string>
 #include <cstdint>
 
-#include "Types.h"
-#include "Vertex.h"
-#include "Face.h"
+#include "Savitar/Types.h"
+#include "Savitar/Vertex.h"
+#include "Savitar/Face.h"
 
 // Forward declarations
 namespace pugi
@@ -35,7 +35,7 @@ namespace pugi
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT MeshData
+    class MeshData
     {
     public:
         /**

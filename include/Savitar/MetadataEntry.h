@@ -21,8 +21,6 @@
 
 #include <string>
 
-#include "SavitarExport.h"
-
 namespace Savitar
 {
 
@@ -31,7 +29,7 @@ namespace Savitar
  *
  * These entries are stored by a key in scenes and scene nodes.
  */
-struct SAVITAR_EXPORT MetadataEntry
+struct MetadataEntry
 {
     /*!
      * The value of the metadata entry.

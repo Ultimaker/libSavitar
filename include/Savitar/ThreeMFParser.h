@@ -19,16 +19,15 @@
 #ifndef THREEMFPARSER_H
 #define THREEMFPARSER_H
 
-#include "SavitarExport.h"
-#include "SceneNode.h"
-#include "../pugixml/src/pugixml.hpp"
+#include "Savitar/SceneNode.h"
+#include <pugixml.hpp>
 
 #include <string>
 namespace Savitar
 {
     class Scene;
 
-    class SAVITAR_EXPORT ThreeMFParser
+    class ThreeMFParser
     {
     public:
         ThreeMFParser();

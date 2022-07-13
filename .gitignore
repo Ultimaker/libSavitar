@@ -34,3 +34,12 @@ build
 
 # Generated headers
 /src/SavitarExport.h
+
+cmake-build-*
+
+CMakeUserPresets.json
+
+/conanbuildinfo.txt
+/graph_info.json
+/conan.lock
+/conaninfo.txt

@@ -19,7 +19,7 @@
 class MetadataEntry
 {
     %TypeHeaderCode
-    #include "MetadataEntry.h"
+    #include "Savitar/MetadataEntry.h"
     %End
 
 public:

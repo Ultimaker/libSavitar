@@ -19,7 +19,7 @@
 class Scene
 {
     %TypeHeaderCode
-    #include "Scene.h"
+    #include "Savitar/Scene.h"
     %End
 public:
     Scene();

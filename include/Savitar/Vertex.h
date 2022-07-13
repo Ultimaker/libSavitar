@@ -16,31 +16,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FACE_H
-#define FACE_H
-
-#include "SavitarExport.h"
+#ifndef VERTEX_H
+#define VERTEX_H
 
 namespace Savitar
 {
-    class SAVITAR_EXPORT Face
+    class Vertex
     {
     public:
         /**
-        * A face uses the index of 3 vertices to describe a triangle
-        */
-        Face(int v1, int v2, int v3);
-        ~Face();
+         * A vertex is a point in 3D space.
+         */
+        Vertex(float x, float y, float z);
+        virtual ~Vertex();
 
-        int getV1();
-        int getV2();
-        int getV3();
-
+        float getX();
+        float getY();
+        float getZ();
     protected:
-        int vertex_1_index;
-        int vertex_2_index;
-        int vertex_3_index;
+        float x;
+        float y;
+        float z;
     };
 }
 
-#endif // FACE_H
+#endif
