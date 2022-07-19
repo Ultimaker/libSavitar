@@ -1,4 +1,4 @@
-# Arcus
+# Savitar
 
 <p align="center">
     <a href="https://github.com/Ultimaker/libSavitar/actions/workflows/conan-package.yml" alt="Conan Package">
