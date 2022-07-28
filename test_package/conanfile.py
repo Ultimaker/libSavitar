@@ -28,9 +28,6 @@ class SavitarTestConan(ConanFile):
         tc.generate()
 
     def build(self):
-        if not tools.cross_building(self, skip_x64_x86 = True):
-            shutil.copy(Path(self.source_folder).joinpath("test.py"), Path(self.build_folder).joinpath("test.py"))
-
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
