@@ -67,25 +67,9 @@ class SavitarConan(ConanFile):
         tc.generate()
 
     def layout(self):
-        self.folders.source = "."
-        try:
-            build_type = str(self.settings.build_type)
-        except ConanException:
-            raise ConanException("'build_type' setting not defined, it is necessary for cmake_layout()")
-
-        self.folders.build = f"cmake-build-{build_type.lower()}"
-
-        self.folders.generators = os.path.join(self.folders.build, "conan")
-
-        self.cpp.source.includedirs = ["include"]
-
+        cmake_layout(self)
         self.cpp.build.libs = ["Savitar"]
-        self.cpp.build.libdirs = ["."]
-        self.cpp.build.bindirs = ["."]
-
         self.cpp.package.libs = ["Savitar"]
-        self.cpp.package.includedirs = ["include"]
-
         self.cpp.package.requires = ["pugixml::pugixml"]
 
     def build(self):
