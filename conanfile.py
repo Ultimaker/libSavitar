@@ -79,5 +79,4 @@ class SavitarConan(ConanFile):
 
     def package(self):
         packager = files.AutoPackager(self)
-        packager.patterns.build.lib = ["*.so", "*.so.*", "*.a", "*.lib", "*.dylib"]
         packager.run()
