@@ -2,10 +2,11 @@
 cmake_policy(SET CMP0091 NEW)
 
 project(savitar)
+
 cmake_minimum_required(VERSION 3.20)
+
 include(cmake/StandardProjectSettings.cmake)
 
-option(BUILD_PYTHON "Build " ON)
 option(BUILD_TESTS "Building the test-suite" OFF)
 
 if(BUILD_TESTS)
@@ -34,6 +35,7 @@ if(BUILD_SHARED_LIBS)
 else()
     add_library(Savitar STATIC ${savitar_SRCS})
 endif()
+
 set_project_warnings(Savitar)
 
 target_link_libraries(Savitar PUBLIC pugixml::pugixml)
@@ -51,30 +53,6 @@ if(CMAKE_BUILD_TYPE)
         target_compile_definitions(Savitar PUBLIC -DSAVITAR_DEBUG)
     endif()
 endif()
-
-if(BUILD_PYTHON)
-    list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-    include(cmake/SIPMacros.cmake)
-    find_package(cpython ${Python_VERSION} REQUIRED)
-
-    add_library(pySavitar INTERFACE)
-
-    target_include_directories(pySavitar
-            INTERFACE
-                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-                $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/python/>
-            )
-
-    target_link_libraries(pySavitar INTERFACE Savitar pugixml::pugixml cpython::cpython)
-
-    add_sip_module(pySavitar)
-    if (DEFINED Python_SITELIB_LOCAL)
-        install_sip_module(pySavitar ${Python_SITELIB_LOCAL})
-    else()
-        install_sip_module(pySavitar)
-    endif ()
-endif()
-
 # List of tests. For each test there must be a file tests/${NAME}.cpp.
 set(savitar_TEST
     ThreeMFParserTest

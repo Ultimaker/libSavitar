@@ -46,9 +46,9 @@ class SavitarTestConan(ConanFile):
             prefix_path = "" if self.settings.os == "Windows" else "./"
             self.run(f"{prefix_path}test{ext}", env = "conanrun")
 
-        cpp_info = self.deps_cpp_info["savitar"]
-        if "pysavitar" in cpp_info.components:
-            test_buf = StringIO()
-            self.run(f"python test.py", env = "conanrun", output = test_buf)
-            if "True" not in test_buf.getvalue():
-                raise ConanException("pysavitar wasn't build correctly!")
+        # cpp_info = self.deps_cpp_info["savitar"]
+        # if "pysavitar" in cpp_info.components:
+        #     test_buf = StringIO()
+        #     self.run(f"python test.py", env = "conanrun", output = test_buf)
+        #     if "True" not in test_buf.getvalue():
+        #         raise ConanException("pysavitar wasn't build correctly!")

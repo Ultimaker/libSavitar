@@ -1,10 +1,6 @@
 "None":
     requirements:
         - "pugixml/1.12.1"
-    requirements_pysavitar:
-        - "cpython/3.10.4"
 "5.1.0":
     requirements:
         - "pugixml/1.12.1"
-    requirements_pysavitar:
-        - "cpython/3.10.4"
