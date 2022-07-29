@@ -76,8 +76,6 @@ class SavitarConan(ConanFile):
     def layout(self):
         cmake_layout(self)
         self.cpp.package.libs = ["Savitar"]
-        if self.settings.build_type == "Debug" or self.settings.build_type == "RelWithDebInfo":
-            self.cpp.build.defines.append("SAVITAR_DEBUG")
 
     def build(self):
         cmake = CMake(self)

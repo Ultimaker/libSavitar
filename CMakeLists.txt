@@ -48,6 +48,12 @@ target_include_directories(Savitar
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         )
 
+if(CMAKE_BUILD_TYPE)
+    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+        target_compile_definitions(Savitar PUBLIC -DSAVITAR_DEBUG)
+    endif()
+endif()
+
 # Compiling the test environment.
 if (BUILD_TESTING)
     # List of tests. For each test there must be a file tests/${NAME}.cpp.
