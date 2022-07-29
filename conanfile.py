@@ -75,6 +75,7 @@ class SavitarConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+        self.cpp.build.libs = ["Savitar"]
         self.cpp.package.libs = ["Savitar"]
 
     def build(self):
