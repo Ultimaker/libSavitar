@@ -7,9 +7,9 @@ cmake_minimum_required(VERSION 3.20)
 
 include(cmake/StandardProjectSettings.cmake)
 
-option(BUILD_TESTS "Building the test-suite" OFF)
+option(BUILD_TESTING "Building the test-suite" OFF)
 
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     message(STATUS "Building with tests...")
     find_package(GTest REQUIRED)
 endif()
@@ -48,20 +48,15 @@ target_include_directories(Savitar
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         )
 
-if(CMAKE_BUILD_TYPE)
-    if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-        target_compile_definitions(Savitar PUBLIC -DSAVITAR_DEBUG)
-    endif()
-endif()
-# List of tests. For each test there must be a file tests/${NAME}.cpp.
-set(savitar_TEST
-    ThreeMFParserTest
-    MeshDataTest
-    NamespaceTest
-)
-
 # Compiling the test environment.
-if (BUILD_TESTS)
+if (BUILD_TESTING)
+    # List of tests. For each test there must be a file tests/${NAME}.cpp.
+    set(savitar_TEST
+            ThreeMFParserTest
+            MeshDataTest
+            NamespaceTest
+    )
+
     include_directories(${GTEST_INCLUDE_DIR})
 
     enable_testing()

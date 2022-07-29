@@ -1,6 +1,10 @@
 "None":
     requirements:
         - "pugixml/1.12.1"
+    build_requirements_testing:
+        - "gtest/[>=1.10.0]"
 "5.1.0":
     requirements:
         - "pugixml/1.12.1"
+    build_requirements_testing:
+        - "gtest/[>=1.10.0]"

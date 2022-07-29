@@ -25,11 +25,13 @@ class SavitarConan(ConanFile):
 
     options = {
         "shared": [True, False],
-        "fPIC": [True, False]
+        "fPIC": [True, False],
+        "enable_testing": [True, False]
     }
     default_options = {
         "shared": True,
         "fPIC": True,
+        "enable_testing": False
     }
     scm = {
         "type": "git",
@@ -37,6 +39,10 @@ class SavitarConan(ConanFile):
         "url": "auto",
         "revision": "auto"
     }
+    def build_requirements(self):
+        if self.options.enable_testing:
+            for req in self._um_data()["build_requirements_testing"]:
+                self.test_requires(req)
 
     def requirements(self):
         for req in self._um_data()["requirements"]:
@@ -64,11 +70,14 @@ class SavitarConan(ConanFile):
             tc.blocks["generic_system"].values["toolset"] = None
 
         tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
+        tc.variables["BUILD_TESTING"] = self.options.enable_testing
         tc.generate()
 
     def layout(self):
         cmake_layout(self)
         self.cpp.package.libs = ["Savitar"]
+        if self.settings.build_type == "Debug" or self.settings.build_type == "RelWithDebInfo":
+            self.cpp.build.defines.append("SAVITAR_DEBUG")
 
     def build(self):
         cmake = CMake(self)
