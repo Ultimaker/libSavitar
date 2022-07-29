@@ -86,3 +86,6 @@ class SavitarConan(ConanFile):
     def package(self):
         packager = files.AutoPackager(self)
         packager.run()
+
+    def package_info(self):
+        self.cpp_info.defines.append("SAVITAR_DEBUG")
