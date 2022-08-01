@@ -77,6 +77,7 @@ class SavitarConan(ConanFile):
         cmake_layout(self)
         self.cpp.build.libs = ["Savitar"]
         self.cpp.package.libs = ["Savitar"]
+        self.cpp.package.defines = ["SAVITAR_DEBUG"]
 
     def build(self):
         cmake = CMake(self)
@@ -86,6 +87,3 @@ class SavitarConan(ConanFile):
     def package(self):
         packager = files.AutoPackager(self)
         packager.run()
-
-    def package_info(self):
-        self.cpp_info.defines.append("SAVITAR_DEBUG")
