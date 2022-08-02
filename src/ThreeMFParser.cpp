@@ -4,8 +4,8 @@
 #include "Savitar/ThreeMFParser.h"
 #include "Savitar/Namespace.h"
 #include "Savitar/Scene.h"
+#include <clocale>
 #include <iostream>
-#include <locale.h>
 #include <sstream>
 
 using namespace Savitar;
@@ -15,19 +15,12 @@ ThreeMFParser::ThreeMFParser()
     setlocale(LC_ALL, "C");
 }
 
-ThreeMFParser::~ThreeMFParser()
-{
-}
-
-Scene ThreeMFParser::parse(std::string xml_string)
+Scene ThreeMFParser::parse(const std::string& xml_string)
 {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_string(xml_string.c_str());
-
+    document.load_string(xml_string.c_str());
     Scene scene;
-
     scene.fillByXMLNode(document.child("model"));
-
 
     return scene;
 }
@@ -65,7 +58,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         if (! per_object_settings.empty())
         {
             pugi::xml_node settings = object.append_child("metadatagroup");
-            for (const std::pair<std::string, MetadataEntry>& setting_pair : per_object_settings)
+            for (const auto& setting_pair : per_object_settings)
             {
                 pugi::xml_node setting = settings.append_child("metadata");
                 setting.append_attribute("name") = setting_pair.first.c_str();
@@ -81,13 +74,13 @@ std::string ThreeMFParser::sceneToString(Scene scene)
             }
         }
 
-        if (scene_node->getMeshData().getVertices().size() != 0)
+        if (! scene_node->getMeshData().getVertices().empty())
         {
             pugi::xml_node mesh = object.append_child("mesh");
             scene_node->getMeshData().toXmlNode(mesh);
         }
 
-        if (scene_node->getChildren().size() != 0)
+        if (! scene_node->getChildren().empty())
         {
             pugi::xml_node components = object.append_child("components");
             for (SceneNode* child_scene_node : scene_node->getChildren())
@@ -117,7 +110,7 @@ std::string ThreeMFParser::sceneToString(Scene scene)
         item.append_attribute("transform") = scene_node->getTransformation().c_str();
     }
 
-    for (const std::pair<std::string, MetadataEntry>& metadata_pair : scene.getMetadata())
+    for (const auto& metadata_pair : scene.getMetadata())
     {
         pugi::xml_node metadata_node = model_node.append_child("metadata");
         metadata_node.append_attribute("name") = metadata_pair.first.c_str();

@@ -3,39 +3,29 @@
 
 #include "Savitar/SceneNode.h"
 #include "Savitar/Namespace.h"
-#include <iostream>
+
 #include <pugixml.hpp>
+
 using namespace Savitar;
-
-SceneNode::SceneNode()
-{
-    transformation = "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0";
-    type = "model";
-    mesh_node = nullptr;
-}
-
-SceneNode::~SceneNode()
-{
-}
 
 std::string SceneNode::getTransformation()
 {
-    return this->transformation;
+    return transformation_;
 }
 
 void SceneNode::setTransformation(std::string transformation)
 {
-    this->transformation = transformation;
+    transformation_ = transformation;
 }
 
 SceneNode* SceneNode::getMeshNode()
 {
-    return mesh_node;
+    return mesh_node_;
 }
 
 std::vector<SceneNode*> SceneNode::getChildren()
 {
-    return this->children;
+    return children_;
 }
 
 bool SceneNode::addChild(SceneNode* node)
@@ -45,58 +35,58 @@ bool SceneNode::addChild(SceneNode* node)
         return false;
     }
 
-    if (this->mesh_data.getVertices().size() != 0) // This node already has mesh data, so we need to move that data to a child node
+    if (! mesh_data_.getVertices().empty()) // This node already has mesh data, so we need to move that data to a child node
     {
-        mesh_node = new SceneNode();
-        mesh_node->setMeshData(this->mesh_data); // Copy the data to the new child.
-        mesh_data.clear(); // Clear our own data
-        this->children.push_back(mesh_node);
+        mesh_node_ = new SceneNode();
+        mesh_node_->setMeshData(this->mesh_data_); // Copy the data to the new child.
+        mesh_data_.clear(); // Clear our own data
+        children_.push_back(mesh_node_);
     }
 
-    this->children.push_back(node);
+    children_.push_back(node);
     return true;
 }
 
 MeshData& SceneNode::getMeshData()
 {
-    return mesh_data;
+    return mesh_data_;
 }
 
-void SceneNode::setMeshData(MeshData mesh_data)
+void SceneNode::setMeshData(const MeshData& mesh_data)
 {
-    this->mesh_data = mesh_data;
+    mesh_data_ = mesh_data;
 }
 
 std::string SceneNode::getType()
 {
-    return this->type;
+    return type_;
 }
 
-void SceneNode::setType(std::string type)
+void SceneNode::setType(const std::string& type)
 {
     if (type == "model" || type == "solidsupport" || type == "support" || type == "surface" || type == "other")
     {
-        this->type = type;
+        type_ = type;
     }
 }
 
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 {
-    settings.clear();
-    id = xml_node.attribute("id").as_string();
-    name = xml_node.attribute("name").as_string();
+    settings_.clear();
+    id_ = xml_node.attribute("id").as_string();
+    name_ = xml_node.attribute("name").as_string();
 
-    if (xml_node.child("mesh"))
+    if (xml_node.child("mesh") != nullptr)
     {
-        mesh_data.clear();
-        mesh_data.fillByXMLNode(xml_node.child("mesh"));
+        mesh_data_.clear();
+        mesh_data_.fillByXMLNode(xml_node.child("mesh"));
     }
 
     // Read settings the old way -which didn't conform  to the 3MF standard- for backwards compat.:
     const pugi::xml_node settings_node = xml_node.child("settings");
-    if (settings_node)
+    if (settings_node != nullptr)
     {
-        for (pugi::xml_node setting = settings_node.child("setting"); setting; setting = setting.next_sibling("setting"))
+        for (pugi::xml_node setting = settings_node.child("setting"); setting != nullptr; setting = setting.next_sibling("setting"))
         {
             const std::string key = setting.attribute("key").as_string();
             const std::string value = setting.text().as_string();
@@ -106,9 +96,9 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 
     // Read settings the conformant way:
     const pugi::xml_node metadatagroup_node = xml_node.child("metadatagroup");
-    if (metadatagroup_node)
+    if (metadatagroup_node != nullptr)
     {
-        for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting; setting = setting.next_sibling("metadata"))
+        for (pugi::xml_node setting = metadatagroup_node.child("metadata"); setting != nullptr; setting = setting.next_sibling("metadata"))
         {
             // NOTE: In theory this could be slow, since we look up the entire ancestry tree for each setting.
             //       In practice it's expected to be negligible compared to the parsing of the mesh.
@@ -126,12 +116,12 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
             }
             const std::string value = setting.text().as_string();
             std::string type = setting.attribute("type").as_string();
-            if (type == "")
+            if (type.empty())
             {
                 type = "xs:string";
             }
             std::string preserve_str = setting.attribute("preserve").as_string(); // as_bool is too strict. Any non-zero value evaluates as true. Parse this ourselves.
-            const bool preserve = (preserve_str != "" && preserve_str != "0");
+            const bool preserve = (! preserve_str.empty() && preserve_str != "0");
             setSetting(key, value, type, preserve);
         }
     }
@@ -139,42 +129,42 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 
 std::string SceneNode::getId()
 {
-    return this->id;
+    return id_;
 }
 
 void SceneNode::setId(std::string id)
 {
-    this->id = id;
+    id_ = id;
 }
 
 std::string SceneNode::getName()
 {
-    return this->name;
+    return name_;
 }
 
 void SceneNode::setName(std::string name)
 {
-    this->name = name;
+    name_ = name;
 }
 
 const std::map<std::string, MetadataEntry>& SceneNode::getSettings() const
 {
-    return settings;
+    return settings_;
 }
 
 void SceneNode::setSetting(const std::string& key, const MetadataEntry& entry)
 {
-    settings.emplace(key, entry);
+    settings_.emplace(key, entry);
 }
 
 void SceneNode::setSetting(const std::string& key, const std::string& value, const std::string& type, const bool preserve)
 {
-    settings.emplace(key, MetadataEntry(value, type, preserve));
+    settings_.emplace(key, MetadataEntry(value, type, preserve));
 }
 
 void SceneNode::removeSetting(std::string key)
 {
-    settings.erase(key);
+    settings_.erase(key);
 }
 
 
@@ -182,15 +172,15 @@ std::vector<SceneNode*> SceneNode::getAllChildren()
 {
     std::vector<SceneNode*> all_children;
 
-    for (SceneNode* scene_node : children)
+    for (SceneNode* scene_node : children_)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_children.insert(all_children.end(), temp_children.begin(), temp_children.end());
     }
 
-    // Add all direct children to the result to return.
+    // Add all direct children_ to the result to return.
     // We put them at the end so that the "simplicity" rule of 3MF is kept:
     // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
-    all_children.insert(all_children.end(), children.begin(), children.end());
+    all_children.insert(all_children.end(), children_.begin(), children_.end());
     return all_children;
 }

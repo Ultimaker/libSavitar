@@ -10,11 +10,7 @@
 #include <string> // For std::string
 #include <vector> // For std::vector
 
-// Forward declaration
-namespace pugi
-{
-class xml_node;
-}
+#include <pugixml.hpp>
 
 namespace Savitar
 {
@@ -24,16 +20,16 @@ public:
     /**
      * A Scene is an object that holds a number of SceneNodes, but also has some meta data entries. It also defines a unit in which the data is expressed.
      */
-    Scene();
-    virtual ~Scene();
+    Scene() = default;
+    virtual ~Scene() = default;
 
     /**
      * Get the scene nodes in this scene.
      * \return The scene nodes that are in the scene.
      */
-    std::vector<SceneNode*> getSceneNodes();
+    [[nodiscard]] std::vector<SceneNode*> getSceneNodes();
 
-    std::vector<SceneNode*> getAllSceneNodes();
+    [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes();
 
     /**
      * Add a scene node to the scene.
@@ -70,20 +66,20 @@ public:
     /**
      * Get all meta data entries
      */
-    const std::map<std::string, MetadataEntry>& getMetadata() const;
+    [[nodiscard]] const std::map<std::string, MetadataEntry>& getMetadata() const;
 
     /**
      * Get the unit (milimeter, inch, etc) of the scene.
      * This is in milimeter by default.
      */
-    std::string getUnit();
+    [[nodiscard]] std::string getUnit();
 
     void setUnit(std::string unit);
 
-protected:
-    std::vector<SceneNode*> scene_nodes;
-    std::map<std::string, MetadataEntry> metadata;
-    std::string unit;
+private:
+    std::vector<SceneNode*> scene_nodes_;
+    std::map<std::string, MetadataEntry> metadata_;
+    std::string unit_{ "millimeter" };
 
     /**
      * Used to recursively create SceneNode objects based on xml nodes.

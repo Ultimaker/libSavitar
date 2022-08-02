@@ -86,8 +86,8 @@ import numpy
 mesh = savitar_node.getMeshData()
 
 # We use zero data, but when using lib savitar, replace this with your data.
-vertices = numpy.zeros((9, 3), dtype = numpy.float32)  
-faces = numpy.zeros((4, 2), dtype=numpy.int32)
+vertices_ = numpy.zeros((9, 3), dtype = numpy.float32)  
+faces_ = numpy.zeros((4, 2), dtype=numpy.int32)
 
 mesh.setVerticesFromBytes(vertices.tobytes())
 mesh.setFacesFromBytes(faces.tobytes())

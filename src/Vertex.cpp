@@ -6,27 +6,24 @@
 using namespace Savitar;
 
 Vertex::Vertex(float x, float y, float z)
+    : x_(x)
+    , y_(y)
+    , z_(z){
+
+    };
+
+
+float Vertex::getX() const
 {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    return x_;
 }
 
-Vertex::~Vertex()
+float Vertex::getY() const
 {
+    return y_;
 }
 
-float Vertex::getX()
+float Vertex::getZ() const
 {
-    return this->x;
-}
-
-float Vertex::getY()
-{
-    return this->y;
-}
-
-float Vertex::getZ()
-{
-    return this->z;
+    return z_;
 }

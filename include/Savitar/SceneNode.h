@@ -11,28 +11,25 @@
 #include <string>
 #include <vector>
 
-namespace pugi
-{
-class xml_node;
-}
+#include <pugixml.hpp>
 
 namespace Savitar
 {
 class SceneNode
 {
 public:
-    SceneNode();
-    virtual ~SceneNode();
+    SceneNode() = default;
+    virtual ~SceneNode() = default;
 
-    std::string getTransformation();
+    [[nodiscard]] std::string getTransformation();
     void setTransformation(std::string);
 
-    std::vector<SceneNode*> getChildren();
-    std::vector<SceneNode*> getAllChildren();
+    [[nodiscard]] std::vector<SceneNode*> getChildren();
+    [[nodiscard]] std::vector<SceneNode*> getAllChildren();
     bool addChild(SceneNode* node);
 
     MeshData& getMeshData();
-    void setMeshData(MeshData mesh_data);
+    void setMeshData(const MeshData& mesh_data);
 
     /**
      * Set the data of this SceneNode by giving it a xml node
@@ -42,24 +39,24 @@ public:
     /**
      * Get the (unique) identifier of the node.
      */
-    std::string getId();
+    [[nodiscard]] std::string getId();
 
     void setId(std::string id);
 
     /**
      * Get the (non-unique) display name of the node.
      */
-    std::string getName();
+    [[nodiscard]] std::string getName();
 
-    void setName(std::string name);
+    [[maybe_unused]] void setName(std::string name);
 
     /**
      * Get the (per-object) settings attached to this SceneNode.
      * Note that this is part of the Cura Extension and not 3mf Core.
      */
-    const std::map<std::string, MetadataEntry>& getSettings() const;
+    [[nodiscard]] const std::map<std::string, MetadataEntry>& getSettings() const;
 
-    void setSetting(const std::string& key, const MetadataEntry& entry);
+    [[maybe_unused]] void setSetting(const std::string& key, const MetadataEntry& entry);
     void setSetting(const std::string& key, const std::string& value, const std::string& type = "xs:string", const bool preserve = false);
     void removeSetting(std::string key);
 
@@ -67,24 +64,24 @@ public:
      * Type of the scene node. Can be "model", "solidsupport", "support", "surface", or "other".
      * This defaults to "model"
      */
-    std::string getType();
-    void setType(std::string type);
+    [[nodiscard]] std::string getType();
+    [[maybe_unused]] void setType(const std::string& type);
 
-    SceneNode* getMeshNode();
+    [[nodiscard]] SceneNode* getMeshNode();
 
-protected:
-    std::string transformation;
-    std::vector<SceneNode*> children;
-    MeshData mesh_data;
-    std::map<std::string, MetadataEntry> settings;
-    std::string id;
-    std::string name;
-    std::string type;
+private:
+    std::string transformation_{ "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0" };
+    std::vector<SceneNode*> children_;
+    MeshData mesh_data_;
+    std::map<std::string, MetadataEntry> settings_;
+    std::string id_;
+    std::string name_;
+    std::string type_{ "model" };
 
     // 3MF does not support having an Object that has a mesh and components.
     // This is solved by the concept of the "mesh" node, which is added as a child.
     // This then gets a bit of metadata set so we can restore the graph in the way that we expect it.
-    SceneNode* mesh_node;
+    SceneNode* mesh_node_{ nullptr };
 };
 } // namespace Savitar
 

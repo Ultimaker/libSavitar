@@ -12,11 +12,7 @@
 #include "Savitar/Types.h"
 #include "Savitar/Vertex.h"
 
-// Forward declarations
-namespace pugi
-{
-class xml_node;
-}
+#include <pugixml.hpp>
 
 namespace Savitar
 {
@@ -27,8 +23,8 @@ public:
      * MeshData holds all data regarding a mesh (vertices, faces, etc).
      * It can be filled by means of a byte array by using setVerticesFromBytes or setFacesFromBytes.
      */
-    MeshData();
-    virtual ~MeshData();
+    MeshData() = default;
+    virtual ~MeshData() = default;
 
     /**
      * Set the data of this MeshData by giving it a xml node (An object node in 3mf)
@@ -45,20 +41,20 @@ public:
      *
      * If there for example is a single vertex, it will return a byte array containing 3 floats (so 3 * 4 bytes)
      */
-    bytearray getVerticesAsBytes();
+    [[nodiscard]] bytearray getVerticesAsBytes();
 
     /**
      * Return the faces as flattend bytes.
      *
      * If there for example is a single face, it will return a byte array containing 3 ints (so 3 * 4 bytes)
      */
-    bytearray getFacesAsBytes();
+    [[nodiscard]] bytearray getFacesAsBytes();
 
     /**
      * Instead of getting all unique vertices, this function returns a bytearray with 3 vertices per face.
      * This is usefull if you want to mimic the data type of STL files.
      */
-    bytearray getFlatVerticesAsBytes();
+    [[nodiscard]] bytearray getFlatVerticesAsBytes();
 
     /**
      * Set the vertices of the meshdata by bytearray (as set from python)
@@ -74,16 +70,16 @@ public:
      */
     void setFacesFromBytes(const bytearray& data);
 
-    std::vector<Vertex> getVertices();
+    [[nodiscard]] std::vector<Vertex> getVertices();
 
     /**
      * Reset the data of the MeshData object.
      */
     void clear();
 
-protected:
-    std::vector<Vertex> vertices;
-    std::vector<Face> faces;
+private:
+    std::vector<Vertex> vertices_;
+    std::vector<Face> faces_;
 };
 } // namespace Savitar
 

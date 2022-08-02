@@ -9,11 +9,11 @@ namespace xml_namespace
 {
 std::string getCuraUri()
 {
-    return std::string("http://software.ultimaker.com/xml/cura/3mf/2015/10");
+    return { "http://software.ultimaker.com/xml/cura/3mf/2015/10" };
 }
 std::string getDefaultUri()
 {
-    return std::string("http://schemas.microsoft.com/3dmanufacturing/core/2015/02");
+    return { "http://schemas.microsoft.com/3dmanufacturing/core/2015/02" };
 }
 
 void appendNamespaceAttributes(xmlns_map_t& map, std::set<std::string>& namespace_names, const pugi::xml_node& xml_node)
@@ -22,7 +22,7 @@ void appendNamespaceAttributes(xmlns_map_t& map, std::set<std::string>& namespac
     {
         const std::string name = attribute.name();
         const std::string name_start = name.substr(0, name.size() >= 5 ? 5 : std::string::npos);
-        if (name_start.compare("xmlns") != 0)
+        if (name_start != "xmlns")
         {
             continue;
         }
@@ -46,7 +46,7 @@ xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node)
 {
     xmlns_map_t result;
     std::set<std::string> namespace_names;
-    for (pugi::xml_node current_node = xml_node; current_node; current_node = current_node.parent())
+    for (pugi::xml_node current_node = xml_node; current_node != nullptr; current_node = current_node.parent())
     {
         appendNamespaceAttributes(result, namespace_names, current_node);
     }

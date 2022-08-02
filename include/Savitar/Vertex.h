@@ -13,16 +13,16 @@ public:
      * A vertex is a point in 3D space.
      */
     Vertex(float x, float y, float z);
-    virtual ~Vertex();
+    virtual ~Vertex() = default;
 
-    float getX();
-    float getY();
-    float getZ();
+    [[nodiscard]] float getX() const;
+    [[nodiscard]] float getY() const;
+    [[nodiscard]] float getZ() const;
 
-protected:
-    float x;
-    float y;
-    float z;
+private:
+    float x_;
+    float y_;
+    float z_;
 };
 } // namespace Savitar
 

@@ -5,10 +5,9 @@
 
 #include <array>
 #include <fstream>
-#include <gtest/gtest.h>
-#include <iostream>
-#include <iterator>
 #include <string>
+
+#include <gtest/gtest.h>
 
 #include <pugixml.hpp>
 
@@ -17,18 +16,8 @@ namespace Savitar
 
 constexpr int NUM_COORDS = 12;
 constexpr int NUM_INDICES = 6;
-const std::array<float, NUM_COORDS> vertices =
-{
-    2.f, 2.f, -1.f,
-    4.f, 2.f,  1.f,
-    4.f, 4.f, -1.f,
-    2.f, 4.f,  1.f
-};
-const std::array<int, NUM_INDICES> faces =
-{
-    0, 1, 2,
-    2, 1, 3
-};
+const std::array<float, NUM_COORDS> vertices = { 2.f, 2.f, -1.f, 4.f, 2.f, 1.f, 4.f, 4.f, -1.f, 2.f, 4.f, 1.f };
+const std::array<int, NUM_INDICES> faces = { 0, 1, 2, 2, 1, 3 };
 
 
 /*
@@ -94,7 +83,9 @@ TEST_F(MeshDataTest, toXmlNode)
         EXPECT_TRUE(y_attr);
         EXPECT_TRUE(z_attr);
 
-        float x, y, z;
+        float x;
+        float y;
+        float z;
         EXPECT_NO_THROW(x = x_attr.as_float());
         EXPECT_NO_THROW(y = y_attr.as_float());
         EXPECT_NO_THROW(z = z_attr.as_float());

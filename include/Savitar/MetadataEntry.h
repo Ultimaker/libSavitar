@@ -37,7 +37,7 @@ struct MetadataEntry
      */
     bool preserve;
 
-    MetadataEntry(const std::string& value, const std::string& type = "xs:string", const bool preserve = false) : value(value), type(type), preserve(preserve)
+    explicit MetadataEntry(const std::string& value, const std::string& type = "xs:string", const bool preserve = false) : value(value), type(type), preserve(preserve)
     {
     }
 };

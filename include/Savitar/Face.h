@@ -13,16 +13,16 @@ public:
      * A face uses the index of 3 vertices to describe a triangle
      */
     Face(int v1, int v2, int v3);
-    ~Face();
+    ~Face() = default;
 
-    int getV1();
-    int getV2();
-    int getV3();
+    [[nodiscard]] int getV1() const;
+    [[nodiscard]] int getV2() const;
+    [[nodiscard]] int getV3() const;
 
-protected:
-    int vertex_1_index;
-    int vertex_2_index;
-    int vertex_3_index;
+private:
+    int vertex_1_index_;
+    int vertex_2_index_;
+    int vertex_3_index_;
 };
 } // namespace Savitar
 

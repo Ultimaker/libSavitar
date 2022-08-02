@@ -1,17 +1,18 @@
 // Copyright (c) 2022 Ultimaker B.V.
 // libSavitar is released under the terms of the LGPLv3 or higher.
 
+#include "Savitar/ThreeMFParser.h"
 #include "Savitar/Scene.h"
 #include "Savitar/SceneNode.h"
-#include "Savitar/ThreeMFParser.h"
+
+#include <gtest/gtest.h>
 
 #include <array>
+#include <filesystem>
 #include <fstream>
-#include <gtest/gtest.h>
 #include <iterator>
 #include <map>
 #include <string>
-#include <filesystem>
 
 namespace Savitar
 {
@@ -26,19 +27,19 @@ public:
     std::string xml_string;
     ThreeMFParser* parser;
 
-    void SetUp()
+    void SetUp() override
     {
         xml_string = "";
         std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("test_model.xml").string());
         if (test_model_file.is_open())
         {
-            xml_string = std::string(std::istreambuf_iterator<char>{test_model_file}, {});
+            xml_string = std::string(std::istreambuf_iterator<char>{ test_model_file }, {});
         }
 
         parser = new ThreeMFParser();
     }
 
-    void TearDown()
+    void TearDown() override
     {
         delete parser;
     }
@@ -55,9 +56,9 @@ TEST_F(ThreeMFParserTest, parse)
     ASSERT_FALSE(nodes.empty());
     ASSERT_EQ(nodes.size(), 4UL);
 
-    std::array<size_t, 4> expected_verts = {36UL, 8UL, 0UL, 0UL};
-    std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL};
-    std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL};
+    std::array<size_t, 4> expected_verts = { 36UL, 8UL, 0UL, 0UL };
+    std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL };
+    std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL };
     int i = -1;
     for (SceneNode* node : nodes)
     {
@@ -118,11 +119,11 @@ TEST_F(ThreeMFParserTest, sceneToString)
 TEST_F(ThreeMFParserTest, decimalSeparatorTest)
 {
     // Don't accept a model that uses ','s for decimal separators.
-    std::string xml_string_septest = "";
+    std::string xml_string_septest;
     std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("problem_model.xml").string());
     if (test_model_file.is_open())
     {
-        xml_string_septest = std::string(std::istreambuf_iterator<char>{test_model_file}, {});
+        xml_string_septest = std::string(std::istreambuf_iterator<char>{ test_model_file }, {});
     }
     ThreeMFParser parser_septest;
 

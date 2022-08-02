@@ -8,21 +8,17 @@
 #include <set>
 #include <string>
 
-// Forward declaration
-namespace pugi
-{
-class xml_node;
-}
+#include <pugixml.hpp>
 
 namespace xml_namespace
 {
-typedef std::map<std::string, std::set<std::string>> xmlns_map_t;
+using xmlns_map_t = std::map<std::string, std::set<std::string>>;
 
-std::string getCuraUri();
-std::string getDefaultUri();
+[[nodiscard]] std::string getCuraUri();
+[[nodiscard]] std::string getDefaultUri();
 
-xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node);
-std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
+[[nodiscard]] xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node);
+[[nodiscard]] std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
 } // namespace xml_namespace
 
 #endif

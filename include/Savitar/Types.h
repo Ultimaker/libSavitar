@@ -10,10 +10,10 @@
 namespace Savitar
 {
 // Convenience typedef so uint can be used.
-typedef unsigned int uint;
+using uint = unsigned int;
 
 // Dynamic array of bytes, defined here to increase code readability.
-typedef std::vector<uint8_t> bytearray;
+using bytearray = std::vector<uint8_t>;
 } // namespace Savitar
 
 #endif
