@@ -5,9 +5,9 @@
 
 #include <fstream>
 #include <gtest/gtest.h>
-#include <iostream>
 #include <string>
 #include <pugixml.hpp>
+#include <filesystem>
 
 namespace xml_namespace
 {
@@ -19,7 +19,7 @@ namespace xml_namespace
 
         void SetUp()
         {
-            std::ifstream test_model_file("../tests/namespaces.xml");
+            std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("namespaces.xml").string());
             if (test_model_file.is_open())
             {
                 const std::string xml_string(std::istreambuf_iterator<char>{test_model_file}, {});

@@ -1,10 +1,7 @@
-import os
-
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conan.tools import files
 from conan import ConanFile
 from conans import tools
-from conans.errors import ConanException
 
 required_conan_version = ">=1.46.2"
 
@@ -69,15 +66,15 @@ class SavitarConan(ConanFile):
             tc.blocks["generic_system"].values["generator_platform"] = None
             tc.blocks["generic_system"].values["toolset"] = None
 
-        tc.variables["ALLOW_IN_SOURCE_BUILD"] = True
-        tc.variables["BUILD_TESTING"] = self.options.enable_testing
+        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
         tc.generate()
 
     def layout(self):
         cmake_layout(self)
-        self.cpp.build.libs = ["Savitar"]
         self.cpp.package.libs = ["Savitar"]
-        self.cpp.package.defines = ["SAVITAR_DEBUG"]
+
+        if self.settings.build_type == "Debug":
+            self.cpp.package.defines = ["SAVITAR_DEBUG"]
 
     def build(self):
         cmake = CMake(self)
