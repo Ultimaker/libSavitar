@@ -1,5 +1,5 @@
-//Copyright (c) 2020 Ultimaker B.V.
-//libSavitar is released under the terms of the AGPLv3 or higher.
+// Copyright (c) 2022 Ultimaker B.V.
+// libSavitar is released under the terms of the LGPLv3 or higher.
 
 #ifndef NAMESPACE_H
 #define NAMESPACE_H
@@ -11,18 +11,18 @@
 // Forward declaration
 namespace pugi
 {
-    class xml_node;
+class xml_node;
 }
 
 namespace xml_namespace
 {
-    typedef std::map<std::string, std::set<std::string>> xmlns_map_t;
+typedef std::map<std::string, std::set<std::string>> xmlns_map_t;
 
-    std::string getCuraUri();
-    std::string getDefaultUri();
+std::string getCuraUri();
+std::string getDefaultUri();
 
-    xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node);
-    std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
-} //namespace xml_namespace
+xmlns_map_t getAncestralNamespaces(const pugi::xml_node& xml_node);
+std::set<std::string> getNamesFor(const xmlns_map_t& map, const std::string& uri);
+} // namespace xml_namespace
 
 #endif

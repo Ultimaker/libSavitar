@@ -1,20 +1,5 @@
-/*
- * This file is part of libSavitar
- *
- * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright (c) 2022 Ultimaker B.V.
+// libSavitar is released under the terms of the LGPLv3 or higher.
 
 #ifndef METADATAENTRY_H
 #define METADATAENTRY_H
@@ -52,13 +37,11 @@ struct MetadataEntry
      */
     bool preserve;
 
-    MetadataEntry(const std::string& value, const std::string& type = "xs:string", const bool preserve = false)
-        : value(value)
-        , type(type)
-        , preserve(preserve)
-    {}
+    MetadataEntry(const std::string& value, const std::string& type = "xs:string", const bool preserve = false) : value(value), type(type), preserve(preserve)
+    {
+    }
 };
 
-}
+} // namespace Savitar
 
 #endif

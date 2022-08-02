@@ -1,5 +1,5 @@
-//Copyright (c) 2020 Ultimaker B.V.
-//libSavitar is released under the terms of the AGPLv3 or higher.
+// Copyright (c) 2022 Ultimaker B.V.
+// libSavitar is released under the terms of the LGPLv3 or higher.
 
 #include "Savitar/Namespace.h"
 

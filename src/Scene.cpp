@@ -1,24 +1,9 @@
-/*
- * This file is part of libSavitar
- *
- * Copyright (C) 2021 Ultimaker B.V. <j.vankessel@ultimaker.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+// Copyright (c) 2022 Ultimaker B.V.
+// libSavitar is released under the terms of the LGPLv3 or higher.
 
 #include "Savitar/Scene.h"
-#include <pugixml.hpp>
 #include <iostream>
+#include <pugixml.hpp>
 #include <string>
 using namespace Savitar;
 
@@ -29,17 +14,16 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-
 }
 
-std::vector< SceneNode*> Scene::getSceneNodes()
+std::vector<SceneNode*> Scene::getSceneNodes()
 {
     return this->scene_nodes;
 }
 
 void Scene::addSceneNode(SceneNode* node)
 {
-    if(node == nullptr)
+    if (node == nullptr)
     {
         return;
     }
@@ -54,30 +38,30 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
     pugi::xml_node resources = xml_node.child("resources");
 
     // Handle metadata:
-    for(pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
+    for (pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
     {
         const std::string key = metadata_node.attribute("name").as_string();
         const std::string value = metadata_node.text().as_string();
         std::string type = metadata_node.attribute("type").as_string();
-        if(type == "")
+        if (type == "")
         {
-            type = "xs:string"; //Fill in the default type if it's not present.
+            type = "xs:string"; // Fill in the default type if it's not present.
         }
-        const std::string preserve_str = metadata_node.attribute("preserve").as_string(); //Don't use as_bool since 3MF's boolean parsing is more lenient.
+        const std::string preserve_str = metadata_node.attribute("preserve").as_string(); // Don't use as_bool since 3MF's boolean parsing is more lenient.
         const bool preserve = (preserve_str != "" && preserve_str != "0");
         setMetaDataEntry(key, value, type, preserve);
     }
 
     pugi::xml_node build = xml_node.child("build");
-    for(pugi::xml_node item = build.child("item"); item; item = item.next_sibling("item"))
+    for (pugi::xml_node item = build.child("item"); item; item = item.next_sibling("item"))
     {
         // Found a item in the build. The items are linked to objects by objectid.
         pugi::xml_node object_node = resources.find_child_by_attribute("object", "id", item.attribute("objectid").value());
-        if(object_node)
+        if (object_node)
         {
             SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
             temp_scene_node->setTransformation(item.attribute("transform").as_string());
-            
+
             // Get all metadata from the item and update that.
             const pugi::xml_node metadatagroup_node = item.child("metadatagroup");
             if (metadatagroup_node)
@@ -87,16 +71,16 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
                     const std::string key = setting.attribute("name").as_string();
                     const std::string value = setting.text().as_string();
                     std::string type = setting.attribute("type").as_string();
-                    if(type == "") //Not specified.
+                    if (type == "") // Not specified.
                     {
                         type = "xs:string";
                     }
-                    const std::string preserve_str = setting.attribute("preserve").as_string(); //Needs to be true if string is not "0", which is less strict than .as_bool();
+                    const std::string preserve_str = setting.attribute("preserve").as_string(); // Needs to be true if string is not "0", which is less strict than .as_bool();
                     const bool preserve = (preserve_str != "" && preserve_str != "0");
                     temp_scene_node->setSetting(key, value, type, preserve);
                 }
             }
-            
+
             scene_nodes.push_back(temp_scene_node);
         }
         else
@@ -112,46 +96,47 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     pugi::xml_node components = object_node.child("components");
     SceneNode* scene_node = new SceneNode();
     scene_node->fillByXMLNode(object_node);
-    
+
     std::map<std::string, std::string>::iterator it;
     const bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
-    
+
     std::string mesh_node_object_id = "";
-    
-    if(has_mesh_node)
+
+    if (has_mesh_node)
     {
         mesh_node_object_id = scene_node->getSettings().at("mesh_node_objectid").value;
     }
 
     // We have to do the checking for children outside of the SceneNode creation itself, because it only has references.
-    if(components)
+    if (components)
     {
-        
         SceneNode* mesh_node = nullptr;
-        for(pugi::xml_node component = components.child("component"); component; component = component.next_sibling("component"))
+        for (pugi::xml_node component = components.child("component"); component; component = component.next_sibling("component"))
         {
             // This node has children. Add them one by one.
             pugi::xml_node child_object_node = root_node.child("resources").find_child_by_attribute("object", "id", component.attribute("objectid").value());
-            if(child_object_node)
+            if (child_object_node)
             {
                 SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
-                if(has_mesh_node && mesh_node_object_id == component.attribute("objectid").as_string())
+                if (has_mesh_node && mesh_node_object_id == component.attribute("objectid").as_string())
                 {
                     // Don't add a node with the mesh_node_objectid metadata. Store it until last so we can copy it's mesh to the parent node
                     mesh_node = child_node;
-                } else
+                }
+                else
                 {
                     child_node->setTransformation(component.attribute("transform").as_string());
                     scene_node->addChild(child_node);
                 }
-            } else
+            }
+            else
             {
                 // TODO: ADD proper error handling here.
                 std::cout << "Child_object_node not found :( " << std::endl;
             }
         }
-        
-        if(mesh_node != nullptr)
+
+        if (mesh_node != nullptr)
         {
             scene_node->setMeshData(mesh_node->getMeshData());
             scene_node->removeSetting("mesh_node_objectid"); // No need to keep it. It's job is done!
@@ -165,13 +150,13 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
 std::vector<SceneNode*> Scene::getAllSceneNodes()
 {
     std::vector<SceneNode*> all_nodes;
-    
-    for(SceneNode* scene_node: scene_nodes)
+
+    for (SceneNode* scene_node : scene_nodes)
     {
         std::vector<SceneNode*> temp_children = scene_node->getAllChildren();
         all_nodes.insert(all_nodes.end(), temp_children.begin(), temp_children.end());
     }
-    
+
     // We put them at the end so that the "simplicity" rule of 3MF is kept:
     // "In keeping with the use of a simple parser, producers MUST define objects prior to referencing them as components."
     all_nodes.insert(all_nodes.end(), scene_nodes.begin(), scene_nodes.end());
