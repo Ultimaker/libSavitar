@@ -3,6 +3,8 @@
 <p align="center">
     <a href="https://github.com/Ultimaker/libSavitar/actions/workflows/conan-package.yml" alt="Conan Package">
         <img src="https://github.com/Ultimaker/libsavitar/actions/workflows/conan-package.yml/badge.svg" /></a>
+    <a href="https://github.com/Ultimaker/libSavitar/actions/workflows/unit-test.yml" alt="Unit test">
+        <img src="https://github.com/Ultimaker/libsavitar/actions/workflows/unit-test.yml/badge.svg" /></a>
     <a href="https://github.com/Ultimaker/libSavitar/issues" alt="Open Issues">
         <img src="https://img.shields.io/github/issues/ultimaker/libsavitar" /></a>
     <a href="https://github.com/Ultimaker/libSavitar/issues?q=is%3Aissue+is%3Aclosed" alt="Closed Issues">
@@ -51,55 +53,7 @@ conan profile new default --detect
 conan remote remove cura
 ```
 
-### pySavitar python module (optional)
-
-This repository also contains a Python module named pySavitar. To build it [sip](https://pypi.org/project/sip/) 6.5.1
-needs to be used to generate the C/C++ source code. We created a build tool for this called [sipbuildtool](https://github.com/Ultimaker/conan-ultimaker-index/recipes/sipbuildtool/conanfile.py)
-which is automatically installed when you run the `conan install` command. This will set up a temporary virtual Python environment, install
-sip and generated the C/C++ source code. The virtual Python environment is then removed. Downside of this method is that Conan should be
-installed with the system Python, not the virtual Python environment.
-
-#### usage
-
-Reading a 3mf file:
-
-```python
-import pySavitar
-file_name = "project.3mf"
-archive = zipfile.ZipFile(file_name, "r")
-parser = pySavitar.ThreeMFParser()
-scene_3mf = parser.parse(archive.open("3D/3dmodel.model").read())
-for node in scene_3mf.getSceneNodes():
-    my_node = convertSavitarNodeToMyNode(node)
-```
-
-Writing a 3mf file:
-
-```python
-archive = zipfile.ZipFile(stream, "w", compression = zipfile.ZIP_DEFLATED)
-model_file = zipfile.ZipInfo("3D/3dmodel.model")
-savitar_scene = pySavitar.Scene()
-#construct your node
-savitar_scene.addSceneNode(savitar_node)
-
-import numpy
-mesh = savitar_node.getMeshData()
-
-# We use zero data, but when using lib savitar, replace this with your data.
-vertices = numpy.zeros((9, 3), dtype = numpy.float32)  
-faces = numpy.zeros((4, 2), dtype=numpy.int32)
-
-mesh.setVerticesFromBytes(vertices.tobytes())
-mesh.setFacesFromBytes(faces.tobytes())
-
-parser = pySavitar.ThreeMFParser()
-
-# Generate XML string 
-scene_string = parser.sceneToString(savitar_scene)  
-archive.writestr(model_file, scene_string)
-```
-
-### Building Savitar and pySavitar
+### Building Savitar
 
 The steps above should be enough to get your system in such a state you can start development on Savitar. Executed in the root directory of
 Savitar.

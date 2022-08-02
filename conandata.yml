@@ -1,10 +1,15 @@
 "None":
     requirements:
         - "pugixml/1.12.1"
-    requirements_pysavitar:
-        - "cpython/3.10.4"
+    build_requirements_testing:
+        - "gtest/1.12.1"
 "5.1.0":
     requirements:
         - "pugixml/1.12.1"
-    requirements_pysavitar:
-        - "cpython/3.10.4"
+    build_requirements_testing:
+        - "gtest/[>=1.10.0]"
+"5.2.0-alpha":
+    requirements:
+        - "pugixml/1.12.1"
+    build_requirements_testing:
+        - "gtest/1.12.1"
