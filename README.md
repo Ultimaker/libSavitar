@@ -3,6 +3,8 @@
 <p align="center">
     <a href="https://github.com/Ultimaker/libSavitar/actions/workflows/conan-package.yml" alt="Conan Package">
         <img src="https://github.com/Ultimaker/libsavitar/actions/workflows/conan-package.yml/badge.svg" /></a>
+    <a href="https://github.com/Ultimaker/libSavitar/actions/workflows/unit-test.yml" alt="Unit test">
+        <img src="https://github.com/Ultimaker/libsavitar/actions/workflows/unit-test.yml/badge.svg" /></a>
     <a href="https://github.com/Ultimaker/libSavitar/issues" alt="Open Issues">
         <img src="https://img.shields.io/github/issues/ultimaker/libsavitar" /></a>
     <a href="https://github.com/Ultimaker/libSavitar/issues?q=is%3Aissue+is%3Aclosed" alt="Closed Issues">
