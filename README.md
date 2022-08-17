@@ -78,18 +78,6 @@ cmake --preset debug
 cmake --build --preset debug
 ```
 
-### 4. Activate Conan Run Environment
-
-```bash
-# For Linux/MacOS
-source build/generators/conanrun.sh
-```
-
-```powershell
-# For Windows (Powershell)
-.\build\generators\conanrun.sh
-```
-
 ## Creating a new Savitar Conan package
 
 To create a new Savitar Conan package such that it can be used in Cura and Uranium, run the following command:
