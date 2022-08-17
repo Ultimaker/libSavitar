@@ -30,6 +30,30 @@ http://www.gnu.org/licenses/lgpl.html
 > But in general it boils down to:  
 > **You need to share the source of any Savitar modifications if you make an application with Savitar.**
 
+## System Requirements
+
+### Windows
+- Python 3.6 or higher
+- Ninja 1.10 or higher
+- VS2022 or higher
+- CMake 3.23 or higher
+- nmake
+
+### MacOs
+- Python 3.6 or higher
+- Ninja 1.10 or higher
+- apply clang 11 or higher
+- CMake 3.23 or higher
+- make
+
+### Linux
+- Python 3.6 or higher
+- Ninja 1.10 or higher
+- gcc 12 or higher
+- CMake 3.23 or higher
+- make
+
+
 ## How To Build
 
 > **Note:**  
