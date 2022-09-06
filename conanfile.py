@@ -61,11 +61,6 @@ class SavitarConan(ConanFile):
         cmake.generate()
 
         tc = CMakeToolchain(self)
-
-        if self.settings.compiler == "Visual Studio":
-            tc.blocks["generic_system"].values["generator_platform"] = None
-            tc.blocks["generic_system"].values["toolset"] = None
-
         tc.variables["ENABLE_TESTING"] = self.options.enable_testing
         tc.generate()
 
