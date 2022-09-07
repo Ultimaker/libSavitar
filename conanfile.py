@@ -1,9 +1,9 @@
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conan.tools import files
+from conan.tools.files import AutoPackager
+from conan.tools.build import check_min_cppstd
 from conan import ConanFile
-from conans import tools
 
-required_conan_version = ">=1.48.0"
+required_conan_version = ">=1.50.0"
 
 
 class SavitarConan(ConanFile):
@@ -16,8 +16,9 @@ class SavitarConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     revision_mode = "scm"
     exports = "LICENSE*"
+    generators = "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
 
-    python_requires = "umbase/0.1.5@ultimaker/testing"
+    python_requires = "umbase/[>=0.1.7]@ultimaker/stable"
     python_requires_extend = "umbase.UMBaseConanfile"
 
     options = {
@@ -36,12 +37,18 @@ class SavitarConan(ConanFile):
         "url": "auto",
         "revision": "auto"
     }
+
+    def set_version(self):
+        if self.version is None:
+            self.version = self._umdefault_version()
+
     def build_requirements(self):
         if self.options.enable_testing:
             for req in self._um_data()["build_requirements_testing"]:
                 self.test_requires(req)
 
     def requirements(self):
+        self.requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
         for req in self._um_data()["requirements"]:
             self.requires(req)
 
@@ -54,12 +61,9 @@ class SavitarConan(ConanFile):
 
     def validate(self):
         if self.settings.compiler.get_safe("cppstd"):
-            tools.check_min_cppstd(self, 17)
+            check_min_cppstd(self, 17)
 
     def generate(self):
-        cmake = CMakeDeps(self)
-        cmake.generate()
-
         tc = CMakeToolchain(self)
         tc.variables["ENABLE_TESTING"] = self.options.enable_testing
         tc.generate()
@@ -77,5 +81,5 @@ class SavitarConan(ConanFile):
         cmake.build()
 
     def package(self):
-        packager = files.AutoPackager(self)
+        packager = AutoPackager(self)
         packager.run()
