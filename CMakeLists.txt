@@ -36,11 +36,6 @@ target_include_directories(Savitar
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         )
 
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
-    target_compile_definitions(Savitar PUBLIC SAVITAR_DEBUG)
-endif()
-
-
 option(ENABLE_TESTING "Enable unit-testing" OFF)
 if (ENABLE_TESTING)
     enable_testing()
