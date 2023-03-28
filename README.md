@@ -19,6 +19,8 @@
         <img src="https://img.shields.io/github/license/ultimaker/libsavitar?style=flat" /></a>
 </p>
 
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Ultimaker/libSavitar/badge)](https://api.securityscorecards.dev/projects/github.com/Ultimaker/libSavitar)
+
 This library contains C++ code and Python bindings for loading 3mf files.
 
 ## License
