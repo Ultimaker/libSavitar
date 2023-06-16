@@ -127,6 +127,16 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
     }
 }
 
+std::string SceneNode::getPath()
+{
+    return path_;
+}
+
+void SceneNode::setPath(std::string path)
+{
+    path_ = path;
+}
+
 std::string SceneNode::getId()
 {
     return id_;

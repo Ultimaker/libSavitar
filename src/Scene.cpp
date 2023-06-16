@@ -23,7 +23,7 @@ void Scene::addSceneNode(SceneNode* node)
 }
 
 
-void Scene::fillByXMLNode(pugi::xml_node xml_node)
+void Scene::fillByXMLNode(const std::string& path, pugi::xml_node xml_node)
 {
     unit_ = xml_node.attribute("unit").as_string();
 
@@ -44,16 +44,54 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         setMetaDataEntry(key, value, type, preserve);
     }
 
+    if (!path.empty())
+    {
+        for (pugi::xml_node object = resources.child("object"); object != nullptr; object = object.next_sibling("object"))
+        {
+            SceneNode* temp_scene_node = createSceneNodeFromObject(path, xml_node, object);
+            std::cout << "sub component " << temp_scene_node->getPath() << ":" << temp_scene_node->getId() << std::endl;
+            scene_nodes_.push_back(temp_scene_node);
+        }
+        return;
+    }
+
+    std::vector<SceneNode*> scene_nodes;
     pugi::xml_node build = xml_node.child("build");
     for (pugi::xml_node item = build.child("item"); item != nullptr; item = item.next_sibling("item"))
     {
         // Found a item in the build. The items are linked to objects by objectid.
+        SceneNode* temp_scene_node = nullptr;
         pugi::xml_node object_node = resources.find_child_by_attribute("object", "id", item.attribute("objectid").value());
-        if (object_node != nullptr)
+        
+        std::string path = item.attribute("p:path").value();
+        if (!path.empty())
         {
-            SceneNode* temp_scene_node = createSceneNodeFromObject(xml_node, object_node);
+            auto id = item.attribute("objectid").value();
+            bool found = false;
+            for (auto node : scene_nodes_)
+            {
+                if (node->getPath() == path && node->getId() == id)
+                {
+                    temp_scene_node = new SceneNode();
+                    temp_scene_node->setMeshData(node->getMeshData());
+                    temp_scene_node->setTransformation(item.attribute("transform").as_string());
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                std::cout << "sub component not found :( " << path << ":" << id << std::endl;
+            }
+        }
+        else if (object_node != nullptr)
+        {
+            temp_scene_node = createSceneNodeFromObject(path, xml_node, object_node);
             temp_scene_node->setTransformation(item.attribute("transform").as_string());
+        }
 
+        if (temp_scene_node)
+        {
             // Get all metadata from the item and update that.
             const pugi::xml_node metadatagroup_node = item.child("metadatagroup");
             if (metadatagroup_node != nullptr)
@@ -73,7 +111,7 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
                 }
             }
 
-            scene_nodes_.push_back(temp_scene_node);
+            scene_nodes.push_back(temp_scene_node);
         }
         else
         {
@@ -81,13 +119,15 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
             std::cout << "Could not find object by given ID" << std::endl;
         }
     }
+    scene_nodes.swap(scene_nodes_);
 }
 
-SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node)
+SceneNode* Scene::createSceneNodeFromObject(const std::string& path, pugi::xml_node root_node, pugi::xml_node object_node)
 {
     pugi::xml_node components = object_node.child("components");
     auto* scene_node = new SceneNode();
     scene_node->fillByXMLNode(object_node);
+    scene_node->setPath(path);
 
     std::map<std::string, std::string>::iterator it;
     const bool has_mesh_node = scene_node->getSettings().find("mesh_node_objectid") != scene_node->getSettings().end();
@@ -106,10 +146,33 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
         for (pugi::xml_node component = components.child("component"); component != nullptr; component = component.next_sibling("component"))
         {
             // This node has children. Add them one by one.
+            std::string path = component.attribute("p:path").value();
+            if (!path.empty())
+            {
+                auto id = component.attribute("objectid").value();
+                bool found = false;
+                for (auto node : scene_nodes_)
+                {
+                    if (node->getPath() == path && node->getId() == id)
+                    {
+                        auto* child_node = new SceneNode();
+                        child_node->setMeshData(node->getMeshData());
+                        child_node->setTransformation(component.attribute("transform").as_string());
+                        scene_node->addChild(child_node);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    std::cout << "sub component not found :( " << path << ":" << id << std::endl;
+                }
+                continue;
+            }
             pugi::xml_node child_object_node = root_node.child("resources").find_child_by_attribute("object", "id", component.attribute("objectid").value());
             if (child_object_node != nullptr)
             {
-                SceneNode* child_node = createSceneNodeFromObject(root_node, child_object_node);
+                SceneNode* child_node = createSceneNodeFromObject(path, root_node, child_object_node);
                 if (has_mesh_node && mesh_node_object_id == component.attribute("objectid").as_string())
                 {
                     // Don't add a node with the mesh_node_objectid metadata. Store it until last so we can copy it's mesh to the parent node
