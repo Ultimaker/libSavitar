@@ -60,6 +60,8 @@ class SavitarConan(ConanFile):
         copy(self, "CMakeLists.txt", self.recipe_folder, self.export_sources_folder)
         copy(self, "*", path.join(self.recipe_folder, "src"), path.join(self.export_sources_folder, "src"))
         copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
+        if self.options.enable_testing:
+            copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
 
     def layout(self):
         cmake_layout(self)
