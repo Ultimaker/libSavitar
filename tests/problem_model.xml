@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <model unit="millimeter" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xml:lang="en-US">
     <!-- this file uses Dutch style commas for the decimal-indicator, instead of international/US points -->
     <!-- this should either be read or fail fast, but should definitely not just silently ignore the part after the comma-->
