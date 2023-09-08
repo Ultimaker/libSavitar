@@ -108,12 +108,17 @@ jobs:
             -   name: Upload the Dependency package(s)
                 run: conan upload "*" -r cura --all -c
 
+            -   name: Look Around You
+                if: ${{ runner.os != 'Windows' }}
+                run: ls -laR
+                working-directory: ../
+
             -   name: Set Environment variables from Conan install (bash)
                 if: ${{ runner.os != 'Windows' }}
                 run: |
                     . ./activate_github_actions_runenv.sh
                     . ./activate_github_actions_buildenv.sh
-                working-directory: build/generators/
+                working-directory: ../build/generators/
 
             -   name: Build Unit Test
                 run: |
@@ -123,7 +128,7 @@ jobs:
             -   name: Run Unit Test
                 id: run-test
                 run: ctest --output-junit engine_test.xml
-                working-directory: build/Release/
+                working-directory: ../build/Release/
 
             -   name: Publish Unit Test Results
                 id: test-results
