@@ -1,9 +1,17 @@
-from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
-from conan.tools.files import AutoPackager
-from conan.tools.build import check_min_cppstd
-from conan import ConanFile
+from os import path
 
-required_conan_version = ">=1.50.0"
+
+from conan import ConanFile
+from conan.errors import ConanInvalidConfiguration
+from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
+from conan.tools.env import VirtualBuildEnv
+from conan.tools.files import AutoPackager, copy
+from conan.tools.build import check_min_cppstd
+from conan.tools.microsoft import check_min_vs, is_msvc, is_msvc_static_runtime
+from conan.tools.scm import Version
+
+
+required_conan_version = ">=1.56.0"
 
 
 class SavitarConan(ConanFile):
@@ -18,9 +26,6 @@ class SavitarConan(ConanFile):
     exports = "LICENSE*"
     generators = "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
 
-    python_requires = "umbase/[>=0.1.7]@ultimaker/stable"
-    python_requires_extend = "umbase.UMBaseConanfile"
-
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
@@ -31,49 +36,79 @@ class SavitarConan(ConanFile):
         "fPIC": True,
         "enable_testing": False
     }
-    scm = {
-        "type": "git",
-        "subfolder": ".",
-        "url": "auto",
-        "revision": "auto"
-    }
 
     def set_version(self):
         if self.version is None:
-            self.version = self._umdefault_version()
+            self.version = "5.3.0-alpha"
 
-    def build_requirements(self):
-        if self.options.enable_testing:
-            for req in self._um_data()["build_requirements_testing"]:
-                self.test_requires(req)
 
-    def requirements(self):
-        self.requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
-        for req in self._um_data()["requirements"]:
-            self.requires(req)
+    @property
+    def _min_cppstd(self):
+        return 17
 
-    def config_options(self):
-        if self.options.shared and self.settings.compiler == "Visual Studio":
-            del self.options.fPIC
+    @property
+    def _compilers_minimum_version(self):
+        return {
+            "gcc": "9",
+            "clang": "9",
+            "apple-clang": "9",
+            "msvc": "192",
+            "visual_studio": "14",
+        }
 
-    def configure(self):
-        self.options["pugixml"].shared = self.options.shared
-
-    def validate(self):
-        if self.settings.compiler.get_safe("cppstd"):
-            check_min_cppstd(self, 17)
-
-    def generate(self):
-        tc = CMakeToolchain(self)
-        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
-        tc.generate()
+    def export_sources(self):
+        copy(self, "CMakeLists.txt", self.recipe_folder, self.export_sources_folder)
+        copy(self, "*", path.join(self.recipe_folder, "src"), path.join(self.export_sources_folder, "src"))
+        copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
+        copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
 
     def layout(self):
         cmake_layout(self)
         self.cpp.package.libs = ["Savitar"]
 
-        if self.settings.build_type == "Debug":
+        if self.settings.get_safe("build_type", "Release") == "Debug":
             self.cpp.package.defines = ["SAVITAR_DEBUG"]
+
+    def requirements(self):
+        self.requires("pugixml/1.12.1", transitive_headers=True)
+
+    def validate(self):
+        if self.settings.compiler.cppstd:
+            check_min_cppstd(self, self._min_cppstd)
+        check_min_vs(self, 192)  # TODO: remove in Conan 2.0
+        if not is_msvc(self):
+            minimum_version = self._compilers_minimum_version.get(str(self.settings.compiler), False)
+            if minimum_version and Version(self.settings.compiler.version) < minimum_version:
+                raise ConanInvalidConfiguration(
+                    f"{self.ref} requires C++{self._min_cppstd}, which your compiler does not support."
+                )
+
+    def build_requirements(self):
+        self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
+        if self.options.enable_testing:
+            self.test_requires("gtest/1.12.1")
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
+    def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        if is_msvc(self):
+            tc.variables["USE_MSVC_RUNTIME_LIBRARY_DLL"] = not is_msvc_static_runtime(self)
+        tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0077"] = "NEW"
+        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
+        tc.generate()
+
+        tc = CMakeDeps(self)
+        tc.generate()
+
+        tc = VirtualBuildEnv(self)
+        tc.generate(scope="build")
 
     def build(self):
         cmake = CMake(self)
@@ -81,5 +116,6 @@ class SavitarConan(ConanFile):
         cmake.build()
 
     def package(self):
+        copy(self, pattern="LICENSE*", dst="licenses", src=self.source_folder)
         packager = AutoPackager(self)
         packager.run()
