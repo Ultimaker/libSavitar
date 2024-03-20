@@ -30,7 +30,7 @@ public:
     void SetUp() override
     {
         xml_string = "";
-        std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("test_model.xml").string());
+        std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("test_model.xml.test").string());
         if (test_model_file.is_open())
         {
             xml_string = std::string(std::istreambuf_iterator<char>{ test_model_file }, {});
@@ -120,7 +120,7 @@ TEST_F(ThreeMFParserTest, decimalSeparatorTest)
 {
     // Don't accept a model that uses ','s for decimal separators.
     std::string xml_string_septest;
-    std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("problem_model.xml").string());
+    std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("problem_model.xml.test").string());
     if (test_model_file.is_open())
     {
         xml_string_septest = std::string(std::istreambuf_iterator<char>{ test_model_file }, {});

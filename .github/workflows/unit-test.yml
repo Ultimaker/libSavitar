@@ -56,7 +56,7 @@ env:
 
 jobs:
     conan-recipe-version:
-        uses: ultimaker/cura/.github/workflows/conan-recipe-version.yml@main
+        uses: ultimaker/cura-workflows/.github/workflows/conan-recipe-version.yml@main
         with:
             project_name: savitar
 

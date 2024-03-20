@@ -20,7 +20,7 @@ public:
 
     void SetUp()
     {
-        std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("namespaces.xml").string());
+        std::ifstream test_model_file(std::filesystem::path(__FILE__).parent_path().append("namespaces.xml.test").string());
         if (test_model_file.is_open())
         {
             const std::string xml_string(std::istreambuf_iterator<char>{ test_model_file }, {});
