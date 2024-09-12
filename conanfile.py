@@ -38,8 +38,8 @@ class SavitarConan(ConanFile):
     }
 
     def set_version(self):
-        if self.version is None:
-            self.version = "5.4.0-alpha"
+        if not self.version:
+            self.version = self.conan_data["version"]
 
     @property
     def _min_cppstd(self):
