@@ -83,7 +83,7 @@ class SavitarConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.1.0]@ultimaker/stable")
+        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
         if self.options.enable_testing:
             self.test_requires("gtest/1.12.1")
 
