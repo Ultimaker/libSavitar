@@ -11,7 +11,7 @@ from conan.tools.microsoft import check_min_vs, is_msvc, is_msvc_static_runtime
 from conan.tools.scm import Version
 
 
-required_conan_version = ">=1.56.0"
+required_conan_version = ">=2.7.0"
 
 
 class SavitarConan(ConanFile):
