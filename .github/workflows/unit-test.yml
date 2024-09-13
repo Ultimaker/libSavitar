@@ -59,7 +59,7 @@ jobs:
           install_system_dependencies: true
 
       - name: Install dependencies and build unit test
-        run: conan build . -o enable_testing=True -s build_type=Release --build=missing --update -g GitHubActionsRunEnv -g GitHubActionsBuildEnv -c tools.build:skip_test=false
+        run: conan build . -s build_type=Release --build=missing --update -g GitHubActionsRunEnv -g GitHubActionsBuildEnv -c tools.build:skip_test=False
 
       - name: Run Unit Test
         id: run-test
