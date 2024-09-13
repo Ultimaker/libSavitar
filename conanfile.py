@@ -26,13 +26,11 @@ class SavitarConan(ConanFile):
 
     options = {
         "shared": [True, False],
-        "fPIC": [True, False],
-        "enable_testing": [True, False]
+        "fPIC": [True, False]
     }
     default_options = {
         "shared": True,
-        "fPIC": True,
-        "enable_testing": False
+        "fPIC": True
     }
 
     def set_version(self):
@@ -86,7 +84,7 @@ class SavitarConan(ConanFile):
 
     def build_requirements(self):
         self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
-        if self.options.enable_testing:
+        if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             self.test_requires("gtest/1.14.0")
 
     def config_options(self):
@@ -102,7 +100,7 @@ class SavitarConan(ConanFile):
         if is_msvc(self):
             tc.variables["USE_MSVC_RUNTIME_LIBRARY_DLL"] = not is_msvc_static_runtime(self)
         tc.cache_variables["CMAKE_POLICY_DEFAULT_CMP0077"] = "NEW"
-        tc.variables["ENABLE_TESTING"] = self.options.enable_testing
+        tc.variables["ENABLE_TESTING"] = not self.conf.get("tools.build:skip_test", False, check_type=bool)
         tc.generate()
 
         tc = CMakeDeps(self)
