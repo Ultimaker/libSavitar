@@ -45,14 +45,6 @@ on:
       - '[0-9].[0-9][0-9].[0-9]'
 
 jobs:
-# FIXME: Use main once merged
-  conan-recipe-version:
-    name: Calculate package version numbers
-    uses: ultimaker/cura-workflows/.github/workflows/conan-recipe-version.yml@CURA-11622_conan_v2
-    with:
-      project_name: savitar
-    secrets: inherit
-
   testing:
     name: Run unit tests
     runs-on: ubuntu-latest
@@ -68,7 +60,7 @@ jobs:
           install_system_dependencies: true
 
       - name: Install dependencies and build unit test
-        run: conan build . ${{ needs.conan-recipe-version.outputs.recipe_id_full }} -o enable_testing=True -s build_type=Release --build=missing --update -g GitHubActionsRunEnv -g GitHubActionsBuildEnv
+        run: conan build . -o enable_testing=True -s build_type=Release --build=missing --update -g GitHubActionsRunEnv -g GitHubActionsBuildEnv
 
       - name: Run Unit Test
         id: run-test
