@@ -49,8 +49,8 @@ jobs:
   conan-recipe-version:
     name: Calculate package version numbers
     uses: ultimaker/cura-workflows/.github/workflows/conan-recipe-version.yml@CURA-11622_conan_v2
-  with:
-    project_name: savitar
+    with:
+      project_name: savitar
 
   testing:
     name: Run unit tests
