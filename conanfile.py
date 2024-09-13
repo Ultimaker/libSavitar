@@ -22,7 +22,6 @@ class SavitarConan(ConanFile):
     description = "libSavitar is a c++ implementation of 3mf loading with SIP python bindings"
     topics = ("conan", "cura", "3mf", "c++")
     settings = "os", "compiler", "build_type", "arch"
-    revision_mode = "scm"
     exports = "LICENSE*"
     generators = "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
 
