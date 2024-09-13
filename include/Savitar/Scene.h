@@ -40,7 +40,7 @@ public:
     /**
      * Set the data of this SceneNode by giving it a xml node
      */
-    void fillByXMLNode(pugi::xml_node xml_node);
+    void fillByXMLNode(const std::string& path, pugi::xml_node xml_node);
 
     /**
      * Store a metadata entry as metadata.
@@ -86,7 +86,7 @@ private:
      * Because 3mf uses references, we also need to provide the root_node, so it's know what the reference points to
      * \returns The created SceneNode.
      */
-    SceneNode* createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_node object_node);
+    SceneNode* createSceneNodeFromObject(const std::string& path, pugi::xml_node root_node, pugi::xml_node object_node);
 };
 } // namespace Savitar
 #endif
