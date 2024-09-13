@@ -1,5 +1,4 @@
-from os import path
-
+import os
 
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
@@ -9,7 +8,6 @@ from conan.tools.files import AutoPackager, copy, update_conandata
 from conan.tools.build import check_min_cppstd
 from conan.tools.microsoft import check_min_vs, is_msvc, is_msvc_static_runtime
 from conan.tools.scm import Version, Git
-
 
 required_conan_version = ">=2.7.0"
 
@@ -23,7 +21,8 @@ class SavitarConan(ConanFile):
     topics = ("conan", "cura", "3mf", "c++")
     settings = "os", "compiler", "build_type", "arch"
     exports = "LICENSE*"
-    generators = "CMakeDeps", "VirtualBuildEnv", "VirtualRunEnv"
+    generators = "VirtualRunEnv"
+    package_type = "library"
 
     options = {
         "shared": [True, False],
@@ -60,9 +59,9 @@ class SavitarConan(ConanFile):
 
     def export_sources(self):
         copy(self, "CMakeLists.txt", self.recipe_folder, self.export_sources_folder)
-        copy(self, "*", path.join(self.recipe_folder, "src"), path.join(self.export_sources_folder, "src"))
-        copy(self, "*", path.join(self.recipe_folder, "include"), path.join(self.export_sources_folder, "include"))
-        copy(self, "*", path.join(self.recipe_folder, "tests"), path.join(self.export_sources_folder, "tests"))
+        copy(self, "*", os.path.join(self.recipe_folder, "src"), os.path.join(self.export_sources_folder, "src"))
+        copy(self, "*", os.path.join(self.recipe_folder, "include"), os.path.join(self.export_sources_folder, "include"))
+        copy(self, "*", os.path.join(self.recipe_folder, "tests"), os.path.join(self.export_sources_folder, "tests"))
 
     def layout(self):
         cmake_layout(self)
@@ -72,7 +71,7 @@ class SavitarConan(ConanFile):
             self.cpp.package.defines = ["SAVITAR_DEBUG"]
 
     def requirements(self):
-        self.requires("pugixml/1.12.1", transitive_headers=True)
+        self.requires("pugixml/1.14", transitive_headers=True)
 
     def validate(self):
         if self.settings.compiler.cppstd:
@@ -88,7 +87,7 @@ class SavitarConan(ConanFile):
     def build_requirements(self):
         self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/cura_11622")  # FIXME: use stable after merge
         if self.options.enable_testing:
-            self.test_requires("gtest/1.12.1")
+            self.test_requires("gtest/1.14.0")
 
     def config_options(self):
         if self.settings.os == "Windows":
