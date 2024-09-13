@@ -51,6 +51,7 @@ jobs:
     uses: ultimaker/cura-workflows/.github/workflows/conan-recipe-version.yml@CURA-11622_conan_v2
     with:
       project_name: savitar
+    secrets: inherit
 
   testing:
     name: Run unit tests
