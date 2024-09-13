@@ -5,10 +5,10 @@ from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
 from conan.tools.cmake import CMakeToolchain, CMakeDeps, CMake, cmake_layout
 from conan.tools.env import VirtualBuildEnv
-from conan.tools.files import AutoPackager, copy
+from conan.tools.files import AutoPackager, copy, update_conandata
 from conan.tools.build import check_min_cppstd
 from conan.tools.microsoft import check_min_vs, is_msvc, is_msvc_static_runtime
-from conan.tools.scm import Version
+from conan.tools.scm import Version, Git
 
 
 required_conan_version = ">=2.7.0"
@@ -40,6 +40,10 @@ class SavitarConan(ConanFile):
     def set_version(self):
         if not self.version:
             self.version = self.conan_data["version"]
+
+    def export(self):
+        git = Git(self)
+        update_conandata(self, {"version": self.version, "commit": git.get_commit()})
 
     @property
     def _min_cppstd(self):
