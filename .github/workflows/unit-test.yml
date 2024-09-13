@@ -47,31 +47,8 @@ on:
 jobs:
   testing:
     name: Run unit tests
-    runs-on: ubuntu-latest
-
-    steps:
 # FIXME: use main once merged
-      - name: Setup the build environment
-        uses: ultimaker/cura-workflows/.github/actions/setup-build-environment@CURA-11622_conan_v2
-        with:
-          conan_user: ${{ secrets.CONAN_USER }}
-          conan_password: ${{ secrets.CONAN_PASS }}
-          install_system_dependencies: true
-
-      - name: Install dependencies and build unit test
-        run: conan build . -s build_type=Release --build=missing --update -g GitHubActionsRunEnv -g GitHubActionsBuildEnv -c tools.build:skip_test=False
-
-      - name: Run Unit Test
-        id: run-test
-        run: ctest --output-junit unit_tests_results.xml
-        working-directory: build/Release/tests
-
-      - name: Publish Unit Test Results
-        id: test-results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: ${{ always() }}
-        with:
-          files: build/Release/tests/unit_tests_results.xml
-
-      - name: Conclusion
-        run: echo "Conclusion is ${{ fromJSON( steps.test-results.outputs.json ).conclusion }}"
+    uses: ultimaker/cura-workflows/.github/workflows/unit-test.yml@CURA-11622_conan_v2
+    with:
+      test_use_ctest: true
+    secrets: inherit
