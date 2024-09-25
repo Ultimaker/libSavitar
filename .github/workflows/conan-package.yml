@@ -7,8 +7,8 @@ on:
       - 'include/**'
       - 'test_package/**'
       - 'tests/**'
-      - 'conanfile.py'
       - 'conandata.yml'
+      - 'conanfile.py'
       - 'CMakeLists.txt'
       - '.github/workflows/conan-package.yml'
     branches:
