@@ -1,0 +1,15 @@
+name: unit-test-post
+
+on:
+  workflow_run:
+    workflows: [ unit-test ]
+    types: [ completed ]
+
+jobs:
+  publish-test-results:
+# FIXME: use main once merged
+    uses: ultimaker/cura-workflows/.github/workflows/unit-test-post.yml@CURA-11622_conan_v2
+    with:
+      event: ${{ github.event.workflow_run.event }}
+      conclusion: ${{ github.event.workflow_run.conclusion }}
+    secrets: inherit
