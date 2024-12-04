@@ -10,5 +10,3 @@ target_link_libraries(test
         PUBLIC
             savitar::savitar
         )
-
-#target_include_directories(test PRIVATE ${Savitar_INCLUDE_DIRS})
