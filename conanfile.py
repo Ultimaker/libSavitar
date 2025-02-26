@@ -83,7 +83,7 @@ class SavitarConan(ConanFile):
                 )
 
     def build_requirements(self):
-        self.test_requires("standardprojectsettings/[>=0.2.0]@ultimaker/stable")
+        self.test_requires("standardprojectsettings/[>=0.2.0]")
         if not self.conf.get("tools.build:skip_test", False, check_type=bool):
             self.test_requires("gtest/1.14.0")
 
