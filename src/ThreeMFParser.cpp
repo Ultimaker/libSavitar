@@ -17,10 +17,32 @@ ThreeMFParser::ThreeMFParser()
 
 Scene ThreeMFParser::parse(const std::string& xml_string)
 {
+    size_t xml_start = 0;
+    std::string path;
+    if (!xml_string.empty() && xml_string.front() == '/')
+    {
+        xml_start = xml_string.find(':');
+        if (xml_start != std::string::npos)
+        {
+            path = xml_string.substr(0, xml_start);
+            ++xml_start;
+        }
+    }
+
+    static Scene g_scene;
     pugi::xml_document document;
-    document.load_string(xml_string.c_str());
-    Scene scene;
-    scene.fillByXMLNode(document.child("model"));
+    document.load_string(xml_string.c_str() + xml_start);
+    Scene scene = g_scene;
+    scene.fillByXMLNode(path, document.child("model"));
+
+    if (path.empty())
+    {
+        g_scene = Scene();
+    }
+    else
+    {
+        g_scene = scene;
+    }
 
     return scene;
 }
