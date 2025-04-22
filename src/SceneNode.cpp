@@ -23,6 +23,11 @@ SceneNode* SceneNode::getMeshNode()
     return mesh_node_;
 }
 
+std::string SceneNode::getComponentPath() const
+{
+    return component_path_;
+}
+
 std::vector<SceneNode*> SceneNode::getChildren()
 {
     return children_;
@@ -125,6 +130,45 @@ void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
             setSetting(key, value, type, preserve);
         }
     }
+
+    // Read components
+    const pugi::xml_node components_node = xml_node.child("components");
+    if (components_node != nullptr)
+    {
+        for (pugi::xml_node component = components_node.child("component"); component != nullptr; component = component.next_sibling("component"))
+        {
+            std::string path = component.attribute("p:path").as_string();
+            if (! path.empty())
+            {
+                component_path_ = path;
+            }
+
+            std::string transformation = component.attribute("transform").as_string();
+            if (! transformation.empty())
+            {
+                transformation_ = transformation;
+            }
+        }
+    }
+}
+
+void SceneNode::parseComponentData(const std::string& xml_string)
+{
+    pugi::xml_document document;
+    document.load_string(xml_string.c_str());
+
+    pugi::xml_node xml_node = document;
+    for (const std::string child_name : {"model", "resources", "object", "mesh"})
+    {
+        xml_node = xml_node.child(child_name.c_str());
+        if (xml_node == nullptr)
+        {
+            return;
+        }
+    }
+
+    mesh_data_.clear();
+    mesh_data_.fillByXMLNode(xml_node);
 }
 
 std::string SceneNode::getId()
