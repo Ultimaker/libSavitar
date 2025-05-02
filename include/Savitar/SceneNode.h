@@ -37,6 +37,11 @@ public:
     void fillByXMLNode(pugi::xml_node xml_node);
 
     /**
+     * Parses the (mesh) data stored in the external component file
+     */
+    void parseComponentData(const std::string& xml_string);
+
+    /**
      * Get the (unique) identifier of the node.
      */
     [[nodiscard]] std::string getId();
@@ -69,6 +74,8 @@ public:
 
     [[nodiscard]] SceneNode* getMeshNode();
 
+    [[nodiscard]] std::string getComponentPath() const;
+
 private:
     std::string transformation_{ "1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0" };
     std::vector<SceneNode*> children_;
@@ -77,6 +84,7 @@ private:
     std::string id_;
     std::string name_;
     std::string type_{ "model" };
+    std::string component_path_;
 
     // 3MF does not support having an Object that has a mesh and components.
     // This is solved by the concept of the "mesh" node, which is added as a child.
