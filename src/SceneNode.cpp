@@ -171,6 +171,16 @@ void SceneNode::parseComponentData(const std::string& xml_string)
     mesh_data_.fillByXMLNode(xml_node);
 }
 
+std::string SceneNode::getPath()
+{
+    return path_;
+}
+
+void SceneNode::setPath(std::string path)
+{
+    path_ = path;
+}
+
 std::string SceneNode::getId()
 {
     return id_;

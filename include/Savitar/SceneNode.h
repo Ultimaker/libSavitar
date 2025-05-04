@@ -44,6 +44,13 @@ public:
     /**
      * Get the (unique) identifier of the node.
      */
+    [[nodiscard]] std::string getPath();
+
+    void setPath(std::string id);
+
+    /**
+     * Get the (unique) identifier of the node.
+     */
     [[nodiscard]] std::string getId();
 
     void setId(std::string id);
@@ -81,6 +88,7 @@ private:
     std::vector<SceneNode*> children_;
     MeshData mesh_data_;
     std::map<std::string, MetadataEntry> settings_;
+    std::string path_;
     std::string id_;
     std::string name_;
     std::string type_{ "model" };
