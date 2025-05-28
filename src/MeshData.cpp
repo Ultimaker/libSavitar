@@ -2,9 +2,11 @@
 // libSavitar is released under the terms of the LGPLv3 or higher.
 
 #include "Savitar/MeshData.h"
+
+#include "Savitar/Scene.h"
+
 #include <cstring>
 #include <iostream>
-#include <pugixml.hpp>
 #include <stdexcept> //For std::runtime_error.
 
 using namespace Savitar;
@@ -37,8 +39,19 @@ void MeshData::fillByXMLNode(pugi::xml_node xml_node)
     pugi::xml_node xml_triangles = xml_node.child("triangles");
     for (pugi::xml_node face = xml_triangles.child("triangle"); face != nullptr; face = face.next_sibling("triangle"))
     {
-        Face temp_face = Face(face.attribute("v1").as_int(), face.attribute("v2").as_int(), face.attribute("v3").as_int());
-        this->faces_.push_back(temp_face);
+        const pugi::xml_attribute attribute_uv_group_id = face.attribute("pid");
+        const pugi::xml_attribute attribute_uv_id_v1 = face.attribute("p1");
+        const pugi::xml_attribute attribute_uv_id_v2 = face.attribute("p2");
+        const pugi::xml_attribute attribute_uv_id_v3 = face.attribute("p3");
+
+        std::optional<UVCoordinatesIndices> uv_coordinates;
+        if (attribute_uv_group_id != nullptr && attribute_uv_id_v1 != nullptr && attribute_uv_id_v2 != nullptr && attribute_uv_id_v3 != nullptr)
+        {
+            uv_coordinates.emplace(attribute_uv_group_id.as_int(), attribute_uv_id_v1.as_int(), attribute_uv_id_v2.as_int(), attribute_uv_id_v3.as_int());
+            uv_group_id_ = attribute_uv_group_id.as_int();
+        }
+
+        this->faces_.emplace_back(face.attribute("v1").as_int(), face.attribute("v2").as_int(), face.attribute("v3").as_int(), uv_coordinates);
     }
 }
 
@@ -124,6 +137,50 @@ bytearray MeshData::getFlatVerticesAsBytes()
     return vertices_data;
 }
 
+bytearray MeshData::getUVCoordinatesPerVertexAsBytes(const Scene* scene) const
+{
+    const TextureData::UVCoordinatesGroup* uv_coordinates_group = scene->getUVCoordinatesGroup(uv_group_id_);
+    if (uv_coordinates_group == nullptr)
+    {
+        return {};
+    }
+    const std::vector<UVCoordinate>& uv_coordinates = uv_coordinates_group->coordinates;
+
+    bytearray uv_data;
+    uv_data.reserve(faces_.size() * 3 * 2);
+
+    for (auto& face : faces_)
+    {
+        const std::optional<UVCoordinatesIndices>& uv_coordinates_opt = face.getUVCoordinates();
+        if (! uv_coordinates_opt.has_value())
+        {
+            return {};
+        }
+        const UVCoordinatesIndices& uv_coordinates_indices = uv_coordinates_opt.value();
+
+        for (const int uv_index : { uv_coordinates_indices.getV1(), uv_coordinates_indices.getV2(), uv_coordinates_indices.getV3() })
+        {
+            if (uv_index >= 0 && uv_index < uv_coordinates.size())
+            {
+                const UVCoordinate& uv_coordinate = uv_coordinates.at(uv_index);
+                exportToByteArray(uv_data, uv_coordinate.getU());
+                exportToByteArray(uv_data, uv_coordinate.getV());
+            }
+            else
+            {
+                return {};
+            }
+        }
+    }
+
+    return uv_data;
+}
+
+std::string MeshData::getTexturePath(const Scene* scene) const
+{
+    return scene->getTexturePathFromGroupId(uv_group_id_);
+}
+
 bytearray MeshData::getFacesAsBytes()
 {
     bytearray face_data;
@@ -190,7 +247,7 @@ void MeshData::setFacesFromBytes(const bytearray& data)
 
     for (int i = 0; i + 2 < num_ints; i += 3)
     {
-        Face temp_face = Face(int_array[i], int_array[i + 1], int_array[i + 2]);
+        Face temp_face = Face(int_array[i], int_array[i + 1], int_array[i + 2], std::nullopt);
         faces_.push_back(temp_face);
     }
 }
@@ -198,4 +255,15 @@ void MeshData::setFacesFromBytes(const bytearray& data)
 std::vector<Vertex> MeshData::getVertices()
 {
     return vertices_;
+}
+
+int MeshData::getUVGroupId() const
+{
+    return uv_group_id_;
+}
+
+template<typename T>
+void MeshData::exportToByteArray(bytearray& data, const T value)
+{
+    data.insert(data.end(), reinterpret_cast<const uint8_t*>(&value), reinterpret_cast<const uint8_t*>(&value) + sizeof(T));
 }

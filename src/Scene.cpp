@@ -27,8 +27,6 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
 {
     unit_ = xml_node.attribute("unit").as_string();
 
-    pugi::xml_node resources = xml_node.child("resources");
-
     // Handle metadata:
     for (pugi::xml_node metadata_node = xml_node.child("metadata"); metadata_node; metadata_node = metadata_node.next_sibling("metadata"))
     {
@@ -44,10 +42,14 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
         setMetaDataEntry(key, value, type, preserve);
     }
 
+    // Handle UV coordinates, which are stored outside the objects
+    pugi::xml_node resources = xml_node.child("resources");
+    texture_data_.fillByXMLNode(resources);
+
     pugi::xml_node build = xml_node.child("build");
     for (pugi::xml_node item = build.child("item"); item != nullptr; item = item.next_sibling("item"))
     {
-        // Found a item in the build. The items are linked to objects by objectid.
+        // Found an item in the build. The items are linked to objects by objectid.
         pugi::xml_node object_node = resources.find_child_by_attribute("object", "id", item.attribute("objectid").value());
         if (object_node != nullptr)
         {
@@ -178,4 +180,14 @@ const std::map<std::string, MetadataEntry>& Scene::getMetadata() const
 void Scene::setUnit(std::string unit)
 {
     unit_ = unit;
+}
+
+std::string Scene::getTexturePathFromGroupId(const int uv_group_id) const
+{
+    return texture_data_.getTexturePathFromGroupId(uv_group_id);
+}
+
+const TextureData::UVCoordinatesGroup* Scene::getUVCoordinatesGroup(const int uv_group_id) const
+{
+    return texture_data_.getUVCoordinatesGroup(uv_group_id);
 }

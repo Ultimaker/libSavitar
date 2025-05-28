@@ -4,8 +4,6 @@
 #ifndef MESHDATA_H
 #define MESHDATA_H
 
-#include <cstdint>
-#include <string>
 #include <vector>
 
 #include "Savitar/Face.h"
@@ -16,6 +14,9 @@
 
 namespace Savitar
 {
+
+class Scene;
+
 class MeshData
 {
 public:
@@ -56,6 +57,10 @@ public:
      */
     [[nodiscard]] bytearray getFlatVerticesAsBytes();
 
+    [[nodiscard]] bytearray getUVCoordinatesPerVertexAsBytes(const Scene* scene) const;
+
+    [[nodiscard]] std::string getTexturePath(const Scene* scene) const;
+
     /**
      * Set the vertices of the meshdata by bytearray (as set from python)
      *
@@ -72,14 +77,21 @@ public:
 
     [[nodiscard]] std::vector<Vertex> getVertices();
 
+    [[nodiscard]] int getUVGroupId() const;
+
     /**
      * Reset the data of the MeshData object.
      */
     void clear();
 
 private:
+    template<typename T>
+    static void exportToByteArray(bytearray& data, const T value);
+
+private:
     std::vector<Vertex> vertices_;
     std::vector<Face> faces_;
+    int uv_group_id_{ -1 };
 };
 } // namespace Savitar
 

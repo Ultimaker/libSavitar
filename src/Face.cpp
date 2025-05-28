@@ -5,7 +5,11 @@
 
 using namespace Savitar;
 
-Face::Face(int v1, int v2, int v3) : vertex_1_index_{ v1 }, vertex_2_index_{ v2 }, vertex_3_index_{ v3 }
+Face::Face(int v1, int v2, int v3, const std::optional<UVCoordinatesIndices>& uv_coordinates)
+    : vertex_1_index_{ v1 }
+    , vertex_2_index_{ v2 }
+    , vertex_3_index_{ v3 }
+    , uv_coordinates_(uv_coordinates)
 {
 }
 
@@ -22,4 +26,9 @@ int Face::getV2() const
 int Face::getV3() const
 {
     return vertex_3_index_;
+}
+
+const std::optional<UVCoordinatesIndices>& Face::getUVCoordinates() const
+{
+    return uv_coordinates_;
 }

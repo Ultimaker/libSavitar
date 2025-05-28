@@ -5,6 +5,7 @@
 #define SCENE_H
 
 #include "Savitar/SceneNode.h"
+#include "TextureData.h"
 
 #include <map> // For std::map
 #include <string> // For std::string
@@ -76,10 +77,15 @@ public:
 
     void setUnit(std::string unit);
 
+    [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
+
+    [[nodiscard]] const TextureData::UVCoordinatesGroup* getUVCoordinatesGroup(const int uv_group_id) const;
+
 private:
     std::vector<SceneNode*> scene_nodes_;
     std::map<std::string, MetadataEntry> metadata_;
     std::string unit_{ "millimeter" };
+    TextureData texture_data_;
 
     /**
      * Used to recursively create SceneNode objects based on xml nodes.
