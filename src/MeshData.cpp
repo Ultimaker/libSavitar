@@ -176,6 +176,25 @@ bytearray MeshData::getUVCoordinatesPerVertexAsBytes(const Scene* scene) const
     return uv_data;
 }
 
+void MeshData::setUVCoordinatesPerVertexAsBytes(const bytearray& data, Scene* scene)
+{
+    uv_group_id_ = scene->setUVCoordinatesGroupFromBytes(data);
+
+    // Although 3MF format is capable of handling various UV coordinates set for a single vertex used by different triangles, Cura
+    // always uses the same coordinate per vertex, so just make the indices match the vertices
+    for (Face& face : faces_)
+    {
+        if (uv_group_id_ >= 0)
+        {
+            face.setUVCoordinates(UVCoordinatesIndices(uv_group_id_, face.getV1(), face.getV2(), face.getV3()));
+        }
+        else
+        {
+            face.setUVCoordinates(std::nullopt);
+        }
+    }
+}
+
 std::string MeshData::getTexturePath(const Scene* scene) const
 {
     return scene->getTexturePathFromGroupId(uv_group_id_);
@@ -209,12 +228,25 @@ void MeshData::toXmlNode(pugi::xml_node& node)
     }
 
     pugi::xml_node triangles_node = node.append_child("triangles");
+    size_t face_index = 0;
     for (auto& face : faces_)
     {
         pugi::xml_node triangle_node = triangles_node.append_child("triangle");
         triangle_node.append_attribute("v1") = face.getV1();
         triangle_node.append_attribute("v2") = face.getV2();
         triangle_node.append_attribute("v3") = face.getV3();
+
+        const std::optional<UVCoordinatesIndices>& uv_coordinates_opt = face.getUVCoordinates();
+        if (uv_group_id_ >= 0 && uv_coordinates_opt.has_value())
+        {
+            const UVCoordinatesIndices& uv_coordinates = uv_coordinates_opt.value();
+            triangle_node.append_attribute("pid") = uv_group_id_;
+            triangle_node.append_attribute("p1") = uv_coordinates.getV1();
+            triangle_node.append_attribute("p2") = uv_coordinates.getV2();
+            triangle_node.append_attribute("p3") = uv_coordinates.getV3();
+        }
+
+        face_index++;
     }
 }
 
@@ -260,6 +292,11 @@ std::vector<Vertex> MeshData::getVertices()
 int MeshData::getUVGroupId() const
 {
     return uv_group_id_;
+}
+
+void MeshData::setUVGroupId(const int uv_group_id)
+{
+    uv_group_id_ = uv_group_id;
 }
 
 template<typename T>

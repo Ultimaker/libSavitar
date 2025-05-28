@@ -20,9 +20,16 @@ public:
     ~Face() = default;
 
     [[nodiscard]] int getV1() const;
+    void setV1(const int v1);
+
     [[nodiscard]] int getV2() const;
+    void setV2(const int v2);
+
     [[nodiscard]] int getV3() const;
+    void setV3(const int v3);
+
     [[nodiscard]] const std::optional<UVCoordinatesIndices>& getUVCoordinates() const;
+    void setUVCoordinates(const std::optional<UVCoordinatesIndices>& uv_coordinates);
 
 private:
     int vertex_1_index_;

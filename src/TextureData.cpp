@@ -45,10 +45,67 @@ void TextureData::fillByXMLNode(pugi::xml_node xml_node)
     }
 }
 
+void TextureData::toXmlNode(pugi::xml_node& resources_node)
+{
+    // Handle textures paths
+    for (const auto& texture_path : textures_paths_)
+    {
+        pugi::xml_node texture_node = resources_node.append_child("m:texture2d");
+        texture_node.append_attribute("id") = texture_path.first;
+        texture_node.append_attribute("path") = texture_path.second.c_str();
+        texture_node.append_attribute("contenttype") = "image/png";
+    }
+
+    // Handle UV coordinates groups
+    for (const auto& uv_coordinates_group : uv_coordinates_)
+    {
+        pugi::xml_node group_node = resources_node.append_child("m:texture2dgroup");
+        group_node.append_attribute("id") = uv_coordinates_group.first;
+        group_node.append_attribute("texid") = uv_coordinates_group.second.texture_id;
+
+        for (const UVCoordinate& coordinate : uv_coordinates_group.second.coordinates)
+        {
+            pugi::xml_node coordinate_node = group_node.append_child("m:tex2coord");
+            coordinate_node.append_attribute("u") = coordinate.getU();
+            coordinate_node.append_attribute("v") = coordinate.getV();
+        }
+    }
+}
+
 const TextureData::UVCoordinatesGroup* TextureData::getUVCoordinatesGroup(const int id) const
 {
     auto iterator = uv_coordinates_.find(id);
     return iterator != uv_coordinates_.end() ? &iterator->second : nullptr;
+}
+
+int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data)
+{
+    // Find first unused id for group
+    int id = 0;
+    while (uv_coordinates_.find(id) != uv_coordinates_.end())
+    {
+        ++id;
+    }
+
+    // Interpret byte array as array of floats.
+    const float* float_array = reinterpret_cast<const float*>(data.data());
+    const size_t num_bytes = data.size();
+    const size_t num_coordinates = (num_bytes / sizeof(float)) / 2;
+
+    UVCoordinatesGroup group;
+    for (size_t i = 0; i < num_coordinates; ++i)
+    {
+        group.coordinates.emplace_back(float_array[i * 2], float_array[i * 2 + 1]);
+    }
+
+    if (group.coordinates.empty())
+    {
+        return -1;
+    }
+
+    uv_coordinates_.emplace(id, std::move(group));
+
+    return id;
 }
 
 std::string TextureData::getTexturePath(const int texture_id) const

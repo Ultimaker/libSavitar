@@ -44,6 +44,11 @@ public:
     void fillByXMLNode(pugi::xml_node xml_node);
 
     /**
+     * Serialise the scene to model_node
+     */
+    void toXmlNode(pugi::xml_node& model_node);
+
+    /**
      * Store a metadata entry as metadata.
      * @param key The key of the metadata.
      * @param entry A MetadataEntry object containing metadata and
@@ -80,6 +85,8 @@ public:
     [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
 
     [[nodiscard]] const TextureData::UVCoordinatesGroup* getUVCoordinatesGroup(const int uv_group_id) const;
+
+    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data);
 
 private:
     std::vector<SceneNode*> scene_nodes_;

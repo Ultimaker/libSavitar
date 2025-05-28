@@ -4,6 +4,7 @@
 #ifndef TEXTUREDATA_H
 #define TEXTUREDATA_H
 
+#include "Types.h"
 #include "UVCoordinate.h"
 
 #include <map>
@@ -27,9 +28,13 @@ public:
 
     void fillByXMLNode(pugi::xml_node xml_node);
 
+    void toXmlNode(pugi::xml_node& resources_node);
+
     [[nodiscard]] std::string getTexturePath(const int texture_id) const;
 
     [[nodiscard]] const UVCoordinatesGroup* getUVCoordinatesGroup(const int id) const;
+
+    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data);
 
     [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
 

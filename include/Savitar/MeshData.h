@@ -59,6 +59,8 @@ public:
 
     [[nodiscard]] bytearray getUVCoordinatesPerVertexAsBytes(const Scene* scene) const;
 
+    void setUVCoordinatesPerVertexAsBytes(const bytearray& data, Scene* scene);
+
     [[nodiscard]] std::string getTexturePath(const Scene* scene) const;
 
     /**
@@ -78,6 +80,8 @@ public:
     [[nodiscard]] std::vector<Vertex> getVertices();
 
     [[nodiscard]] int getUVGroupId() const;
+
+    void setUVGroupId(const int uv_group_id);
 
     /**
      * Reset the data of the MeshData object.
