@@ -294,7 +294,12 @@ const TextureData::UVCoordinatesGroup* Scene::getUVCoordinatesGroup(const int uv
     return texture_data_.getUVCoordinatesGroup(uv_group_id);
 }
 
-int Scene::setUVCoordinatesGroupFromBytes(const bytearray& data)
+int Scene::addTexturePath(const std::string& texture_path)
 {
-    return texture_data_.setUVCoordinatesGroupFromBytes(data);
+    return texture_data_.addTexturePath(texture_path);
+}
+
+int Scene::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id)
+{
+    return texture_data_.setUVCoordinatesGroupFromBytes(data, texture_id);
 }

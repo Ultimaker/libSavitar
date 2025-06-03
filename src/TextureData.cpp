@@ -78,7 +78,7 @@ const TextureData::UVCoordinatesGroup* TextureData::getUVCoordinatesGroup(const 
     return iterator != uv_coordinates_.end() ? &iterator->second : nullptr;
 }
 
-int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data)
+int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id)
 {
     // Find first unused id for group
     int id = 0;
@@ -93,6 +93,7 @@ int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data)
     const size_t num_coordinates = (num_bytes / sizeof(float)) / 2;
 
     UVCoordinatesGroup group;
+    group.texture_id = texture_id;
     for (size_t i = 0; i < num_coordinates; ++i)
     {
         group.coordinates.emplace_back(float_array[i * 2], float_array[i * 2 + 1]);
@@ -105,6 +106,19 @@ int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data)
 
     uv_coordinates_.emplace(id, std::move(group));
 
+    return id;
+}
+
+int TextureData::addTexturePath(const std::string& texture_path)
+{
+    // Find first unused id for textures
+    int id = 0;
+    while (textures_paths_.find(id) != textures_paths_.end())
+    {
+        ++id;
+    }
+
+    textures_paths_.emplace(id, texture_path);
     return id;
 }
 

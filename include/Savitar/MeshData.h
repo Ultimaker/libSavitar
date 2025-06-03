@@ -59,7 +59,7 @@ public:
 
     [[nodiscard]] bytearray getUVCoordinatesPerVertexAsBytes(const Scene* scene) const;
 
-    void setUVCoordinatesPerVertexAsBytes(const bytearray& data, Scene* scene);
+    void setUVCoordinatesPerVertexAsBytes(const bytearray& data, const std::string& texture_path, Scene* scene);
 
     [[nodiscard]] std::string getTexturePath(const Scene* scene) const;
 

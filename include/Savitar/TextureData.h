@@ -34,7 +34,9 @@ public:
 
     [[nodiscard]] const UVCoordinatesGroup* getUVCoordinatesGroup(const int id) const;
 
-    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data);
+    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id);
+
+    [[nodiscard]] int addTexturePath(const std::string& texture_path);
 
     [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
 

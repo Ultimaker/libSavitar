@@ -86,7 +86,9 @@ public:
 
     [[nodiscard]] const TextureData::UVCoordinatesGroup* getUVCoordinatesGroup(const int uv_group_id) const;
 
-    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data);
+    [[nodiscard]] int addTexturePath(const std::string& texture_path);
+
+    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id);
 
 private:
     std::vector<SceneNode*> scene_nodes_;
