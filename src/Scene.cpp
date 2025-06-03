@@ -249,7 +249,7 @@ int Scene::getNextAvailableResourceId() const
     int id = 0;
 
     std::vector<SceneNode*> all_nodes = getAllSceneNodes();
-    const auto iterator_max = std::max_element(all_nodes.begin(), all_nodes.end(), [](const SceneNode* lhs, const SceneNode* rhs) { return lhs->getId() > rhs->getId(); });
+    const auto iterator_max = std::max_element(all_nodes.begin(), all_nodes.end(), [](const SceneNode* lhs, const SceneNode* rhs) { return lhs->getId() < rhs->getId(); });
     if (iterator_max != all_nodes.end())
     {
         id = (*iterator_max)->getId() + 1;
