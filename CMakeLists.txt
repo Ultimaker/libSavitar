@@ -39,9 +39,6 @@ target_include_directories(Savitar
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 
-#add_executable(load3mf load3mf.cpp)
-#target_link_libraries(load3mf Savitar)
-
 option(ENABLE_TESTING "Enable unit-testing" OFF)
 if (ENABLE_TESTING)
     enable_testing()
