@@ -103,7 +103,7 @@ TEST_F(ThreeMFParserTest, parse)
 
     EXPECT_EQ(nodes[0]->getName().compare("test_object"), 0);
     EXPECT_EQ(nodes[1]->getName().compare(""), 0);
-    EXPECT_EQ(nodes[1]->getId().compare("2"), 0);
+    EXPECT_EQ(nodes[1]->getId(), 2);
     EXPECT_FALSE(nodes[1]->getTransformation().empty());
 }
 

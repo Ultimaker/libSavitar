@@ -4,6 +4,7 @@
 #include "Savitar/Scene.h"
 #include "Savitar/Namespace.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -98,17 +99,17 @@ void Scene::toXmlNode(pugi::xml_node& model_node)
 
     texture_data_.toXmlNode(resources_node);
 
-    for (int i = 0; i < getAllSceneNodes().size(); i++)
+    const std::vector<SceneNode*> all_nodes = getAllSceneNodes();
+    for (SceneNode* scene_node : all_nodes)
     {
-        SceneNode* scene_node = getAllSceneNodes().at(i);
-        scene_node->setId(std::to_string(i + 1));
+        scene_node->setId(getNextAvailableResourceId());
     }
 
-    for (SceneNode* scene_node : getAllSceneNodes())
+    for (SceneNode* scene_node : all_nodes)
     {
         // Create item
         pugi::xml_node object = resources_node.append_child("object");
-        object.append_attribute("id") = scene_node->getId().c_str();
+        object.append_attribute("id") = std::to_string(scene_node->getId()).c_str();
         if (! scene_node->getName().empty())
         {
             object.append_attribute("name") = scene_node->getName().c_str();
@@ -147,7 +148,7 @@ void Scene::toXmlNode(pugi::xml_node& model_node)
             for (SceneNode* child_scene_node : scene_node->getChildren())
             {
                 pugi::xml_node component = components.append_child("component");
-                component.append_attribute("objectid") = child_scene_node->getId().c_str();
+                component.append_attribute("objectid") = std::to_string(child_scene_node->getId()).c_str();
                 component.append_attribute("transform") = child_scene_node->getTransformation().c_str();
             }
         }
@@ -159,7 +160,7 @@ void Scene::toXmlNode(pugi::xml_node& model_node)
             }
             pugi::xml_node mesh_node_setting = object.child("metadatagroup").append_child("metadata");
             mesh_node_setting.append_attribute("name") = "mesh_node_objectid";
-            mesh_node_setting.text().set(scene_node->getMeshNode()->getId().c_str());
+            mesh_node_setting.text().set(std::to_string(scene_node->getMeshNode()->getId()).c_str());
             mesh_node_setting.append_attribute("preserve") = "true";
         }
     }
@@ -167,7 +168,7 @@ void Scene::toXmlNode(pugi::xml_node& model_node)
     for (SceneNode* scene_node : getSceneNodes())
     {
         pugi::xml_node item = build_node.append_child("item");
-        item.append_attribute("objectid") = scene_node->getId().c_str();
+        item.append_attribute("objectid") = std::to_string(scene_node->getId()).c_str();
         item.append_attribute("transform") = scene_node->getTransformation().c_str();
     }
 
@@ -243,7 +244,23 @@ SceneNode* Scene::createSceneNodeFromObject(pugi::xml_node root_node, pugi::xml_
     return scene_node;
 }
 
-std::vector<SceneNode*> Scene::getAllSceneNodes()
+int Scene::getNextAvailableResourceId() const
+{
+    int id = 0;
+
+    std::vector<SceneNode*> all_nodes = getAllSceneNodes();
+    const auto iterator_max = std::max_element(all_nodes.begin(), all_nodes.end(), [](const SceneNode* lhs, const SceneNode* rhs) { return lhs->getId() > rhs->getId(); });
+    if (iterator_max != all_nodes.end())
+    {
+        id = (*iterator_max)->getId() + 1;
+    }
+
+    id = std::max(id, texture_data_.getNextAvailableResourceId());
+
+    return id;
+}
+
+std::vector<SceneNode*> Scene::getAllSceneNodes() const
 {
     std::vector<SceneNode*> all_nodes;
 
@@ -294,12 +311,12 @@ const TextureData::UVCoordinatesGroup* Scene::getUVCoordinatesGroup(const int uv
     return texture_data_.getUVCoordinatesGroup(uv_group_id);
 }
 
-int Scene::addTexturePath(const std::string& texture_path)
+void Scene::addTexturePath(const std::string& texture_path, const int texture_id)
 {
-    return texture_data_.addTexturePath(texture_path);
+    texture_data_.addTexturePath(texture_path, texture_id);
 }
 
-int Scene::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id)
+void Scene::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id)
 {
-    return texture_data_.setUVCoordinatesGroupFromBytes(data, texture_id);
+    texture_data_.setUVCoordinatesGroupFromBytes(data, texture_id, group_id);
 }

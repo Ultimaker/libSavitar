@@ -30,7 +30,7 @@ public:
      */
     [[nodiscard]] std::vector<SceneNode*> getSceneNodes();
 
-    [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes();
+    [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes() const;
 
     /**
      * Add a scene node to the scene.
@@ -74,6 +74,8 @@ public:
      */
     [[nodiscard]] const std::map<std::string, MetadataEntry>& getMetadata() const;
 
+    int getNextAvailableResourceId() const;
+
     /**
      * Get the unit (milimeter, inch, etc) of the scene.
      * This is in milimeter by default.
@@ -86,9 +88,9 @@ public:
 
     [[nodiscard]] const TextureData::UVCoordinatesGroup* getUVCoordinatesGroup(const int uv_group_id) const;
 
-    [[nodiscard]] int addTexturePath(const std::string& texture_path);
+    void addTexturePath(const std::string& texture_path, const int texture_id);
 
-    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id);
+    void setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id);
 
 private:
     std::vector<SceneNode*> scene_nodes_;

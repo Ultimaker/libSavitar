@@ -44,9 +44,9 @@ public:
     /**
      * Get the (unique) identifier of the node.
      */
-    [[nodiscard]] std::string getId();
+    [[nodiscard]] int getId() const;
 
-    void setId(std::string id);
+    void setId(int id);
 
     /**
      * Get the (non-unique) display name of the node.
@@ -81,7 +81,7 @@ private:
     std::vector<SceneNode*> children_;
     MeshData mesh_data_;
     std::map<std::string, MetadataEntry> settings_;
-    std::string id_;
+    int id_{ -1 };
     std::string name_;
     std::string type_{ "model" };
     std::string component_path_;

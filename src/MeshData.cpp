@@ -178,8 +178,11 @@ bytearray MeshData::getUVCoordinatesPerVertexAsBytes(const Scene* scene) const
 
 void MeshData::setUVCoordinatesPerVertexAsBytes(const bytearray& data, const std::string& texture_path, Scene* scene)
 {
-    const int texture_id = scene->addTexturePath(texture_path);
-    uv_group_id_ = scene->setUVCoordinatesGroupFromBytes(data, texture_id);
+    const int texture_id = scene->getNextAvailableResourceId();
+    scene->addTexturePath(texture_path, texture_id);
+
+    uv_group_id_ = scene->getNextAvailableResourceId();
+    scene->setUVCoordinatesGroupFromBytes(data, texture_id, uv_group_id_);
 
     // Although 3MF format is capable of handling various UV coordinates set for a single vertex used by different triangles, Cura
     // always uses the same coordinate per vertex, so just make the indices match the vertices

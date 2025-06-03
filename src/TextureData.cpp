@@ -78,15 +78,8 @@ const TextureData::UVCoordinatesGroup* TextureData::getUVCoordinatesGroup(const 
     return iterator != uv_coordinates_.end() ? &iterator->second : nullptr;
 }
 
-int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id)
+void TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id)
 {
-    // Find first unused id for group
-    int id = 0;
-    while (uv_coordinates_.find(id) != uv_coordinates_.end())
-    {
-        ++id;
-    }
-
     // Interpret byte array as array of floats.
     const float* float_array = reinterpret_cast<const float*>(data.data());
     const size_t num_bytes = data.size();
@@ -99,27 +92,15 @@ int TextureData::setUVCoordinatesGroupFromBytes(const bytearray& data, const int
         group.coordinates.emplace_back(float_array[i * 2], float_array[i * 2 + 1]);
     }
 
-    if (group.coordinates.empty())
+    if (! group.coordinates.empty())
     {
-        return -1;
+        uv_coordinates_.emplace(group_id, std::move(group));
     }
-
-    uv_coordinates_.emplace(id, std::move(group));
-
-    return id;
 }
 
-int TextureData::addTexturePath(const std::string& texture_path)
+void TextureData::addTexturePath(const std::string& texture_path, const int id)
 {
-    // Find first unused id for textures
-    int id = 0;
-    while (textures_paths_.find(id) != textures_paths_.end())
-    {
-        ++id;
-    }
-
     textures_paths_.emplace(id, texture_path);
-    return id;
 }
 
 std::string TextureData::getTexturePath(const int texture_id) const
@@ -137,4 +118,15 @@ std::string TextureData::getTexturePathFromGroupId(const int uv_group_id) const
     }
 
     return getTexturePath(group->texture_id);
+}
+
+int TextureData::getNextAvailableResourceId() const
+{
+    int id = 0;
+    while (textures_paths_.find(id) != textures_paths_.end() || uv_coordinates_.find(id) != uv_coordinates_.end())
+    {
+        ++id;
+    }
+
+    return id;
 }

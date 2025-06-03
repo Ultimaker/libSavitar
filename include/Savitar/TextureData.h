@@ -34,11 +34,13 @@ public:
 
     [[nodiscard]] const UVCoordinatesGroup* getUVCoordinatesGroup(const int id) const;
 
-    [[nodiscard]] int setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id);
+    void setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id);
 
-    [[nodiscard]] int addTexturePath(const std::string& texture_path);
+    void addTexturePath(const std::string& texture_path, const int id);
 
     [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
+
+    [[nodiscard]] int getNextAvailableResourceId() const;
 
 private:
     std::map<int, std::string> textures_paths_;
