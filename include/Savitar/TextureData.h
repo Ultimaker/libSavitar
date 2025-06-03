@@ -14,13 +14,16 @@
 
 namespace Savitar
 {
+/**
+ * The TextureData stores UV coordinates groups and textures paths, that will end-up as resources in the global model description
+ */
 class TextureData
 {
 public:
     struct UVCoordinatesGroup
     {
-        int texture_id;
-        std::vector<UVCoordinate> coordinates;
+        int texture_id; // The ID of the associated texture
+        std::vector<UVCoordinate> coordinates; // The actual UV coordinates of the group
     };
 
     TextureData();
@@ -34,12 +37,22 @@ public:
 
     [[nodiscard]] const UVCoordinatesGroup* getUVCoordinatesGroup(const int id) const;
 
+    /**
+     * Loads a UV coordinates group from raw data
+     * @param data The actual UV coordinates as an array of floats
+     * @param texture_id The ID of the associated texture
+     * @param group_id The ID of the newly created group
+     */
     void setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id);
 
     void addTexturePath(const std::string& texture_path, const int id);
 
     [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
 
+    /**
+     * Find the next available resource ID amongst actually stored texture and UV coordinates. This should be called before
+     * adding any of these resources, so that IDs are unique in the end.
+     */
     [[nodiscard]] int getNextAvailableResourceId() const;
 
 private:

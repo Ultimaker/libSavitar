@@ -74,7 +74,11 @@ public:
      */
     [[nodiscard]] const std::map<std::string, MetadataEntry>& getMetadata() const;
 
-    int getNextAvailableResourceId() const;
+    /**
+     * Find the next available resource ID amongst actually stored texture, UV coordinates and scene nodes. This should be called before
+     * adding any of these resources, so that IDs are unique in the end.
+     */
+    [[nodiscard]] int getNextAvailableResourceId() const;
 
     /**
      * Get the unit (milimeter, inch, etc) of the scene.
@@ -90,6 +94,12 @@ public:
 
     void addTexturePath(const std::string& texture_path, const int texture_id);
 
+    /**
+     * Stores a UV coordinates group from raw data
+     * @param data The raw data to be stored
+     * @param texture_id The ID of the associated texture
+     * @param group_id The ID of the newly created coordinates group
+     */
     void setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id);
 
 private:

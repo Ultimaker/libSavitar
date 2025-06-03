@@ -293,16 +293,6 @@ std::vector<Vertex> MeshData::getVertices()
     return vertices_;
 }
 
-int MeshData::getUVGroupId() const
-{
-    return uv_group_id_;
-}
-
-void MeshData::setUVGroupId(const int uv_group_id)
-{
-    uv_group_id_ = uv_group_id;
-}
-
 template<typename T>
 void MeshData::exportToByteArray(bytearray& data, const T value)
 {

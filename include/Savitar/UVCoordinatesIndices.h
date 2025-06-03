@@ -6,6 +6,10 @@
 
 namespace Savitar
 {
+/**
+ * UV coordinates indices contains the UV group ID and associated indices for each point of a face. A single mesh may contain indices
+ * from multiple texture.
+ */
 class UVCoordinatesIndices
 {
 public:

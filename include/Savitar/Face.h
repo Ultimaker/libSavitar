@@ -14,7 +14,7 @@ class Face
 {
 public:
     /**
-     * A face uses the index of 3 vertices to describe a triangle
+     * A face uses the index of 3 vertices to describe a triangle, and possibly indices of UV coordinates
      */
     Face(int v1, int v2, int v3, const std::optional<UVCoordinatesIndices>& uv_coordinates = std::nullopt);
     ~Face() = default;
