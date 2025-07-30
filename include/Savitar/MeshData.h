@@ -4,8 +4,6 @@
 #ifndef MESHDATA_H
 #define MESHDATA_H
 
-#include <cstdint>
-#include <string>
 #include <vector>
 
 #include "Savitar/Face.h"
@@ -16,6 +14,9 @@
 
 namespace Savitar
 {
+
+class Scene;
+
 class MeshData
 {
 public:
@@ -57,6 +58,28 @@ public:
     [[nodiscard]] bytearray getFlatVerticesAsBytes();
 
     /**
+     * Retrieves the list of actual UV coordinates for each vertex of each face, as a raw byte array
+     * @param scene The scene which actually holds the UV coordinates set (can be shared amongst meshes)
+     * @return The coordinates array, or an empty array if the mesh doesn't have texture data
+     */
+    [[nodiscard]] bytearray getUVCoordinatesPerVertexAsBytes(const Scene* scene) const;
+
+    /**
+     * Sets the UV coordinates from a raw byte array, containing the actual coordinates for each vertex of each face
+     * @param data The raw coordinates data
+     * @param texture_path The path of the texture file te be stored besides the model description
+     * @param scene The scene which actually holds the UV coordinates set (can be shared amongst meshes)
+     */
+    void setUVCoordinatesPerVertexAsBytes(const bytearray& data, const std::string& texture_path, Scene* scene);
+
+    /**
+     * Get the path of the texture used by this mesh
+     * @param scene The scene which actually contains the list of stored textures (can be shared amongst models)
+     * @return The texture path, or an empty string if the mesh doesn't have texture data
+     */
+    [[nodiscard]] std::string getTexturePath(const Scene* scene) const;
+
+    /**
      * Set the vertices of the meshdata by bytearray (as set from python)
      *
      * For every vertex it's assumed that there are 12 bytes (3 floats * 4).
@@ -78,8 +101,18 @@ public:
     void clear();
 
 private:
+    /**
+     * @tparam T The type of data to be exported
+     * @param data The byte array containing the exported raw data
+     * @param value The value to be exported as raw data in the byte array
+     */
+    template<typename T>
+    static void exportToByteArray(bytearray& data, const T value);
+
+private:
     std::vector<Vertex> vertices_;
     std::vector<Face> faces_;
+    int uv_group_id_{ -1 };
 };
 } // namespace Savitar
 

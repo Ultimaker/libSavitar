@@ -5,6 +5,7 @@
 #define SCENE_H
 
 #include "Savitar/SceneNode.h"
+#include "TextureData.h"
 
 #include <map> // For std::map
 #include <string> // For std::string
@@ -29,7 +30,7 @@ public:
      */
     [[nodiscard]] std::vector<SceneNode*> getSceneNodes();
 
-    [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes();
+    [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes() const;
 
     /**
      * Add a scene node to the scene.
@@ -41,6 +42,11 @@ public:
      * Set the data of this SceneNode by giving it a xml node
      */
     void fillByXMLNode(pugi::xml_node xml_node);
+
+    /**
+     * Serialise the scene to model_node
+     */
+    void toXmlNode(pugi::xml_node& model_node);
 
     /**
      * Store a metadata entry as metadata.
@@ -69,6 +75,12 @@ public:
     [[nodiscard]] const std::map<std::string, MetadataEntry>& getMetadata() const;
 
     /**
+     * Find the next available resource ID amongst actually stored texture, UV coordinates and scene nodes. This should be called before
+     * adding any of these resources, so that IDs are unique in the end.
+     */
+    [[nodiscard]] int getNextAvailableResourceId() const;
+
+    /**
      * Get the unit (milimeter, inch, etc) of the scene.
      * This is in milimeter by default.
      */
@@ -76,10 +88,25 @@ public:
 
     void setUnit(std::string unit);
 
+    [[nodiscard]] std::string getTexturePathFromGroupId(const int uv_group_id) const;
+
+    [[nodiscard]] const TextureData::UVCoordinatesGroup* getUVCoordinatesGroup(const int uv_group_id) const;
+
+    void addTexturePath(const std::string& texture_path, const int texture_id);
+
+    /**
+     * Stores a UV coordinates group from raw data
+     * @param data The raw data to be stored
+     * @param texture_id The ID of the associated texture
+     * @param group_id The ID of the newly created coordinates group
+     */
+    void setUVCoordinatesGroupFromBytes(const bytearray& data, const int texture_id, const int group_id);
+
 private:
     std::vector<SceneNode*> scene_nodes_;
     std::map<std::string, MetadataEntry> metadata_;
     std::string unit_{ "millimeter" };
+    TextureData texture_data_;
 
     /**
      * Used to recursively create SceneNode objects based on xml nodes.

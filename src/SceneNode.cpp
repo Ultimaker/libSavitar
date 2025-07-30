@@ -78,7 +78,7 @@ void SceneNode::setType(const std::string& type)
 void SceneNode::fillByXMLNode(pugi::xml_node xml_node)
 {
     settings_.clear();
-    id_ = xml_node.attribute("id").as_string();
+    id_ = xml_node.attribute("id").as_int();
     name_ = xml_node.attribute("name").as_string();
 
     if (xml_node.child("mesh") != nullptr)
@@ -158,7 +158,7 @@ void SceneNode::parseComponentData(const std::string& xml_string)
     document.load_string(xml_string.c_str());
 
     pugi::xml_node xml_node = document;
-    for (const std::string child_name : {"model", "resources", "object", "mesh"})
+    for (const std::string child_name : { "model", "resources", "object", "mesh" })
     {
         xml_node = xml_node.child(child_name.c_str());
         if (xml_node == nullptr)
@@ -171,12 +171,12 @@ void SceneNode::parseComponentData(const std::string& xml_string)
     mesh_data_.fillByXMLNode(xml_node);
 }
 
-std::string SceneNode::getId()
+int SceneNode::getId() const
 {
     return id_;
 }
 
-void SceneNode::setId(std::string id)
+void SceneNode::setId(const int id)
 {
     id_ = id;
 }
