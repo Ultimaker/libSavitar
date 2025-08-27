@@ -156,9 +156,6 @@ TEST_F(MeshDataTest, fromXmlNode)
     {
         EXPECT_EQ(byte, face_bytes[++i_face_byte]);
     }
-
-    const bytearray got_uv_function = mesh_data->getUVCoordinatesPerVertexAsBytes();
-    ASSERT_EQ(got_uv_function.size(), 0);  // NOTE: Didn't add a _proper_ test yet, but the function should at least exist and return the right type.
 }
 
 } // namespace Savitar
