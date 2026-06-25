@@ -35,7 +35,7 @@ public:
     /**
      * Serialise the meshData to xml_node
      */
-    void toXmlNode(pugi::xml_node& xml_node);
+    void toXmlNode(pugi::xml_node& xml_node) const;
 
     /**
      * Return the vertices as flattend bytes.
@@ -93,7 +93,11 @@ public:
      */
     void setFacesFromBytes(const bytearray& data);
 
-    [[nodiscard]] std::vector<Vertex> getVertices();
+    [[nodiscard]] const std::vector<Vertex>& getVertices() const;
+
+    [[nodiscard]] const std::vector<Face>& getFaces() const;
+
+    [[nodiscard]] int getUVGroupId() const;
 
     /**
      * Reset the data of the MeshData object.

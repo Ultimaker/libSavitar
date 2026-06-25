@@ -220,7 +220,7 @@ bytearray MeshData::getFacesAsBytes()
     return face_data;
 }
 
-void MeshData::toXmlNode(pugi::xml_node& node)
+void MeshData::toXmlNode(pugi::xml_node& node) const
 {
     pugi::xml_node vertices_node = node.append_child("vertices");
     for (auto& vertice : vertices_)
@@ -288,9 +288,19 @@ void MeshData::setFacesFromBytes(const bytearray& data)
     }
 }
 
-std::vector<Vertex> MeshData::getVertices()
+const std::vector<Vertex>& MeshData::getVertices() const
 {
     return vertices_;
+}
+
+const std::vector<Face>& MeshData::getFaces() const
+{
+    return faces_;
+}
+
+int MeshData::getUVGroupId() const
+{
+    return uv_group_id_;
 }
 
 template<typename T>

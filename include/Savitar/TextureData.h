@@ -31,7 +31,7 @@ public:
 
     void fillByXMLNode(pugi::xml_node xml_node);
 
-    void toXmlNode(pugi::xml_node& resources_node);
+    void toXmlNode(pugi::xml_node& resources_node) const;
 
     [[nodiscard]] std::string getTexturePath(const int texture_id) const;
 

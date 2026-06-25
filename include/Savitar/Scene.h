@@ -28,7 +28,7 @@ public:
      * Get the scene nodes in this scene.
      * \return The scene nodes that are in the scene.
      */
-    [[nodiscard]] std::vector<SceneNode*> getSceneNodes();
+    [[nodiscard]] const std::vector<SceneNode*>& getSceneNodes() const;
 
     [[nodiscard]] std::vector<SceneNode*> getAllSceneNodes() const;
 
@@ -46,7 +46,7 @@ public:
     /**
      * Serialise the scene to model_node
      */
-    void toXmlNode(pugi::xml_node& model_node);
+    void toXmlNode(pugi::xml_node& model_node) const;
 
     /**
      * Store a metadata entry as metadata.
@@ -84,7 +84,7 @@ public:
      * Get the unit (milimeter, inch, etc) of the scene.
      * This is in milimeter by default.
      */
-    [[nodiscard]] std::string getUnit();
+    [[nodiscard]] const std::string& getUnit() const;
 
     void setUnit(std::string unit);
 

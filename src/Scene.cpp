@@ -10,7 +10,7 @@
 
 using namespace Savitar;
 
-std::vector<SceneNode*> Scene::getSceneNodes()
+const std::vector<SceneNode*>& Scene::getSceneNodes() const
 {
     return scene_nodes_;
 }
@@ -87,7 +87,7 @@ void Scene::fillByXMLNode(pugi::xml_node xml_node)
     }
 }
 
-void Scene::toXmlNode(pugi::xml_node& model_node)
+void Scene::toXmlNode(pugi::xml_node& model_node) const
 {
     pugi::xml_node resources_node = model_node.append_child("resources");
     pugi::xml_node build_node = model_node.append_child("build");
@@ -286,7 +286,7 @@ void Scene::setMetaDataEntry(const std::string& key, const std::string& value, c
     metadata_.emplace(key, MetadataEntry(value, type, preserve));
 }
 
-std::string Scene::getUnit()
+const std::string& Scene::getUnit() const
 {
     return unit_;
 }
