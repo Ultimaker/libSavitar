@@ -49,7 +49,7 @@ public:
      *
      * If there for example is a single face, it will return a byte array containing 3 ints (so 3 * 4 bytes)
      */
-    [[nodiscard]] bytearray getFacesAsBytes();
+    [[nodiscard]] bytearray getFacesAsBytes() const;
 
     /**
      * Instead of getting all unique vertices, this function returns a bytearray with 3 vertices per face.

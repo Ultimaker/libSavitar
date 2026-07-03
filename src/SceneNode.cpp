@@ -212,7 +212,7 @@ void SceneNode::removeSetting(std::string key)
 }
 
 
-std::vector<SceneNode*> SceneNode::getAllChildren()
+std::vector<SceneNode*> SceneNode::getAllChildren() const
 {
     std::vector<SceneNode*> all_children;
 

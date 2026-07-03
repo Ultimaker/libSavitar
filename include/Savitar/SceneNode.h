@@ -25,7 +25,7 @@ public:
     void setTransformation(const std::string& transformation);
 
     [[nodiscard]] const std::vector<SceneNode*>& getChildren() const;
-    [[nodiscard]] std::vector<SceneNode*> getAllChildren();
+    [[nodiscard]] std::vector<SceneNode*> getAllChildren() const;
     bool addChild(SceneNode* node);
 
     [[nodiscard]] const MeshData& getMeshData() const;

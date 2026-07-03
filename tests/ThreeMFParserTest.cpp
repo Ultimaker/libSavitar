@@ -60,10 +60,10 @@ TEST_F(ThreeMFParserTest, parse)
     std::array<size_t, 4> expected_tris = { 144UL, 144UL, 0UL, 0UL };
     std::array<size_t, 4> expected_child = { 0UL, 0UL, 1UL, 1UL };
     int i = -1;
-    for (SceneNode* node : nodes)
+    for (const SceneNode* node : nodes)
     {
         ++i;
-        MeshData& data = node->getMeshData();
+        const MeshData& data = node->getMeshData();
 
         const std::vector<Vertex>& verts = data.getVertices();
         EXPECT_EQ(verts.size(), expected_verts[i]);
@@ -71,13 +71,13 @@ TEST_F(ThreeMFParserTest, parse)
         const bytearray& tris = data.getFacesAsBytes();
         EXPECT_EQ(tris.size(), expected_tris[i]);
 
-        const std::vector<SceneNode*>& children = node->getAllChildren();
+        const std::vector<SceneNode*> children = node->getAllChildren();
         ASSERT_EQ(children.size(), expected_child[i]);
-        for (SceneNode* child : children)
+        for (const SceneNode* child : children)
         {
-            data = child->getMeshData();
-            EXPECT_FALSE(data.getVertices().empty());
-            EXPECT_FALSE(data.getFacesAsBytes().empty());
+            const MeshData& child_data = child->getMeshData();
+            EXPECT_FALSE(child_data.getVertices().empty());
+            EXPECT_FALSE(child_data.getFacesAsBytes().empty());
         }
     }
     // NOTE: To/from for content of vertices/triangles is tested in MeshDataTest.

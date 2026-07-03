@@ -204,7 +204,7 @@ std::string MeshData::getTexturePath(const Scene* scene) const
     return scene->getTexturePathFromGroupId(uv_group_id_);
 }
 
-bytearray MeshData::getFacesAsBytes()
+bytearray MeshData::getFacesAsBytes() const
 {
     bytearray face_data;
 
