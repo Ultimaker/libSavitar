@@ -8,12 +8,12 @@
 
 using namespace Savitar;
 
-std::string SceneNode::getTransformation()
+const std::string& SceneNode::getTransformation() const
 {
     return transformation_;
 }
 
-void SceneNode::setTransformation(std::string transformation)
+void SceneNode::setTransformation(const std::string& transformation)
 {
     transformation_ = transformation;
 }
@@ -28,7 +28,7 @@ std::string SceneNode::getComponentPath() const
     return component_path_;
 }
 
-std::vector<SceneNode*> SceneNode::getChildren()
+const std::vector<SceneNode*>& SceneNode::getChildren() const
 {
     return children_;
 }
@@ -52,7 +52,7 @@ bool SceneNode::addChild(SceneNode* node)
     return true;
 }
 
-MeshData& SceneNode::getMeshData()
+const MeshData& SceneNode::getMeshData() const
 {
     return mesh_data_;
 }
@@ -181,7 +181,7 @@ void SceneNode::setId(const int id)
     id_ = id;
 }
 
-std::string SceneNode::getName()
+const std::string& SceneNode::getName() const
 {
     return name_;
 }
@@ -212,7 +212,7 @@ void SceneNode::removeSetting(std::string key)
 }
 
 
-std::vector<SceneNode*> SceneNode::getAllChildren()
+std::vector<SceneNode*> SceneNode::getAllChildren() const
 {
     std::vector<SceneNode*> all_children;
 

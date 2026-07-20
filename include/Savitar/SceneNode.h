@@ -21,14 +21,14 @@ public:
     SceneNode() = default;
     virtual ~SceneNode() = default;
 
-    [[nodiscard]] std::string getTransformation();
-    void setTransformation(std::string);
+    [[nodiscard]] const std::string& getTransformation() const;
+    void setTransformation(const std::string& transformation);
 
-    [[nodiscard]] std::vector<SceneNode*> getChildren();
-    [[nodiscard]] std::vector<SceneNode*> getAllChildren();
+    [[nodiscard]] const std::vector<SceneNode*>& getChildren() const;
+    [[nodiscard]] std::vector<SceneNode*> getAllChildren() const;
     bool addChild(SceneNode* node);
 
-    MeshData& getMeshData();
+    [[nodiscard]] const MeshData& getMeshData() const;
     void setMeshData(const MeshData& mesh_data);
 
     /**
@@ -51,7 +51,7 @@ public:
     /**
      * Get the (non-unique) display name of the node.
      */
-    [[nodiscard]] std::string getName();
+    [[nodiscard]] const std::string& getName() const;
 
     [[maybe_unused]] void setName(std::string name);
 

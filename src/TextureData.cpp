@@ -45,7 +45,7 @@ void TextureData::fillByXMLNode(pugi::xml_node xml_node)
     }
 }
 
-void TextureData::toXmlNode(pugi::xml_node& resources_node)
+void TextureData::toXmlNode(pugi::xml_node& resources_node) const
 {
     // Handle textures paths
     for (const auto& texture_path : textures_paths_)
